@@ -60,8 +60,12 @@ namespace testdatamodel.Models
         [Display(Name = "創建時間")]
         public DateTime InitDate { get; set; }
 
-       
-        
+        /// <summary>
+        /// 愛心的數量
+        /// </summary>
+        [Display(Name = "愛心數量")]
+        public int Lovecount { get; set; }
+
         public virtual ICollection<MessageNormal> MessageNormals { get; set; }
 
         public virtual ICollection<Member> Members { get; set; }

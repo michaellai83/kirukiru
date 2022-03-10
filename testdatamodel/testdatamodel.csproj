@@ -357,7 +357,9 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
+    <Compile Include="Controllers\ArticleNormalController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HomepageController.cs" />
     <Compile Include="Controllers\MemberController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
@@ -368,6 +370,7 @@
     </Compile>
     <Compile Include="JWT\JwtAuthFilter .cs" />
     <Compile Include="JWT\JwtAuthUtil.cs" />
+    <Compile Include="listclass\NewArticle.cs" />
     <Compile Include="Migrations\202203070846064_Addtable.cs" />
     <Compile Include="Migrations\202203070846064_Addtable.Designer.cs">
       <DependentUpon>202203070846064_Addtable.cs</DependentUpon>
@@ -388,28 +391,71 @@
     <Compile Include="Migrations\202203070955319_V4.Designer.cs">
       <DependentUpon>202203070955319_V4.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203080848367_DeleteFilrstPic.cs" />
+    <Compile Include="Migrations\202203080848367_DeleteFilrstPic.Designer.cs">
+      <DependentUpon>202203080848367_DeleteFilrstPic.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203080909487_EditMemberAddInfotable.cs" />
+    <Compile Include="Migrations\202203080909487_EditMemberAddInfotable.Designer.cs">
+      <DependentUpon>202203080909487_EditMemberAddInfotable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203090655230_EditArticleAndFirstmission.cs" />
+    <Compile Include="Migrations\202203090655230_EditArticleAndFirstmission.Designer.cs">
+      <DependentUpon>202203090655230_EditArticleAndFirstmission.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203090809083_EditArticleAddLovecount.cs" />
+    <Compile Include="Migrations\202203090809083_EditArticleAddLovecount.Designer.cs">
+      <DependentUpon>202203090809083_EditArticleAddLovecount.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203090811109_EditArticleNormalAddlovecount.cs" />
+    <Compile Include="Migrations\202203090811109_EditArticleNormalAddlovecount.Designer.cs">
+      <DependentUpon>202203090811109_EditArticleNormalAddlovecount.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203100159513_DeleteArticleMainStrAndFirstmissionStr.cs" />
+    <Compile Include="Migrations\202203100159513_DeleteArticleMainStrAndFirstmissionStr.Designer.cs">
+      <DependentUpon>202203100159513_DeleteArticleMainStrAndFirstmissionStr.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203100621373_Editmember.cs" />
+    <Compile Include="Migrations\202203100621373_Editmember.Designer.cs">
+      <DependentUpon>202203100621373_Editmember.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203100708365_AddBack.cs" />
+    <Compile Include="Migrations\202203100708365_AddBack.Designer.cs">
+      <DependentUpon>202203100708365_AddBack.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203100715541_AddOrder.cs" />
+    <Compile Include="Migrations\202203100715541_AddOrder.Designer.cs">
+      <DependentUpon>202203100715541_AddOrder.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203100745391_AddBackQA.cs" />
+    <Compile Include="Migrations\202203100745391_AddBackQA.Designer.cs">
+      <DependentUpon>202203100745391_AddBackQA.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Articlecategory.cs" />
     <Compile Include="Models\ArticleMain.cs" />
-    <Compile Include="Models\ArticleMainString.cs" />
     <Compile Include="Models\ArticleNormal.cs" />
+    <Compile Include="Models\BackArticle.cs" />
+    <Compile Include="Models\Backmember.cs" />
+    <Compile Include="Models\BackQA.cs" />
     <Compile Include="Models\Collect.cs" />
     <Compile Include="Models\Firstmission.cs" />
-    <Compile Include="Models\FirstmissionString.cs" />
-    <Compile Include="Models\FirstPic.cs" />
-    <Compile Include="Models\Good.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageNormal.cs" />
+    <Compile Include="Models\Orderlist.cs" />
     <Compile Include="Models\ProjectDb.cs" />
     <Compile Include="Models\Remark.cs" />
     <Compile Include="Models\R_Message.cs" />
     <Compile Include="Models\R_MessageNormal.cs" />
     <Compile Include="Models\Subscription.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PutData\DataArticle.cs" />
     <Compile Include="PutData\DataArticlecategorie.cs" />
+    <Compile Include="PutData\DataArticleNormal.cs" />
     <Compile Include="PutData\DataMember.cs" />
+    <Compile Include="PutData\GetMainData.cs" />
     <Compile Include="Secret\HashWithSaltResult.cs" />
     <Compile Include="Secret\PasswordWithSaltHasher.cs" />
     <Compile Include="Secret\Rng.cs" />
@@ -514,6 +560,36 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203070955319_V4.resx">
       <DependentUpon>202203070955319_V4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203080848367_DeleteFilrstPic.resx">
+      <DependentUpon>202203080848367_DeleteFilrstPic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203080909487_EditMemberAddInfotable.resx">
+      <DependentUpon>202203080909487_EditMemberAddInfotable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203090655230_EditArticleAndFirstmission.resx">
+      <DependentUpon>202203090655230_EditArticleAndFirstmission.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203090809083_EditArticleAddLovecount.resx">
+      <DependentUpon>202203090809083_EditArticleAddLovecount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203090811109_EditArticleNormalAddlovecount.resx">
+      <DependentUpon>202203090811109_EditArticleNormalAddlovecount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203100159513_DeleteArticleMainStrAndFirstmissionStr.resx">
+      <DependentUpon>202203100159513_DeleteArticleMainStrAndFirstmissionStr.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203100621373_Editmember.resx">
+      <DependentUpon>202203100621373_Editmember.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203100708365_AddBack.resx">
+      <DependentUpon>202203100708365_AddBack.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203100715541_AddOrder.resx">
+      <DependentUpon>202203100715541_AddOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203100745391_AddBackQA.resx">
+      <DependentUpon>202203100745391_AddBackQA.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

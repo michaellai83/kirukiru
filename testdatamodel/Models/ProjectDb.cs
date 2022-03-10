@@ -24,14 +24,14 @@ namespace testdatamodel.Models
         public virtual DbSet<Member> Members { get; set; }
         public virtual DbSet<ArticleNormal> ArticleNormals { get; set; }
         public virtual DbSet<Article> Articles { get; set; }
-        public virtual DbSet<FirstPic> FirstPics { get; set; }
+       
         public virtual DbSet<Articlecategory> Articlecategory { get; set; }
 
         public virtual DbSet<Firstmission> Firstmissions { get; set; }
         public virtual DbSet<ArticleMain> ArticleMains { get; set; }
 
         public virtual DbSet<Collect> Collects { get; set; }
-        public virtual DbSet<Good> Goods { get; set; }
+        
 
         public virtual DbSet<Message> Messages { get; set; }
 
@@ -39,12 +39,12 @@ namespace testdatamodel.Models
         public virtual DbSet<R_Message> R_Messages { get; set; }
         public virtual DbSet<R_MessageNormal> R_MessageNormals { get; set; }
         public virtual DbSet<Subscription> Subscriptions { get; set; }
-        
-        public virtual DbSet<ArticleMainString> ArticleMainStrings { get; set; }
-        
-        public virtual DbSet<FirstmissionString> FirstmissionStrings { get; set; }
-        
         public virtual DbSet<Remark> Remarks { get; set; }
+        public virtual DbSet<Backmember> Backmembers { get; set; }
+        public virtual DbSet<BackArticle> BackArticles { get; set; }
+        public virtual DbSet<Orderlist> Orderlists { get; set; }
+        
+        public virtual DbSet<BackQA> BackQas { get; set; }
     }
 
     //public class MyEntity

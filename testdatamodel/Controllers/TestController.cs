@@ -101,6 +101,7 @@ namespace testdatamodel.Controllers
             //{
             //    return NotFound();
             //}
+
             return Ok(result);
         }
         /// <summary>
@@ -131,11 +132,11 @@ namespace testdatamodel.Controllers
                 //匿名型別
                 var result = new
                 {
-                    Id=articlog.Id,
-                    Name=articlog.Name
+                    Id = articlog.Id,
+                    Name = articlog.Name
                 };
-               
-                
+
+
                 return Ok(result);
             }
             catch (Exception ex)

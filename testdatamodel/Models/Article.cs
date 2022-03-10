@@ -26,14 +26,15 @@ namespace testdatamodel.Models
         [Display(Name = "使用者帳號")]
         public string UserName { get; set; }
         /// <summary>
-        /// 封面圖片的ID
+        /// 封面圖片名稱
         /// </summary>
-        //ForeignKey
-        [Display(Name = "封面圖片ID")]
-        public int FirstPicId { get; set; }
-
-        [ForeignKey("FirstPicId")]
-        public virtual FirstPic FirstPic { get; set; }
+        [Display(Name = "封面圖片名稱")]
+        public string FirstPicName { get; set; }
+        /// <summary>
+        /// 封面圖片副檔名
+        /// </summary>
+        [Display(Name = "封面圖片的副檔名")]
+        public string FirstPicFileName { get; set; }
         /// <summary>
         /// 文章標題
         /// </summary>
@@ -68,6 +69,11 @@ namespace testdatamodel.Models
         /// </summary>
         [Display(Name = "創建時間")]
         public DateTime InitDate { get; set; }
+        /// <summary>
+        /// 愛心的數量
+        /// </summary>
+        [Display(Name = "愛心數量")]
+        public int Lovecount { get; set; }
 
         public virtual ICollection<Firstmission> Firstmissions { get; set; }
         public virtual ICollection<ArticleMain> ArticleMains { get; set; }

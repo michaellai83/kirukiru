@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.Design;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
@@ -41,11 +42,16 @@ namespace testdatamodel.Models
 
        public string PicName { get; set; }
        public  string FileName { get; set; }
+       
+       public string Introduction { get; set; }
+       
+       public bool Opencollectarticles { get; set; }
 
 
        public virtual ICollection<Article> Articles { get; set; }
 
        public virtual ICollection<ArticleNormal> ArticleNormals { get; set; }
+       public virtual ICollection<Orderlist> Orderlists { get; set; }
 
     }
 }

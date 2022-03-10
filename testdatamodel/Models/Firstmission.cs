@@ -30,11 +30,11 @@ namespace testdatamodel.Models
         /// </summary>
         [Display(Name ="圖片副檔名")]
         public string PicFileName { get; set; }
-        [Display(Name = "內文ID")]
-        public int FirstmissionStringId { get; set; }
-
-        [ForeignKey("FirstmissionStringId")]
-        public virtual FirstmissionString FirstmissionStrings { get; set; }
+        
+        [Display(Name = "道具")]
+        public string FirstItem { get; set; }
+        [Display(Name = "數量")]
+        public string ItemNumber { get; set; }
 
         /// <summary>
         /// 文章的ID

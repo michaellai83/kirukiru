@@ -30,7 +30,11 @@ namespace testdatamodel.Models
         /// </summary>
         [Display(Name = "圖片副檔名")]
         public string PicFileName { get; set; }
-        
+        /// <summary>
+        /// 切切文章內容
+        /// </summary>
+        [Display(Name = "文章內容")]
+        public string Main { get; set; }
         /// <summary>
         /// 文章的ID
         /// </summary>
@@ -46,10 +50,7 @@ namespace testdatamodel.Models
         [Display(Name = "創立時間")]
         public DateTime InDateTime { get; set; }
 
-        [Display(Name = "切切的內文ID")]
-        public int ArticleMainStringId { get; set; }
-        [ForeignKey("ArticleMainStringId")]
-        public virtual ArticleMainString ArticleMainStrings { get; set; }
+        
 
 
     }

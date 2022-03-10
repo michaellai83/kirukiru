@@ -8,28 +8,30 @@ using System.Web;
 namespace testdatamodel.Models
 {
     /// <summary>
-    /// 封面圖
+    /// 後台QA文章
     /// </summary>
-    public class FirstPic
+    public class BackQA
     {
         /// <summary>
-        /// 封面ID
+        /// 編號ID
         /// </summary>
-        [Key]
-        [Display(Name = "編號")]
+        [Key]//主鍵 PK
+        [Display(Name = "ID")]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]//自動生成編號
-        public int Id { get; set; }
-
+        public int ID { get; set; }
         /// <summary>
-        /// 封面圖片名稱
+        /// 問題
         /// </summary>
-        [Display(Name = "封面圖片名稱")]
-        public string Name { get; set; }
+        [Display(Name = "問題")]
+        public string Title { get; set; }
         /// <summary>
-        /// 封面圖片副檔名
+        /// 答案
         /// </summary>
-        [Display(Name="封面圖片的副檔名")]
-        public string FileName { get; set; }
-        public virtual ICollection<Article> Articles { get; set; }
+        [Display(Name = "答案")]
+        public string Answer { get; set; }
+        /// <summary>
+        /// 建立時間
+        /// </summary>
+        public DateTime InitDateTime { get; set; }
     }
 }

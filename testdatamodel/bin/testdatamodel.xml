@@ -523,6 +523,208 @@
             <param name="ReMsgId">留言的ID</param>
             <returns></returns>
         </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.GetArctile(System.String)">
+            <summary>
+            取得文章資料
+            </summary>
+            <param name="articleid">文章ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.EditArticle">
+            <summary>
+            編輯文章(會把舊的圖片刪除後重新建立)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.DeleteActile(System.String)">
+            <summary>
+            刪除文章
+            </summary>
+            <param name="artid">文章ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.GetUserArticle(System.String,System.Boolean)">
+            <summary>
+            找到作者的所有切切
+            </summary>
+            <param name="username">作者的會員帳號</param>
+            <param name="ispush">是否發布</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.AddLoveArticle(System.Int32,System.Boolean)">
+            <summary>
+            按愛心
+            </summary>
+            <param name="artid">文章ID</param>
+            <param name="putlove">是否按愛心</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.Collectarticle(System.Int32,System.Int32)">
+            <summary>
+            收藏切切文章
+            </summary>
+            <param name="artid">文章ID</param>
+            <param name="memberid">收藏者的ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.Deletecollect(System.Int32,System.Int32)">
+            <summary>
+            取消收藏文章
+            </summary>
+            <param name="userid">會員ID</param>
+            <param name="articleid">收藏文章的ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.GetAllcollectart(System.Int32)">
+            <summary>
+            取得會員收藏的切切文章
+            </summary>
+            <param name="memberid">會員ID</param>
+            <returns></returns>
+        </member>
+        <member name="T:testdatamodel.Controllers.ArticleNormalController">
+            <summary>
+            一般文章的API
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.CreatArticleNormal(testdatamodel.PutData.DataArticleNormal)">
+            <summary>
+            添加一般文章
+            </summary>
+            <param name="data">回傳給後端的格式</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetUserAllArticleNormal(System.String,System.Boolean)">
+            <summary>
+            找到作者的所有文章
+            </summary>
+            <param name="username">作者會員帳號</param>
+            <param name="ispush">是否發布</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.DeleteArticleNormal(System.Int32)">
+            <summary>
+            刪除作者的文章
+            </summary>
+            <param name="artID">要刪除的文章ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.EditArticleNormal(System.Int32,testdatamodel.PutData.DataArticleNormal)">
+            <summary>
+            更改一般文章
+            </summary>
+            <param name="artID">文章的ID</param>
+            <param name="data">更改過後的資料</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.AddLoveArticleNormal(System.Int32,System.Boolean)">
+            <summary>
+            一般文章按愛心
+            </summary>
+            <param name="artid">文章id</param>
+            <param name="putlove">是否按愛心</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetArticleNormal(System.Int32)">
+            <summary>
+            取得一般文章頁面所需資訊
+            </summary>
+            <param name="artid">文章ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.AddmessageArticleNrmal(System.Int32,System.String,System.String)">
+            <summary>
+            一般文章的留言
+            </summary>
+            <param name="artid">文章ID</param>
+            <param name="username">留言者帳號</param>
+            <param name="messagemain">留言內容</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.Addremessage(System.Int32,System.String)">
+            <summary>
+            回覆一般文章留言
+            </summary>
+            <param name="messageid">留言ID</param>
+            <param name="messagemain">回覆留言的內容</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.Getmessage(System.Int32)">
+            <summary>
+            找到一般文章所有的留言
+            </summary>
+            <param name="artid">文章ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.Getrmessage(System.Int32)">
+            <summary>
+            取得此留言回覆
+            </summary>
+            <param name="messageid">留言id</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.Collectarticle(System.Int32,System.Int32)">
+            <summary>
+            收藏一般文章
+            </summary>
+            <param name="artid">文章ID</param>
+            <param name="memberid">收藏者的ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.Deletecollect(System.Int32,System.Int32)">
+            <summary>
+            取消收藏
+            </summary>
+            <param name="userid">會員ID</param>
+            <param name="articleid">文章ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetAllcollectart(System.Int32)">
+            <summary>
+            取得會員收藏的一般文章
+            </summary>
+            <param name="memberid">會員ID</param>
+            <returns></returns>
+        </member>
+        <member name="T:testdatamodel.Controllers.HomepageController">
+            <summary>
+            首頁的API
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Controllers.HomepageController.SeekArticle(System.Int32)">
+            <summary>
+            依類別取得一般文章和切切文章(按照時間最新排列
+            </summary>
+            <param name="artlog">類別的數字值</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.HomepageController.SeekTimeArticle(System.String,System.String)">
+            <summary>
+            依照時間範圍搜尋文章
+            </summary>
+            <param name="datetime1">較早的時間(ex:2022.03.08)</param>
+            <param name="datetime2">較晚的時間(ex:2022.03.10)</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.HomepageController.NewArticle">
+            <summary>
+            最新文章排列(前三筆
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.HomepageController.Lovearticle">
+            <summary>
+            最熱門文章排列
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.HomepageController.Seekstringarticle(System.String)">
+            <summary>
+            關鍵字搜尋文章標題
+            </summary>
+            <param name="keywords">關鍵字</param>
+            <returns></returns>
+        </member>
         <member name="M:testdatamodel.Controllers.MemberController.CreatMember(testdatamodel.PutData.DataMember)">
             <summary>
             會員註冊
@@ -552,6 +754,66 @@
             <param name="username">帳號</param>
             <param name="O_password">舊密碼</param>
             <param name="password">新密碼</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.ChangeName(System.String,System.String)">
+            <summary>
+            更改會員名字
+            </summary>
+            <param name="username">會員帳號</param>
+            <param name="name">會員更新名字</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.ChangeInfo(System.String,System.String)">
+            <summary>
+            更改會員敘述
+            </summary>
+            <param name="username">會員帳號</param>
+            <param name="introduction">會員敘述</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.ChangeEmail(System.String,System.String)">
+            <summary>
+            更改會員信箱
+            </summary>
+            <param name="username">會員帳號</param>
+            <param name="email">會員信箱</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.ChagneOpenCollect(System.String,System.Boolean)">
+            <summary>
+            是否公開會員收藏文章
+            </summary>
+            <param name="username">會員帳號</param>
+            <param name="opencollect">是否公開</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.CollectArticlenumber(System.Int32)">
+            <summary>
+            找到會員收藏文章的數量
+            </summary>
+            <param name="memberid">會員ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.GetAllMemberarticle(System.Int32)">
+            <summary>
+            會員的收藏文章列表
+            </summary>
+            <param name="userid">會員ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.GetMemberartnumber(System.String)">
+            <summary>
+            取得作者發布的文章數量
+            </summary>
+            <param name="authorname">作者的帳號</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.Collectauthorarticle(System.String)">
+            <summary>
+            查詢作者蒐藏的文章
+            </summary>
+            <param name="authorusername">作者帳號名稱</param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.TestController">
@@ -644,6 +906,11 @@
             <param name="Token">輸入前面拿到的Token key</param>
             <returns></returns>
         </member>
+        <member name="T:testdatamodel.listclass.NewArticle">
+            <summary>
+            最新文章列表
+            </summary>
+        </member>
         <member name="T:testdatamodel.Models.Article">
             <summary>
             切切文章
@@ -659,9 +926,14 @@
             使用者帳號
             </summary>
         </member>
-        <member name="P:testdatamodel.Models.Article.FirstPicId">
+        <member name="P:testdatamodel.Models.Article.FirstPicName">
             <summary>
-            封面圖片的ID
+            封面圖片名稱
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.Article.FirstPicFileName">
+            <summary>
+            封面圖片副檔名
             </summary>
         </member>
         <member name="P:testdatamodel.Models.Article.Title">
@@ -694,6 +966,11 @@
             創建時間
             </summary>
         </member>
+        <member name="P:testdatamodel.Models.Article.Lovecount">
+            <summary>
+            愛心的數量
+            </summary>
+        </member>
         <member name="T:testdatamodel.Models.ArticleMain">
             <summary>
             切切的內容
@@ -714,22 +991,17 @@
             切切內容圖片的副檔名
             </summary>
         </member>
+        <member name="P:testdatamodel.Models.ArticleMain.Main">
+            <summary>
+            切切文章內容
+            </summary>
+        </member>
         <member name="P:testdatamodel.Models.ArticleMain.ArticleId">
             <summary>
             文章的ID
             </summary>
         </member>
         <member name="P:testdatamodel.Models.ArticleMain.InDateTime">
-            <summary>
-            建立時間
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.ArticleMainString.Main">
-            <summary>
-            切切內容的描述
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.ArticleMainString.InDateTime">
             <summary>
             建立時間
             </summary>
@@ -779,6 +1051,46 @@
             創建時間
             </summary>
         </member>
+        <member name="P:testdatamodel.Models.ArticleNormal.Lovecount">
+            <summary>
+            愛心的數量
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Models.BackArticle">
+            <summary>
+            後台文章
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Models.Backmember">
+            <summary>
+            後台管理員
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Models.BackQA">
+            <summary>
+            後台QA文章
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.BackQA.ID">
+            <summary>
+            編號ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.BackQA.Title">
+            <summary>
+            問題
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.BackQA.Answer">
+            <summary>
+            答案
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.BackQA.InitDateTime">
+            <summary>
+            建立時間
+            </summary>
+        </member>
         <member name="T:testdatamodel.Models.Collect">
             <summary>
             收藏的資料表
@@ -822,66 +1134,6 @@
         <member name="P:testdatamodel.Models.Firstmission.InitDate">
             <summary>
             創建時間
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.FirstmissionString.Id">
-            <summary>
-            前置任務的內文ID
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.FirstmissionString.Main">
-            <summary>
-            前置任務的內容(或者道具數量,單位)
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.FirstmissionString.InitDate">
-            <summary>
-            創建時間
-            </summary>
-        </member>
-        <member name="T:testdatamodel.Models.FirstPic">
-            <summary>
-            封面圖
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.FirstPic.Id">
-            <summary>
-            封面ID
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.FirstPic.Name">
-            <summary>
-            封面圖片名稱
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.FirstPic.FileName">
-            <summary>
-            封面圖片副檔名
-            </summary>
-        </member>
-        <member name="T:testdatamodel.Models.Good">
-            <summary>
-            按愛心的資料表
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.Good.Id">
-            <summary>
-            按愛心的ID
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.Good.UserName">
-            <summary>
-            會員的帳號
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.Good.ArticleId">
-            <summary>
-            按愛心的切切文章ID
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.Good.ArticleNorId">
-            <summary>
-            愛心的一般文章ID
             </summary>
         </member>
         <member name="T:testdatamodel.Models.Message">
@@ -942,6 +1194,31 @@
         <member name="P:testdatamodel.Models.MessageNormal.InitDate">
             <summary>
             留言時間
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Models.Orderlist">
+            <summary>
+            訂閱的訂單列表
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.Orderlist.ID">
+            <summary>
+            訂單ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.Orderlist.MemberID">
+            <summary>
+            訂閱者的ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.Orderlist.AuthorName">
+            <summary>
+            被訂閱者的帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.Orderlist.InitDateTime">
+            <summary>
+            建立時間
             </summary>
         </member>
         <member name="T:testdatamodel.Models.Remark">
@@ -1032,6 +1309,11 @@
         <member name="T:testdatamodel.PutData.DataArticlecategorie">
             <summary>
             回傳Data文章種類
+            </summary>
+        </member>
+        <member name="T:testdatamodel.PutData.GetMainData">
+            <summary>
+            取得切切的list
             </summary>
         </member>
         <member name="T:testdatamodel.Secret.HashWithSaltResult">

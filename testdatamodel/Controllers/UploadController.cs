@@ -53,9 +53,10 @@ namespace testdatamodel.Controllers
                     {
                         var fileName = content.Headers.ContentDisposition.FileName.Trim('\"');
                         string[] fileary = fileName.Split('.');
+                        string uploadfilename = username+DateTime.Now.ToFileTime() + "." + fileary[1];
                         var fileBytes = await content.ReadAsByteArrayAsync();
 
-                        var outputPath = Path.Combine(root, fileName);
+                        var outputPath = Path.Combine(root, uploadfilename);
                         using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
                         {
                             await output.WriteAsync(fileBytes, 0, fileBytes.Length);
@@ -64,7 +65,7 @@ namespace testdatamodel.Controllers
                         foreach (var p in q)
                         {
                             ;
-                            p.PicName = fileary[0];//檔名
+                            p.PicName = username + DateTime.Now.ToFileTime();//檔名
                             p.FileName = fileary[1];//副檔名
                         }
 
