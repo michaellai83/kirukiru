@@ -686,24 +686,74 @@
             <param name="memberid">會員ID</param>
             <returns></returns>
         </member>
+        <member name="T:testdatamodel.Controllers.BackmemberController">
+            <summary>
+            後台專區
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Controllers.BackmemberController.CreateBackMember(System.String,System.String,System.String,System.String)">
+            <summary>
+            註冊後台管理員
+            </summary>
+            <param name="username">帳號</param>
+            <param name="userpassword">密碼</param>
+            <param name="email">信箱</param>
+            <param name="name">姓名</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.BackmemberController.BackLogint(System.String,System.String)">
+            <summary>
+            後台登入(產生Token)
+            </summary>
+            <param name="username">帳號</param>
+            <param name="password">密碼</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.BackmemberController.CreatQA(System.String,System.String)">
+            <summary>
+            產生QA
+            </summary>
+            <param name="title">問題</param>
+            <param name="answer">答案</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.BackmemberController.Showallqa">
+            <summary>
+            取得所有QA
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.BackmemberController.DeleteQA(System.Int32)">
+            <summary>
+            刪除QA
+            </summary>
+            <param name="qaID">QA的ID</param>
+            <returns></returns>
+        </member>
         <member name="T:testdatamodel.Controllers.HomepageController">
             <summary>
             首頁的API
             </summary>
         </member>
-        <member name="M:testdatamodel.Controllers.HomepageController.SeekArticle(System.Int32)">
+        <member name="M:testdatamodel.Controllers.HomepageController.SeekArticle(System.Int32,System.Int32,System.Int32,System.Int32)">
             <summary>
             依類別取得一般文章和切切文章(按照時間最新排列
             </summary>
             <param name="artlog">類別的數字值</param>
+            <param name="nowpage">現在的頁數(一開始請填1)</param>
+            <param name="pagecount">總共幾筆資料(一開始請填0)</param>
+            <param name="showcount">要顯示幾筆資料</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.HomepageController.SeekTimeArticle(System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.HomepageController.SeekTimeArticle(System.String,System.String,System.Int32,System.Int32,System.Int32)">
             <summary>
             依照時間範圍搜尋文章
             </summary>
             <param name="datetime1">較早的時間(ex:2022.03.08)</param>
             <param name="datetime2">較晚的時間(ex:2022.03.10)</param>
+            <param name="nowpage">現在頁數(一開始請直接傳1)</param>
+            <param name="totalcount">總共有幾筆資料(一開始請填0)</param>
+            <param name="showcount">顯示幾筆資料</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.HomepageController.NewArticle">
@@ -714,15 +764,18 @@
         </member>
         <member name="M:testdatamodel.Controllers.HomepageController.Lovearticle">
             <summary>
-            最熱門文章排列
+            最熱門文章排列(前四筆
             </summary>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.HomepageController.Seekstringarticle(System.String)">
+        <member name="M:testdatamodel.Controllers.HomepageController.Seekstringarticle(System.String,System.Int32,System.Int32,System.Int32)">
             <summary>
             關鍵字搜尋文章標題
             </summary>
             <param name="keywords">關鍵字</param>
+            <param name="nowpage">現在的頁數(一開始就是第一頁,請填1)</param>
+            <param name="datacount">總共幾筆資料(一開始請填0,後端會傳回總共幾筆)</param>
+            <param name="showcount">顯示筆數</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.MemberController.CreatMember(testdatamodel.PutData.DataMember)">

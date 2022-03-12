@@ -104,7 +104,7 @@ namespace testdatamodel.Controllers
 
             db.ArticleNormals.Remove(data);
             db.SaveChanges();
-            return Ok(new {status = "sucess"});
+            return Ok(new {status = "success" });
         }
         /// <summary>
         /// 更改一般文章
@@ -135,7 +135,7 @@ namespace testdatamodel.Controllers
             }
 
             db.SaveChanges();
-            return Ok(new {status = "suceess"});
+            return Ok(new {status = "success" });
         }
         /// <summary>
         /// 一般文章按愛心
@@ -175,7 +175,7 @@ namespace testdatamodel.Controllers
                 db.SaveChanges();
             }
 
-            return Ok(new { status = "sucess" });
+            return Ok(new { status = "success" });
         }
         /// <summary>
         /// 取得一般文章頁面所需資訊
@@ -256,7 +256,7 @@ namespace testdatamodel.Controllers
             message.InitDate = DateTime.Now;
             db.MessageNormals.Add(message);
             db.SaveChanges();
-            return Ok(new {status = "sucess"});
+            return Ok(new {status = "success" });
         }
         /// <summary>
         /// 回覆一般文章留言
@@ -278,7 +278,7 @@ namespace testdatamodel.Controllers
             rMessage.InitDate = DateTime.Now;
             db.R_MessageNormals.Add(rMessage);
             db.SaveChanges();
-            return Ok(new {status = "sucess"});
+            return Ok(new {status = "success" });
         }
         /// <summary>
         /// 找到一般文章所有的留言
@@ -358,7 +358,7 @@ namespace testdatamodel.Controllers
             Member member = db.Members.FirstOrDefault(x => x.ID == memberid);
             member.ArticleNormals.Add(datArticle);
             db.SaveChanges();
-            return Ok(new { status = "sucess" });
+            return Ok(new { status = "success" });
 
         }
         /// <summary>
@@ -379,7 +379,7 @@ namespace testdatamodel.Controllers
             Member member = db.Members.FirstOrDefault(x => x.ID == userid);
             member.ArticleNormals.Remove(data);
             db.SaveChanges();
-            return Ok(new { status = "sucess" });
+            return Ok(new { status = "success" });
         }
         /// <summary>
         /// 取得會員收藏的一般文章

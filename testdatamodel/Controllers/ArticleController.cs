@@ -192,7 +192,7 @@ namespace testdatamodel.Controllers
                     //db.SaveChanges();
                 }
                 db.SaveChanges();
-                return Ok();
+                return Ok(new{status= "success" });
                 //return this.Ok(uploadResponse);
             }
             catch (Exception e)
@@ -694,7 +694,7 @@ namespace testdatamodel.Controllers
                 string TitlePicfilestr = TitlePicName + "." + TitlePicFileName;
                 string path = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{TitlePicfilestr}");
                 File.Delete(path);
-                return Ok(new {status = "success"});
+                return Ok(new {status = "success" });
             }
             catch (Exception e)
             {
@@ -777,7 +777,7 @@ namespace testdatamodel.Controllers
                 db.SaveChanges();
             }
 
-            return Ok(new {status = "sucess"});
+            return Ok(new {status = "success" });
         }
         /// <summary>
         /// 收藏切切文章
@@ -798,7 +798,7 @@ namespace testdatamodel.Controllers
             Member member = db.Members.FirstOrDefault(x => x.ID == memberid);
             member.Articles.Add(datArticle);
             db.SaveChanges();
-            return Ok(new {status = "sucess"});
+            return Ok(new {status = "success" });
 
         }
         /// <summary>
@@ -819,7 +819,7 @@ namespace testdatamodel.Controllers
             Member member = db.Members.FirstOrDefault(x => x.ID == userid);
             member.Articles.Remove(data);
             db.SaveChanges();
-            return Ok(new { status = "sucess" });
+            return Ok(new { status = "success" });
         }
         /// <summary>
         /// 取得會員收藏的切切文章

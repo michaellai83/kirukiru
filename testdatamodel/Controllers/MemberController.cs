@@ -283,7 +283,7 @@ namespace testdatamodel.Controllers
             }
 
             db.SaveChanges();
-            return Ok(new {status = "sucess"});
+            return Ok(new {status = "success" });
         }
         /// <summary>
         /// 找到會員收藏文章的數量
@@ -382,7 +382,7 @@ namespace testdatamodel.Controllers
                           where (q.UserName == authorname & q.IsPush == true)
                                    select q;
             int number = artdata.Count() + norartdata.Count();
-            return Ok(new {status = "sucess", artcount = number});
+            return Ok(new {status = "success", artcount = number});
         }
         /// <summary>
         /// 查詢作者蒐藏的文章

@@ -358,6 +358,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="Controllers\ArticleNormalController.cs" />
+    <Compile Include="Controllers\BackmemberController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\HomepageController.cs" />
     <Compile Include="Controllers\MemberController.cs" />

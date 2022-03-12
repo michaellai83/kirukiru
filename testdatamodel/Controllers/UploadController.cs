@@ -82,7 +82,7 @@ namespace testdatamodel.Controllers
                     //uploadResponse.ContentTypes.Add(content.Headers.ContentType.MediaType);
                 }
 
-                return Ok();
+                return Ok(new{status= "success" });
                 //return this.Ok(uploadResponse);
             }
             catch (Exception e)

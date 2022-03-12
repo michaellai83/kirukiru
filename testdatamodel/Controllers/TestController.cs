@@ -65,7 +65,7 @@ namespace testdatamodel.Controllers
             db.Articlecategory.Add(articlecategory);
             db.SaveChanges();
             
-            return Ok();
+            return Ok(new{status= "success" });
         }
         /// <summary>
         /// 查所有文章類別
