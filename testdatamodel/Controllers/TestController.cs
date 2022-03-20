@@ -28,29 +28,56 @@ namespace testdatamodel.Controllers
     public class TestController : ApiController
     {
         ProjectDb db = new ProjectDb();
+
         /// <summary>
         /// 回傳會員資料
         /// </summary>
-        /// <param name="userName">會員帳號</param>
+        /// <param name="token">回傳TOKEN</param>
         /// <returns></returns>
         [HttpGet]
         [JwtAuthFilter]
-        public IHttpActionResult GetName(string userName)
+        public IHttpActionResult GetName(string token)
         {
+            var data = JwtAuthUtil.GetuserList(token);
+            
+            if (data == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此帳號"
+                });
+            }
+
+            var userName = data.Item2;
             var user = db.Members.FirstOrDefault(m => m.UserName == userName);
             var artlog = db.Articlecategory.FirstOrDefault(m => m.Id == user.ArticlecategoryId);
+            string pic = user.PicName + "."+user.FileName;
+            var order = user.Orderlists.Where(x => x.Issuccess == true).ToList();
+            ArrayList orderlist = new ArrayList();
+            foreach (var q in order)
+            {
+                var resultdata = new
+                {
+                    AuthorName = q.AuthorName
+                };
+                orderlist.Add(resultdata);
+            }
             var result = new
             {
+                Username=user.UserName,
                 user.Name,
-                user.Gender,
-                user.Birthday,
-                user.Address,
-                user.PhoneNumber,
+                Userpic = pic,
                 user.Email,
-                hobby=artlog.Name,
-
+                user.Introduction,
+                Hobby=artlog.Name,
+                Subscription = orderlist
             };
-            return Ok(result);
+            return Ok(new
+            {
+                success=true,
+                data=result
+            });
         }
         /// <summary>
         /// 加入文章類別
@@ -65,7 +92,11 @@ namespace testdatamodel.Controllers
             db.Articlecategory.Add(articlecategory);
             db.SaveChanges();
             
-            return Ok(new{status= "success" });
+            return Ok(new
+            {
+                success=true,
+                message="添加成功"
+            });
         }
         /// <summary>
         /// 查所有文章類別
@@ -115,7 +146,11 @@ namespace testdatamodel.Controllers
             var articlecategory = db.Articlecategory.Where(m => m.Id == Artid).FirstOrDefault();
             db.Articlecategory.Remove(articlecategory);
             db.SaveChanges();
-            return Ok();
+            return Ok(new  {
+                success = true,
+                message = "刪除成功"
+            
+            });
         }
         /// <summary>
         /// 找到文章類別
@@ -149,77 +184,77 @@ namespace testdatamodel.Controllers
         /// </summary>
         /// <param name="data">會員資料</param>
         /// <returns></returns>
-        [HttpPost]
-        public IHttpActionResult CreatMember(DataMember data)
-        {
-            PasswordWithSaltHasher passwordWithSalt = new PasswordWithSaltHasher();
-            HashWithSaltResult hashResultSha256 = passwordWithSalt.HashWithSalt(data.PassWord, 64, SHA256.Create());
-            
-            
-            
-            if (data != null)
-            {
-                Member member = new Member();
-                member.UserName = data.UserName;
-                member.PassWord = hashResultSha256.Digest;
-                member.PasswordSalt = hashResultSha256.Salt;
-                member.Name = data.Name;
-                member.Gender = data.Gender;
-                member.Birthday = data.Birthday;
-                member.Address = data.Address;
-                member.PhoneNumber = data.PhoneNumber;
-                member.Email = data.Email;
-                member.initDate = DateTime.Now;
-                member.Isidentify = false;
-                member.ArticlecategoryId = data.ArticlecategoryId;
-                db.Members.Add(member);
-                db.SaveChanges();
-                return Ok("註冊成功");
-            }
-            else
-            {
-                return Ok("8888");
-            }
-            
-            
-        }
+        //[HttpPost]
+        //public IHttpActionResult CreatMember(DataMember data)
+        //{
+        //    PasswordWithSaltHasher passwordWithSalt = new PasswordWithSaltHasher();
+        //    HashWithSaltResult hashResultSha256 = passwordWithSalt.HashWithSalt(data.PassWord, 64, SHA256.Create());
+
+
+
+        //    if (data != null)
+        //    {
+        //        Member member = new Member();
+        //        member.UserName = data.UserName;
+        //        member.PassWord = hashResultSha256.Digest;
+        //        member.PasswordSalt = hashResultSha256.Salt;
+        //        member.Name = data.Name;
+        //        member.Gender = data.Gender;
+        //        member.Birthday = data.Birthday;
+        //        member.Address = data.Address;
+        //        member.PhoneNumber = data.PhoneNumber;
+        //        member.Email = data.Email;
+        //        member.initDate = DateTime.Now;
+        //        member.Isidentify = false;
+        //        member.ArticlecategoryId = data.ArticlecategoryId;
+        //        db.Members.Add(member);
+        //        db.SaveChanges();
+        //        return Ok("註冊成功");
+        //    }
+        //    else
+        //    {
+        //        return Ok("8888");
+        //    }
+
+
+        //}
         /// <summary>
         /// 登入
         /// </summary>
         /// <param name="username">帳號</param>
         /// <param name="password">密碼</param>
         /// <returns></returns>
-        [HttpGet]
-        public IHttpActionResult Login(string username, string password)
-        { 
-            
-            var Isusername = db.Members.FirstOrDefault(m => m.UserName == username);
-           
-            string Rightpassword = HashWithSaltResult(password, Isusername.PasswordSalt, SHA256.Create()).Digest.ToString();
-            
-            if (Isusername !=null)
-            {
-                if (Isusername.PassWord == Rightpassword)
-                {
-                    JwtAuthUtil jwt = new JwtAuthUtil();
+        //[HttpGet]
+        //public IHttpActionResult Login(string username, string password)
+        //{ 
 
-                    var result = new
-                    {
-                        success = "登入成功",
-                        token = jwt.GenerateToken(Isusername.ID)
-                    };
-                    return Ok(result);
-                }
-                else
-                {
-                    return Ok("密碼錯誤");
-                }
-            }
-            else
-            {
-                return NotFound();
-            }
-        }
+        //    var Isusername = db.Members.FirstOrDefault(m => m.UserName == username);
+
+        //    string Rightpassword = HashWithSaltResult(password, Isusername.PasswordSalt, SHA256.Create()).Digest.ToString();
+
+        //    if (Isusername !=null)
+        //    {
+        //        if (Isusername.PassWord == Rightpassword)
+        //        {
+        //            JwtAuthUtil jwt = new JwtAuthUtil();
+
+        //            var result = new
+        //            {
+        //                success = "登入成功",
+        //                token = jwt.GenerateToken(Isusername.ID,Isusername.UserName,Isusername.Name)
+        //            };
+        //            return Ok(result);
+        //        }
+        //        else
+        //        {
+        //            return Ok("密碼錯誤");
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return NotFound();
+        //    }
+        //}
 
         private HashWithSaltResult HashWithSaltResult(string password, string salt, HashAlgorithm hashAlgo)
         {

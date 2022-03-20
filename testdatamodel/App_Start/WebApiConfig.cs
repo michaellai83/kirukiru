@@ -9,6 +9,7 @@ namespace testdatamodel
     {
         public static void Register(HttpConfiguration config)
         {
+            config.EnableCors();
             // Web API 設定和服務
 
             // Web API 路由
@@ -19,6 +20,8 @@ namespace testdatamodel
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
             );
+            //var appXmlType = config.Formatters.XmlFormatter.SupportedMediaTypes.FirstOrDefault(t => t.MediaType == "application/xml");
+            //config.Formatters.XmlFormatter.SupportedMediaTypes.Remove(appXmlType);
         }
     }
 }

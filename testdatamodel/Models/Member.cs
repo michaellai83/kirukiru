@@ -16,18 +16,17 @@ namespace testdatamodel.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]//自動生成編號
         public int ID { get; set; }
         [Required]
+        [MaxLength(200)]
         public string UserName { get; set; }
         [Required]
         public string PassWord { get; set; }
         [Required]
         public string PasswordSalt { get; set; }
         [Required]
+        [MaxLength(200)]
         public string Name { get; set; }
-        public string Gender { get; set; }
-        public string Birthday { get; set; }
-        public string Address { get; set; }
-        public string PhoneNumber { get; set; }
         [Required]
+        [MaxLength(200)]
         public string Email { get; set; }
 
         

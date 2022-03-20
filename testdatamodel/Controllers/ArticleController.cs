@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
+using testdatamodel.JWT;
+using testdatamodel.listclass;
 using testdatamodel.Models;
 using testdatamodel.PutData;
 
@@ -28,6 +30,7 @@ namespace testdatamodel.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
+        [JwtAuthFilter]
 
         public async Task<IHttpActionResult> AddArticle()
         {
@@ -48,11 +51,11 @@ namespace testdatamodel.Controllers
                 //var _MemberID = HttpContext.Current.Request.Form.GetValues("MemberID");
                 //string MemberID = _MemberID[0];
                 //int UserID = Convert.ToInt32(MemberID);
-                var _username = HttpContext.Current.Request.Form.GetValues("username"); //找到formdata 文字檔 key值為 username的values值
+                var _username = HttpContext.Current.Request.Form.GetValues("userName"); //找到formdata 文字檔 key值為 username的values值
                 string username = _username[0]; //value值
                 var _title = HttpContext.Current.Request.Form.GetValues("title");
                 string title = _title[0];
-                var _Isfree = HttpContext.Current.Request.Form.GetValues("Isfree");
+                var _Isfree = HttpContext.Current.Request.Form.GetValues("isFree");
                 string Isfree = _Isfree[0];
                 bool Is_Free = true;
                 if (Isfree == "False")
@@ -60,11 +63,11 @@ namespace testdatamodel.Controllers
                     Is_Free = false;
                 }
 
-                var _Introduction = HttpContext.Current.Request.Form.GetValues("Introduction");
+                var _Introduction = HttpContext.Current.Request.Form.GetValues("introduction");
                 string Introduction = _Introduction[0];
-                var _ArticlecategoryId = HttpContext.Current.Request.Form.GetValues("ArticlecategoryId");
+                var _ArticlecategoryId = HttpContext.Current.Request.Form.GetValues("articlecategoryId");
                 string ArticlecategoryId = _ArticlecategoryId[0];
-                var _IsPush = HttpContext.Current.Request.Form.GetValues("IsPush");
+                var _IsPush = HttpContext.Current.Request.Form.GetValues("isPush");
                 string IsPush = _IsPush[0];
                 bool Is_Push = true;
                 if (IsPush == "False")
@@ -73,13 +76,13 @@ namespace testdatamodel.Controllers
                 }
 
 
-                var _ArtMain = HttpContext.Current.Request.Form.GetValues("Main");
+                var _ArtMain = HttpContext.Current.Request.Form.GetValues("main");
                 int artmaincount = 0;
 
 
 
                 //下面是前置任務
-                var _FirstMission = HttpContext.Current.Request.Form.GetValues("Mission");
+                var _FirstMission = HttpContext.Current.Request.Form.GetValues("mission");
                 int firstcount = 0;
                 
                 int ArtId = 0;
@@ -92,12 +95,15 @@ namespace testdatamodel.Controllers
                 {
                     var KeyName = content.Headers.ContentDisposition.Name.Trim('\"');
 
-                    if (KeyName.Contains("First"))
+                    if (KeyName.Contains("first"))
                     {
-                        var fileName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                        string[] fileary = fileName.Split('.');
+                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+                        string[] fileary = filerealName.Split('.');
                         var fileBytes = await content.ReadAsByteArrayAsync();
 
+                        var filefirst = DateTime.Now.ToFileTime() + username;
+                        var fileName = filefirst +"." + fileary[1];
+                        
                         var outputPath = Path.Combine(root, fileName);
                         using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
                         {
@@ -113,57 +119,94 @@ namespace testdatamodel.Controllers
                         article.Introduction = Introduction;
                         article.ArticlecategoryId = Convert.ToInt32(ArticlecategoryId);
                         article.IsPush = Is_Push;
-                        article.FirstPicName = fileary[0];
+                        article.FirstPicName = filefirst;
                         article.FirstPicFileName = fileary[1];
                         article.InitDate = DateTime.Now;
                         db.Articles.Add(article);
                         db.SaveChanges();
-                        var result = db.Articles.FirstOrDefault(m => m.Title == title);
+                        var result = db.Articles.FirstOrDefault(m => m.FirstPicName == filefirst);
                         ArtId = result.ID;
 
                     }
-                    else if (KeyName.Contains("Sec"))
+                    else if (KeyName.Contains("sec"))
                     {
-                        var fileName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                        string[] fileary = fileName.Split('.');
-                        var fileBytes = await content.ReadAsByteArrayAsync();
-
-                        var outputPath = Path.Combine(root, fileName);
-                        using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+                        
+                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+                        if (filerealName.Equals(""))
                         {
-                            await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+                            Firstmission firstmission = new Firstmission();
+                            firstmission.PicName = "";
+                            firstmission.PicFileName = "";
+                            firstmission.ArticleId = ArtId;
+                            firstmission.FirstItem = _FirstMission[firstcount];
+                            firstmission.InitDate = DateTime.Now;
+                            db.Firstmissions.Add(firstmission);
                         }
+                        else
+                        {
+                            string[] fileary = filerealName.Split('.');
+                            var fileBytes = await content.ReadAsByteArrayAsync();
 
-                        Firstmission firstmission = new Firstmission();
-                        firstmission.PicName = fileary[0];
-                        firstmission.PicFileName = fileary[1];
-                        firstmission.ArticleId = ArtId;
-                        firstmission.FirstItem = _FirstMission[firstcount];
-                        firstmission.InitDate = DateTime.Now;
-                        db.Firstmissions.Add(firstmission);
+                            var filefirst = DateTime.Now.ToFileTime() + username;
+                            var fileName = filefirst + "." + fileary[1];
+
+                            var outputPath = Path.Combine(root, fileName);
+                            using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+                            {
+                                await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+                            }
+
+                            Firstmission firstmission = new Firstmission();
+                            firstmission.PicName = filefirst;
+                            firstmission.PicFileName = fileary[1];
+                            firstmission.ArticleId = ArtId;
+                            firstmission.FirstItem = _FirstMission[firstcount];
+                            firstmission.InitDate = DateTime.Now;
+                            db.Firstmissions.Add(firstmission);
+                        }
+                           
                         //db.SaveChanges();
                         firstcount++;
                     }
-                    else if (KeyName.Contains("Third"))
+                    else if (KeyName.Contains("third"))
                     {
-                        var fileName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                        string[] fileary = fileName.Split('.');
-                        var fileBytes = await content.ReadAsByteArrayAsync();
-
-                        var outputPath = Path.Combine(root, fileName);
-                        using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+                        if (filerealName.Equals(""))
                         {
-                            await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+                            ArticleMain articleMain = new ArticleMain();
+                            articleMain.PicName = "";
+                            articleMain.PicFileName = "";
+                            articleMain.ArticleId = ArtId;
+                            articleMain.Main = _ArtMain[artmaincount];
+                            articleMain.InDateTime = DateTime.Now;
+                            db.ArticleMains.Add(articleMain);
+                            //db.SaveChanges();
                         }
+                        else
+                        {
+                            string[] fileary = filerealName.Split('.');
+                            var fileBytes = await content.ReadAsByteArrayAsync();
 
-                        ArticleMain articleMain = new ArticleMain();
-                        articleMain.PicName = fileary[0];
-                        articleMain.PicFileName = fileary[1];
-                        articleMain.ArticleId = ArtId;
-                        articleMain.Main = _ArtMain[artmaincount];
-                        articleMain.InDateTime = DateTime.Now;
-                        db.ArticleMains.Add(articleMain);
-                        //db.SaveChanges();
+                            var filefirst = DateTime.Now.ToFileTime() + username;
+                            var fileName = filefirst + "." + fileary[1];
+
+                            var outputPath = Path.Combine(root, fileName);
+                            using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+                            {
+                                await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+                            }
+
+                            ArticleMain articleMain = new ArticleMain();
+                            articleMain.PicName = filefirst;
+                            articleMain.PicFileName = fileary[1];
+                            articleMain.ArticleId = ArtId;
+                            articleMain.Main = _ArtMain[artmaincount];
+                            articleMain.InDateTime = DateTime.Now;
+                            db.ArticleMains.Add(articleMain);
+                            
+                            //db.SaveChanges();
+                            
+                        }
                         artmaincount++;
                     }
                     else
@@ -177,7 +220,7 @@ namespace testdatamodel.Controllers
                 }
                 
                 
-                var _Final = HttpContext.Current.Request.Form.GetValues("Final");
+                var _Final = HttpContext.Current.Request.Form.GetValues("final");
                 if (_Final != null)
                 {
                     foreach (var str in _Final)
@@ -192,7 +235,11 @@ namespace testdatamodel.Controllers
                     //db.SaveChanges();
                 }
                 db.SaveChanges();
-                return Ok(new{status= "success" });
+                return Ok(new
+                {
+                    success = true,
+                    message = "已新增文章"
+                });
                 //return this.Ok(uploadResponse);
             }
             catch (Exception e)
@@ -217,17 +264,35 @@ namespace testdatamodel.Controllers
         /// <param name="ArtID">文章ID</param>
         /// <returns></returns>
         [HttpPost]
+        [JwtAuthFilter]
         public IHttpActionResult AddMessage(string UserName, string Main, string ArtID)
         {
-            Message message = new Message();
-            message.UserName = UserName;
-            message.ArticleId = Convert.ToInt32(ArtID);
-            message.Main = Main;
-            message.InitDate = DateTime.Now;
-            db.Messages.Add(message);
-            db.SaveChanges();
-            var result = new {message = "成功"};
-            return Ok(result);
+            int id = Convert.ToInt32(ArtID);
+            var data = db.Messages.FirstOrDefault(x => x.Id ==id);
+            if (data == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "查無此文章"
+                });
+            }
+            else
+            {
+                Message message = new Message();
+                message.UserName = UserName;
+                message.ArticleId = Convert.ToInt32(ArtID);
+                message.Main = Main;
+                message.InitDate = DateTime.Now;
+                db.Messages.Add(message);
+                db.SaveChanges();
+                return Ok(new
+                {
+                    success = true,
+                    message = "已留言"
+                });
+            }
+           
         }
 
         /// <summary>
@@ -249,11 +314,20 @@ namespace testdatamodel.Controllers
                     array.Add(result);
                 }
 
-                return Ok(array);
+                return Ok(new
+                {
+                    success = true,
+                    data =array
+                });
             }
             else
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success = false,
+                    message = "查無此留言"
+                });
+
             }
 
         }
@@ -265,16 +339,35 @@ namespace testdatamodel.Controllers
         /// <param name="main">留言內容</param>
         /// <returns></returns>
         [HttpPost]
+        [JwtAuthFilter]
         public IHttpActionResult AddReMessage(string Messageid, string main)
         {
-            R_Message rMessage = new R_Message();
-            rMessage.MessageId = Convert.ToInt32(Messageid);
-            rMessage.Main = main;
-            rMessage.InitDate = DateTime.Now;
-            db.R_Messages.Add(rMessage);
-            db.SaveChanges();
-            var result = new {message = "成功"};
-            return Ok(result);
+            int id = Convert.ToInt32(Messageid);
+            var data = db.Messages.FirstOrDefault(x => x.Id == id);
+            if (data == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "查無此留言"
+                });
+
+            }
+            else
+            {
+                R_Message rMessage = new R_Message();
+                rMessage.MessageId = Convert.ToInt32(Messageid);
+                rMessage.Main = main;
+                rMessage.InitDate = DateTime.Now;
+                db.R_Messages.Add(rMessage);
+                db.SaveChanges();
+                return Ok(new
+                {
+                    success = true,
+                    message = "已回覆留言"
+                });
+            }
+            
         }
 
         /// <summary>
@@ -296,11 +389,19 @@ namespace testdatamodel.Controllers
                     arrayList.Add(result);
                 }
 
-                return Ok(arrayList);
+                return Ok(new
+                {
+                    success = true,
+                    data =arrayList
+                });
             }
             else
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success = false,
+                    message = "查無此留言"
+                });
             }
 
         }
@@ -316,7 +417,11 @@ namespace testdatamodel.Controllers
             var havdata = db.Articles.FirstOrDefault(m => m.ID == Art_ID);
             if (havdata == null)
             {
-                return Ok(new{status="沒有此文章ID"});
+                return Ok(new
+                {
+                    success = false,
+                    message = "查無此文章"
+                });
             }
             
             var Art_Title = havdata.Title.ToString();
@@ -393,157 +498,212 @@ namespace testdatamodel.Controllers
                 remessageArrayList,
                
             };
-            return Ok(result);
+            return Ok(new
+            {
+                success = true,
+                data =result
+            });
         }
         /// <summary>
         /// 編輯文章(會把舊的圖片刪除後重新建立)
         /// </summary>
         /// <returns></returns>
         [HttpPost]
+        [JwtAuthFilter]
         [Route("EditArticle")]
         public async Task<IHttpActionResult> EditArticle()
         {
-            var _ArtId = HttpContext.Current.Request.Form.GetValues("ArticleID"); ;
+            var _ArtId = HttpContext.Current.Request.Form.GetValues("articleId"); ;
             int ArtId = Convert.ToInt32(_ArtId[0]);
+            var _username = HttpContext.Current.Request.Form.GetValues("userName");
+            string username = _username[0];
+
             var ArtData = db.Articles.FirstOrDefault(m => m.ID == ArtId);
             if (ArtData == null)
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success = false,
+                    message = "查無此文章"
+                });
             }
             else
             {
-                try
+                //try
+                //{
+
+                //}
+                //catch (Exception e)
+                //{
+                //    return Ok(e.ToString());
+                //    throw;
+                //}
+
+                string picpath = "~/Pic/";
+                //刪除封面照片
+
+                var otpicdata = db.Articles.FirstOrDefault(m => m.ID == ArtId);
+                //刪除資料夾的圖片
+                string picname = otpicdata.FirstPicName + "." + otpicdata.FirstPicFileName;
+                string savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
+
+                File.Delete(savpath);
+                //db.FirstPics.Remove(otpicdata);
+                //刪除前置步驟
+                var OFpicary = db.Firstmissions.Where(m => m.ArticleId == ArtId).ToList();
+                foreach (var pic in OFpicary)
                 {
-                    string picpath = "~/Pic/";
-                    //刪除封面照片
-
-                    var otpicdata = db.Articles.FirstOrDefault(m => m.ID == ArtId);
-                    //刪除資料夾的圖片
-                    string picname = otpicdata.FirstPicName + "." + otpicdata.FirstPicFileName;
-                    string savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
-
-                    File.Delete(savpath);
-                    //db.FirstPics.Remove(otpicdata);
-                    //刪除前置步驟
-                    var OFpicary = db.Firstmissions.Where(m => m.ArticleId == ArtId).ToList();
-                    foreach (var pic in OFpicary)
+                    int picid = pic.Id;
+                    var fdata = db.Firstmissions.FirstOrDefault(m => m.Id == picid);
+                    picname = fdata.PicName + "." + fdata.PicFileName;
+                    if (picname.Equals("."))
                     {
-                        int picid = pic.Id;
-                        var fdata = db.Firstmissions.FirstOrDefault(m => m.Id == picid);
-                        picname = fdata.PicName + "." + fdata.PicFileName;
+                        db.Firstmissions.Remove(fdata);
+                    }
+                    else
+                    {
                         savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
                         File.Delete(savpath);
                         db.Firstmissions.Remove(fdata);
                     }
-                    //刪除切切
-                    var OMpicary = db.ArticleMains.Where(m => m.ArticleId == ArtId).ToList();
-                    foreach (var str in OMpicary)
+                    
+                }
+                //刪除切切
+                var OMpicary = db.ArticleMains.Where(m => m.ArticleId == ArtId).ToList();
+                foreach (var str in OMpicary)
+                {
+                    int picid = str.Id;
+                    var mdata = db.ArticleMains.FirstOrDefault(m => m.Id == picid);
+                    picname = mdata.PicName + "." + mdata.PicFileName;
+                    if (picname.Equals("."))
                     {
-                        int picid = str.Id;
-                        var mdata = db.ArticleMains.FirstOrDefault(m => m.Id == picid);
-                        picname = mdata.PicName + "." + mdata.PicFileName;
+                        db.ArticleMains.Remove(mdata);
+                    }
+                    else
+                    {
                         savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
                         File.Delete(savpath);
                         db.ArticleMains.Remove(mdata);
                     }
-
-                    var ORemark = db.Remarks.Where(m => m.ArticleId == ArtId).ToList();
-                    foreach (var str in ORemark)
-                    {
-                        int remarkid = str.Id;
-                        var redata = db.Remarks.FirstOrDefault(m => m.Id == remarkid);
-                        db.Remarks.Remove(redata);
-                    }
-                    db.SaveChanges();
-
-                    if (!this.Request.Content.IsMimeMultipartContent())
-                    {
-                        throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-                    }
-
-                    var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Pic");
-                    var exists = Directory.Exists(root);
-                    if (!exists)
-                    {
-                        Directory.CreateDirectory("Pic");
-                    }
-
-                    var _title = HttpContext.Current.Request.Form.GetValues("title");
-                    string title = _title[0];
-                    var _Isfree = HttpContext.Current.Request.Form.GetValues("Isfree");
-                    string Isfree = _Isfree[0];
-                    bool Is_Free = true;
-                    if (Isfree == "False")
-                    {
-                        Is_Free = false;
-                    }
-
-                    var _Introduction = HttpContext.Current.Request.Form.GetValues("Introduction");
-                    string Introduction = _Introduction[0];
-                    var _ArticlecategoryId = HttpContext.Current.Request.Form.GetValues("ArticlecategoryId");
-                    string ArticlecategoryId = _ArticlecategoryId[0];
-                    var _IsPush = HttpContext.Current.Request.Form.GetValues("IsPush");
-                    string IsPush = _IsPush[0];
-                    bool Is_Push = true;
-                    if (IsPush == "False")
-                    {
-                        Is_Push = false;
-                    }
-
-                    var _ArtMain = HttpContext.Current.Request.Form.GetValues("Main");
                     
+                }
 
-                    //下面是前置任務
-                    var _FirstMission = HttpContext.Current.Request.Form.GetValues("Mission");
+                var ORemark = db.Remarks.Where(m => m.ArticleId == ArtId).ToList();
+                foreach (var str in ORemark)
+                {
+                    int remarkid = str.Id;
+                    var redata = db.Remarks.FirstOrDefault(m => m.Id == remarkid);
+                    db.Remarks.Remove(redata);
+                }
+                db.SaveChanges();
 
-                    int firstcount = 0;
-                    int artmaincount = 0;
+                if (!this.Request.Content.IsMimeMultipartContent())
+                {
+                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+                }
+
+                var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Pic");
+                var exists = Directory.Exists(root);
+                if (!exists)
+                {
+                    Directory.CreateDirectory("Pic");
+                }
+
+                var _title = HttpContext.Current.Request.Form.GetValues("title");
+                string title = _title[0];
+                var _Isfree = HttpContext.Current.Request.Form.GetValues("isFree");
+                string Isfree = _Isfree[0];
+                bool Is_Free = true;
+                if (Isfree == "False")
+                {
+                    Is_Free = false;
+                }
+
+                var _Introduction = HttpContext.Current.Request.Form.GetValues("introduction");
+                string Introduction = _Introduction[0];
+                var _ArticlecategoryId = HttpContext.Current.Request.Form.GetValues("articlecategoryId");
+                string ArticlecategoryId = _ArticlecategoryId[0];
+                var _IsPush = HttpContext.Current.Request.Form.GetValues("isPush");
+                string IsPush = _IsPush[0];
+                bool Is_Push = true;
+                if (IsPush == "False")
+                {
+                    Is_Push = false;
+                }
+
+                var _ArtMain = HttpContext.Current.Request.Form.GetValues("main");
 
 
-                    var provider = new MultipartMemoryStreamProvider();
-                    await this.Request.Content.ReadAsMultipartAsync(provider);
+                //下面是前置任務
+                var _FirstMission = HttpContext.Current.Request.Form.GetValues("mission");
+
+                int firstcount = 0;
+                int artmaincount = 0;
 
 
-                    foreach (var content in provider.Contents)
+                var provider = new MultipartMemoryStreamProvider();
+                await this.Request.Content.ReadAsMultipartAsync(provider);
+
+
+                foreach (var content in provider.Contents)
+                {
+
+                    var KeyName = content.Headers.ContentDisposition.Name.Trim('\"');
+
+                    if (KeyName.Contains("first"))
+                    {
+                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+                        string[] fileary = filerealName.Split('.');
+                        var fileBytes = await content.ReadAsByteArrayAsync();
+
+                        var filefirst = DateTime.Now.ToFileTime() + username;
+                        var fileName = filefirst + "." + fileary[1];
+
+                        var outputPath = Path.Combine(root, fileName);
+                        using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+                        {
+                            await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+                        }
+
+                        var q = from p in db.Articles where p.ID == ArtId select p;
+                        foreach (var p in q)
+                        {
+                            p.ArticlecategoryId = Convert.ToInt32(ArticlecategoryId);
+                            p.Title = title;
+                            p.Introduction = Introduction;
+                            p.IsFree = Is_Free;
+                            p.IsPush = Is_Push;
+                            p.FirstPicName = fileary[0];
+                            p.FirstPicFileName = fileary[1];
+
+                        }
+
+                        db.SaveChanges();
+
+
+
+                    }
+                    else if (KeyName.Contains("sec"))
                     {
 
-                        var KeyName = content.Headers.ContentDisposition.Name.Trim('\"');
-
-                        if (KeyName.Contains("First"))
+                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+                        if (filerealName.Equals(""))
                         {
-                            var fileName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                            string[] fileary = fileName.Split('.');
-                            var fileBytes = await content.ReadAsByteArrayAsync();
-
-                            var outputPath = Path.Combine(root, fileName);
-                            using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
-                            {
-                                await output.WriteAsync(fileBytes, 0, fileBytes.Length);
-                            }
-
-                            var q = from p in db.Articles where p.ID == ArtId select p;
-                            foreach (var p in q)
-                            {
-                                p.ArticlecategoryId = Convert.ToInt32(ArticlecategoryId);
-                                p.Title = title;
-                                p.Introduction = Introduction;
-                                p.IsFree = Is_Free;
-                                p.IsPush = Is_Push;
-                                p.FirstPicName = fileary[0];
-                                p.FirstPicFileName = fileary[1];
-
-                            }
-
-                            db.SaveChanges();
-
-
-                            
+                            Firstmission firstmission = new Firstmission();
+                            firstmission.PicName = "";
+                            firstmission.PicFileName = "";
+                            firstmission.ArticleId = ArtId;
+                            firstmission.FirstItem = _FirstMission[firstcount];
+                            firstmission.InitDate = DateTime.Now;
+                            db.Firstmissions.Add(firstmission);
                         }
-                        else if (KeyName.Contains("Sec"))
+                        else
                         {
-                            var fileName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                            string[] fileary = fileName.Split('.');
+                            string[] fileary = filerealName.Split('.');
                             var fileBytes = await content.ReadAsByteArrayAsync();
+
+                            var filefirst = DateTime.Now.ToFileTime() + username;
+                            var fileName = filefirst + "." + fileary[1];
 
                             var outputPath = Path.Combine(root, fileName);
                             using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
@@ -552,21 +712,38 @@ namespace testdatamodel.Controllers
                             }
 
                             Firstmission firstmission = new Firstmission();
-                            firstmission.PicName = fileary[0];
+                            firstmission.PicName = filefirst;
                             firstmission.PicFileName = fileary[1];
                             firstmission.ArticleId = ArtId;
                             firstmission.FirstItem = _FirstMission[firstcount];
                             firstmission.InitDate = DateTime.Now;
                             db.Firstmissions.Add(firstmission);
-                            //db.SaveChanges();
-                            firstcount++;
-
                         }
-                        else if (KeyName.Contains("Third"))
+
+                        //db.SaveChanges();
+                        firstcount++;
+                    }
+                    else if (KeyName.Contains("third"))
+                    {
+                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+                        if (filerealName.Equals(""))
                         {
-                            var fileName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                            string[] fileary = fileName.Split('.');
+                            ArticleMain articleMain = new ArticleMain();
+                            articleMain.PicName = "";
+                            articleMain.PicFileName = "";
+                            articleMain.ArticleId = ArtId;
+                            articleMain.Main = _ArtMain[artmaincount];
+                            articleMain.InDateTime = DateTime.Now;
+                            db.ArticleMains.Add(articleMain);
+                            //db.SaveChanges();
+                        }
+                        else
+                        {
+                            string[] fileary = filerealName.Split('.');
                             var fileBytes = await content.ReadAsByteArrayAsync();
+
+                            var filefirst = DateTime.Now.ToFileTime() + username;
+                            var fileName = filefirst + "." + fileary[1];
 
                             var outputPath = Path.Combine(root, fileName);
                             using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
@@ -574,41 +751,40 @@ namespace testdatamodel.Controllers
                                 await output.WriteAsync(fileBytes, 0, fileBytes.Length);
                             }
 
-
                             ArticleMain articleMain = new ArticleMain();
-                            articleMain.PicName = fileary[0];
+                            articleMain.PicName = filefirst;
                             articleMain.PicFileName = fileary[1];
                             articleMain.ArticleId = ArtId;
                             articleMain.Main = _ArtMain[artmaincount];
                             articleMain.InDateTime = DateTime.Now;
                             db.ArticleMains.Add(articleMain);
+
                             //db.SaveChanges();
-                            artmaincount++;
-                        }
-                    }
-
-                    var _Final = HttpContext.Current.Request.Form.GetValues("Final");
-                    if (_Final != null)
-                    {
-                        foreach (var str in _Final)
-                        {
-                            Remark remark = new Remark();
-                            remark.Main = str;
-                            remark.InitTime = DateTime.Now;
-                            remark.ArticleId = ArtId;
-                            db.Remarks.Add(remark);
 
                         }
-                        //db.SaveChanges();
+                        artmaincount++;
                     }
-                    db.SaveChanges();
-                    return Ok(new { status = "success" });
                 }
-                catch (Exception e)
+
+                var _Final = HttpContext.Current.Request.Form.GetValues("final");
+                if (_Final != null)
                 {
-                    return Ok(e.ToString());
-                    throw;
+                    foreach (var str in _Final)
+                    {
+                        Remark remark = new Remark();
+                        remark.Main = str;
+                        remark.InitTime = DateTime.Now;
+                        remark.ArticleId = ArtId;
+                        db.Remarks.Add(remark);
+
+                    }
+                    //db.SaveChanges();
                 }
+                db.SaveChanges();
+                return Ok(new {
+                    success = true,
+                    message = "已編輯"
+                });
             }
 
 
@@ -620,87 +796,95 @@ namespace testdatamodel.Controllers
         /// <param name="artid">文章ID</param>
         /// <returns></returns>
         [HttpDelete]
+        [JwtAuthFilter]
         public IHttpActionResult DeleteActile(string artid)
         {
             int artId = Convert.ToInt32(artid);
             var ArtData = db.Articles.FirstOrDefault(m => m.ID == artId);
             if (ArtData == null)
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success = false,
+                    message = "查無此文章"
+                });
             }
+            var ArtFirstMission = ArtData.Firstmissions.ToList();
+            foreach (var str in ArtFirstMission)
+            {
+                int FirstID = str.Id;
+                var FirstPic = db.Firstmissions.FirstOrDefault(m => m.Id == FirstID);
+                string picname = FirstPic.PicName + "." + FirstPic.PicFileName;
 
-            try
+                db.Firstmissions.Remove(FirstPic);
+                //db.SaveChanges();
+
+                string savepath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
+                File.Delete(savepath);
+            }
+            var ArtMain = ArtData.ArticleMains.ToList();
+            foreach (var str in ArtMain)
             {
 
-                //string FilePath = WebConfigurationManager.ConnectionStrings["PicturePath"].ConnectionString;
-               // string picpath = System.Web.HttpContext.Current.Server.MapPath($"~/testdatamodel/Pic/");
-                var ArtFirstMission = ArtData.Firstmissions.ToList();
-                foreach (var str in ArtFirstMission)
-                {
-                    int FirstID = str.Id;
-                    var FirstPic = db.Firstmissions.FirstOrDefault(m => m.Id == FirstID);
-                    string picname = FirstPic.PicName + "." + FirstPic.PicFileName;
-                   
-                    db.Firstmissions.Remove(FirstPic);
-                    //db.SaveChanges();
+                int MainPicID = str.Id;
 
-                    string savepath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
-                    File.Delete(savepath);
-                }
-                var ArtMain =ArtData.ArticleMains.ToList();
-                foreach (var str in ArtMain)
-                {
-                    
-                    int MainPicID = str.Id;
-                   
-                    var MainPic = db.ArticleMains.FirstOrDefault(m => m.Id == MainPicID);
-                    string picname = MainPic.PicName + "." + MainPic.PicFileName;
-                    string savepath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
-                   
-                    db.ArticleMains.Remove(MainPic);
-                    //db.SaveChanges();
-                    File.Delete(savepath);
-                }
+                var MainPic = db.ArticleMains.FirstOrDefault(m => m.Id == MainPicID);
+                string picname = MainPic.PicName + "." + MainPic.PicFileName;
+                string savepath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
 
-                var ArtRemarke = ArtData.Remarks.ToList();
-                foreach (var str in ArtRemarke)
-                {
-                    int id = str.Id;
-                    var result = db.Remarks.FirstOrDefault(m => m.Id == id);
-                    db.Remarks.Remove(result);
-                    //db.SaveChanges();
-                }
-
-                var ArtMessage = ArtData.Messages.ToList();
-                if (ArtMessage.Count > 0)
-                {
-                    foreach (var message in ArtMessage)
-                    {
-                        int id = message.Id;
-                        var Rmessage = db.R_Messages.FirstOrDefault(m => m.MessageId == id);
-                        var result = db.Messages.FirstOrDefault(m => m.Id == id);
-                        db.R_Messages.Remove(Rmessage);
-                        
-                        db.Messages.Remove(result);
-                        //db.SaveChanges();
-                    }
-                }
-                
-                var TitlePic = db.Articles.FirstOrDefault(m => m.ID==artId);
-                string TitlePicName = TitlePic.FirstPicName;
-                string TitlePicFileName = TitlePic.FirstPicFileName;
-                db.Articles.Remove(ArtData);
-                db.SaveChanges();
-                string TitlePicfilestr = TitlePicName + "." + TitlePicFileName;
-                string path = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{TitlePicfilestr}");
-                File.Delete(path);
-                return Ok(new {status = "success" });
+                db.ArticleMains.Remove(MainPic);
+                //db.SaveChanges();
+                File.Delete(savepath);
             }
-            catch (Exception e)
+
+            var ArtRemarke = ArtData.Remarks.ToList();
+            foreach (var str in ArtRemarke)
             {
-                return Ok(e);
-                throw;
+                int id = str.Id;
+                var result = db.Remarks.FirstOrDefault(m => m.Id == id);
+                db.Remarks.Remove(result);
+                //db.SaveChanges();
             }
+
+            var ArtMessage = ArtData.Messages.ToList();
+            if (ArtMessage.Count > 0)
+            {
+                foreach (var message in ArtMessage)
+                {
+                    int id = message.Id;
+                    var Rmessage = db.R_Messages.FirstOrDefault(m => m.MessageId == id);
+                    var result = db.Messages.FirstOrDefault(m => m.Id == id);
+                    db.R_Messages.Remove(Rmessage);
+
+                    db.Messages.Remove(result);
+                    //db.SaveChanges();
+                }
+            }
+
+            var TitlePic = db.Articles.FirstOrDefault(m => m.ID == artId);
+            string TitlePicName = TitlePic.FirstPicName;
+            string TitlePicFileName = TitlePic.FirstPicFileName;
+            db.Articles.Remove(ArtData);
+            db.SaveChanges();
+            string TitlePicfilestr = TitlePicName + "." + TitlePicFileName;
+            string path = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{TitlePicfilestr}");
+            File.Delete(path);
+            return Ok(new {
+                success = true,
+                message = "已刪除文章"
+            });
+            //try
+            //{
+
+            //    //string FilePath = WebConfigurationManager.ConnectionStrings["PicturePath"].ConnectionString;
+            //   // string picpath = System.Web.HttpContext.Current.Server.MapPath($"~/testdatamodel/Pic/");
+
+            //}
+            //catch (Exception e)
+            //{
+            //    return Ok(e);
+            //    throw;
+            //}
 
         }
         /// <summary>
@@ -715,7 +899,12 @@ namespace testdatamodel.Controllers
             var havedata = db.Articles.FirstOrDefault(m => m.UserName == username);
             if (havedata == null)
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success = false,
+                    message = "查無此文章"
+                });
+
             }
             var data = from q in db.Articles
                 where (q.UserName == username & q.IsPush == ispush)
@@ -737,7 +926,11 @@ namespace testdatamodel.Controllers
                 arrayList.Add(result);
             }
 
-            return Ok(arrayList);
+            return Ok(new
+            {
+                success = true,
+                data =arrayList
+            });
         }
         /// <summary>
         /// 按愛心
@@ -746,6 +939,7 @@ namespace testdatamodel.Controllers
         /// <param name="putlove">是否按愛心</param>
         /// <returns></returns>
         [HttpPut]
+        [JwtAuthFilter]
         public IHttpActionResult AddLoveArticle( int artid,bool putlove)
         {
             var data = from q in db.Articles
@@ -753,7 +947,11 @@ namespace testdatamodel.Controllers
                 select q;
             if (data == null)
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success = false,
+                    message = "查無此文章"
+                });
             }
 
             int lovecount = db.Articles.FirstOrDefault(m => m.ID == artid).Lovecount;
@@ -777,7 +975,12 @@ namespace testdatamodel.Controllers
                 db.SaveChanges();
             }
 
-            return Ok(new {status = "success" });
+
+
+            return Ok(new
+            {
+                success = true
+            });
         }
         /// <summary>
         /// 收藏切切文章
@@ -786,19 +989,27 @@ namespace testdatamodel.Controllers
         /// <param name="memberid">收藏者的ID</param>
         /// <returns></returns>
         [HttpPost]
+        [JwtAuthFilter]
         public IHttpActionResult Collectarticle(int artid, int memberid)
         {
             var datArticle = db.Articles.FirstOrDefault(x => x.ID == artid);
 
             if (datArticle == null)
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success = false,
+                    message = "查無此文章"
+                });
             }
 
             Member member = db.Members.FirstOrDefault(x => x.ID == memberid);
             member.Articles.Add(datArticle);
             db.SaveChanges();
-            return Ok(new {status = "success" });
+            return Ok(new {
+                success = true,
+                message = "已收藏"
+            });
 
         }
         /// <summary>
@@ -808,43 +1019,121 @@ namespace testdatamodel.Controllers
         /// <param name="articleid">收藏文章的ID</param>
         /// <returns></returns>
         [HttpDelete]
+        [JwtAuthFilter]
         public IHttpActionResult Deletecollect(int userid, int articleid)
         {
             var data = db.Articles.FirstOrDefault(x => x.ID == articleid);
             if (data == null)
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success = false,
+                    message = "查無此文章"
+                });
             }
 
             Member member = db.Members.FirstOrDefault(x => x.ID == userid);
             member.Articles.Remove(data);
             db.SaveChanges();
-            return Ok(new { status = "success" });
+            return Ok(new
+            {
+                success=true,
+                message = "已取消收藏"
+            });
         }
         /// <summary>
         /// 取得會員收藏的切切文章
         /// </summary>
         /// <param name="memberid">會員ID</param>
+        /// <param name="Nowpage">現在頁數(預設為1)</param>
+        /// <param name="showcount">一頁顯示幾筆</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult GetAllcollectart(int memberid)
+        [JwtAuthFilter]
+        public IHttpActionResult GetAllcollectart(int memberid, int Nowpage, int showcount)
         {
             var data = db.Members.FirstOrDefault(x => x.ID == memberid);
             var art = data.Articles.ToList();
-            ArrayList artlList = new ArrayList();
-            foreach (var str in art)
+            //ArrayList artlList = new ArrayList();
+            //foreach (var str in art)
+            //{
+            //    var result = new
+            //    {
+            //        str.ID,
+            //        str.Articlecategory.Name,
+            //        str.UserName,
+            //        str.Title,
+            //    };
+            //    artlList.Add(result);
+            //}
+            List<NewArticle> arrayList = new List<NewArticle>();
+            foreach (var content in art)
             {
-                var result = new
-                {
-                    str.ID,
-                    str.Articlecategory.Name,
-                    str.UserName,
-                    str.Title,
-                };
-                artlList.Add(result);
+
+                NewArticle newartary = new NewArticle();
+                newartary.ArticleID = content.ID;
+                newartary.UserName = content.UserName;
+                newartary.Title = content.Title;
+                newartary.Articlecategory = content.Articlecategory.Name;
+                newartary.Lovecount = content.Lovecount;
+                newartary.InitDateTime = content.InitDate;
+
+                arrayList.Add(newartary);
+
+
             }
 
-            return Ok(artlList);
+            int total = arrayList.Count;
+            if (Nowpage == 1)
+            {
+                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
+                ArrayList result = new ArrayList();
+                foreach (var str in newArticles)
+                {
+                    var resultdata = new
+                    {
+                        str.ArticleID,
+                        str.UserName,
+                        str.Title,
+                        str.Articlecategory,
+                        str.Lovecount,
+                        str.InitDateTime
+                    };
+                    result.Add(resultdata);
+                }
+                return Ok(new
+                {
+                    success = true,
+                    total = total,
+                    data = result
+                });
+            }
+            else
+            {
+                var page = (Nowpage - 1) * showcount;
+                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
+                ArrayList result = new ArrayList();
+                foreach (var str in newArticles)
+                {
+                    var resultdata = new
+                    {
+                        str.ArticleID,
+                        str.UserName,
+                        str.Title,
+                        str.Articlecategory,
+                        str.Lovecount,
+                        str.InitDateTime
+                    };
+                    result.Add(resultdata);
+                }
+                return Ok(new
+                {
+                    success = true,
+                    total = total,
+                    data = result
+                });
+            }
+
         }
     }
 }

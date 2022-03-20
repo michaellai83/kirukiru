@@ -7,11 +7,11 @@ namespace testdatamodel.PutData
 {
     public class DataArticleNormal
     {
-        public string Username { get; set; }
-        public string Title { get; set; }
-        public string Main { get; set; }
-        public int ArticlecategoryId { get; set; }
-        public bool IsFree { get; set; }
-        public bool IsPush { get; set; }
+        public string userName { get; set; }
+        public string title { get; set; }
+        public string main { get; set; }
+        public int articlecategoryId { get; set; }
+        public bool isFree { get; set; }
+        public bool isPush { get; set; }
     }
 }

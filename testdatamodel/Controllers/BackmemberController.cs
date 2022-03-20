@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using System.Web.Http;
 using testdatamodel.JWT;
 using testdatamodel.Models;
@@ -65,7 +66,7 @@ namespace testdatamodel.Controllers
                     var result = new
                     {
                         success = "登入成功",
-                        token = jwt.GenerateToken(Isusername.ID)
+                        token = jwt.GenerateToken(Isusername.ID,Isusername.Username,Isusername.Name)
                     };
                     return Ok(result);
                 }
@@ -128,6 +129,32 @@ namespace testdatamodel.Controllers
             db.BackQas.Remove(data);
             db.SaveChanges();
             return Ok(new {status = "success" });
+        }
+        /// <summary>
+        /// 信箱驗證
+        /// </summary>
+        /// <param name="ID">註冊者ID</param>
+        /// <param name="email">信箱認證的字串</param>
+        /// <returns></returns>
+        [Route("checkmail")]
+        [HttpGet]
+        public IHttpActionResult Checkemail(string ID, string email)
+        {
+            int id = Convert.ToInt32(ID);
+            var member = db.Members.FirstOrDefault(x => x.ID == id);
+            if (member == null)
+            {
+                return Ok<string>("驗證失敗");
+            }
+            var q = from p in db.Members where p.ID == id select p;
+            foreach (var p in q)
+            {
+                p.Isidentify = true;
+            }
+
+            db.SaveChanges();
+            //回傳網址
+            return Redirect("https://kirukiru.rocket-coding.com/");
         }
     }
 }

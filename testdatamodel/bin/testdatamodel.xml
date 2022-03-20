@@ -481,6 +481,609 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="T:testdatamodel.Blue.Atom">
+            <summary>執行結果基元</summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Atom.IsSuccess">
+            <summary>是否成功</summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Atom.Message">
+            <summary>訊息</summary>
+        </member>
+        <member name="T:testdatamodel.Blue.Atom`1">
+            <summary>執行結果基元(泛型)</summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Atom`1.IsSuccess">
+            <summary>執行是否成功</summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Atom`1.IsError">
+            <summary>是否為錯誤狀態</summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Atom`1.Message">
+            <summary>訊息</summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Atom`1.Item">
+            <summary>項目</summary>
+        </member>
+        <member name="T:testdatamodel.Blue.BankInfoModel">
+            <summary>
+            銀行端基本資訊
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.BankInfoModel.MerchantID">
+            <summary>
+            商店代號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.BankInfoModel.HashKey">
+            <summary>
+            AES 加密/SHA256 加密 Key
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.BankInfoModel.HashIV">
+            <summary>
+            AES 加密/SHA256 加密 IV
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.BankInfoModel.ReturnURL">
+            <summary>
+            支付完成 返回商店網址
+            <para>1.交易完成後，以 Form Post 方式導回商店頁面。</para>
+            <para>2.若為空值，交易完成後，消費者將停留在智付通付款或取號完成頁面。</para>
+            <para>3.只接受80與443 Port。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.BankInfoModel.NotifyURL">
+            <summary>
+            支付通知網址
+            <para>1.以幕後方式回傳給商店相關支付結果資料</para>
+            <para>2.只接受80與443 Port。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.BankInfoModel.CustomerURL">
+            <summary>
+            商店取號網址
+            <para>1.系統取號後以 form post 方式將結果導回商店指定的網址</para>
+            <para>2.此參數若為空值，則會顯示取號結果在智付通頁面。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.BankInfoModel.AuthUrl">
+            <summary>
+            授權網址
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.BankInfoModel.CloseUrl">
+            <summary>
+            (取消)請退款網址
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.BankInfoModel.PeriodUrl">
+            <summary>
+            定期定額的授權網址
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Blue.ConfigurationUtility.GetAppSetting(System.String)">
+            <summary>
+            取得Web.config的AppSettings設定
+            </summary>
+            <param name="appSettingKey">讀取的appSettingKey</param>
+            <returns></returns>
+        </member>
+        <member name="T:testdatamodel.Blue.CryptoUtil">
+            <summary>
+            智付通加解密Util
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Blue.CryptoUtil.EncryptAES(System.Byte[],System.String,System.String)">
+            <summary>
+            字串加密AES
+            </summary>
+            <param name="source">加密前字串</param>
+            <param name="cryptoKey">加密金鑰</param>
+            <param name="cryptoIV">cryptoIV</param>
+            <returns>加密後字串</returns>
+        </member>
+        <member name="M:testdatamodel.Blue.CryptoUtil.DecryptAES(System.Byte[],System.String,System.String)">
+            <summary>
+            字串解密AES
+            </summary>
+            <param name="source">解密前字串</param>
+            <param name="cryptoKey">解密金鑰</param>
+            <param name="cryptoIV">cryptoIV</param>
+            <returns>解密後字串</returns>
+        </member>
+        <member name="M:testdatamodel.Blue.CryptoUtil.EncryptAESHex(System.String,System.String,System.String)">
+            <summary>
+            加密後再轉 16 進制字串
+            </summary>
+            <param name="source">加密前字串</param>
+            <param name="cryptoKey">加密金鑰</param>
+            <param name="cryptoIV">cryptoIV</param>
+            <returns>加密後的字串</returns>
+        </member>
+        <member name="M:testdatamodel.Blue.CryptoUtil.DecryptAESHex(System.String,System.String,System.String)">
+            <summary>
+            16 進制字串解密
+            </summary>
+            <param name="source">加密前字串</param>
+            <param name="cryptoKey">加密金鑰</param>
+            <param name="cryptoIV">cryptoIV</param>
+            <returns>解密後的字串</returns>
+        </member>
+        <member name="M:testdatamodel.Blue.CryptoUtil.EncryptSHA256(System.String)">
+            <summary>
+            字串加密SHA256
+            </summary>
+            <param name="source">加密前字串</param>
+            <returns>加密後字串</returns>
+        </member>
+        <member name="T:testdatamodel.Blue.LambdaUtil">
+            <summary>
+            [Lambda]通用函式
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Blue.LambdaUtil.DictionaryToObject``1(System.Collections.Generic.IDictionary{System.String,System.String})">
+            <summary>
+            Dictionary 轉為物件(欄位不分大小寫)
+            </summary>
+            <typeparam name="T">泛型</typeparam>
+            <param name="dict">IDictionary 物件</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Blue.LambdaUtil.ModelToKeyValuePairList``1(``0)">
+            <summary>
+            將model 轉換為KeyValuePair List, null值不轉
+            </summary>
+            <typeparam name="T">泛型</typeparam>
+            <param name="model">欲轉換之Model</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Blue.LogUtil.WriteLog(System.String)">
+            <summary>
+            寫入Log檔
+            </summary>
+            <param name="msg"></param>
+        </member>
+        <member name="M:testdatamodel.Blue.LogUtil.WriteLog(System.Exception)">
+            <summary>
+            寫入Log檔
+            </summary>
+            <param name="exception"></param>
+        </member>
+        <member name="T:testdatamodel.Blue.NewebPayreturn">
+            <summary>
+            藍星回傳格式
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Blue.PathUtil.MapPath(System.String)">
+            <summary>
+            取得檔案實體路徑
+            </summary>
+            <param name="path">檔案路徑</param>
+            <returns></returns>
+        </member>
+        <member name="T:testdatamodel.Blue.RazorExtensions">
+            <summary>Razor 擴充函式</summary>
+        </member>
+        <member name="M:testdatamodel.Blue.RazorExtensions.LogFormData(System.Web.HttpRequestBase,System.String)">
+            <summary>紀錄 Form Data</summary>
+        </member>
+        <member name="T:testdatamodel.Blue.Returndata">
+            <summary>
+            解密後資料
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.MerchantID">
+            <summary>
+            商店代號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.Amt">
+            <summary>
+            交易金額
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.TradeNo">
+            <summary>
+            藍星交易序號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.MerchantOrderNo">
+            <summary>
+            商店訂單編號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.PaymentType">
+            <summary>
+            支付方式
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.RespondCode">
+            <summary>
+            金融機構回應碼(電子錢包專屬)
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.Auth">
+            <summary>
+            收單銀行
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.Card6No">
+            <summary>
+            信用卡前6碼
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.Card4No">
+            <summary>
+            信用卡後4碼
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.InstFirst">
+            <summary>
+            分期-首期金額(信用卡專屬)
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.InstEach">
+            <summary>
+            分期-每期金額(信用卡專屬)
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.Inst">
+            <summary>
+            分期-期別(信用卡專屬)
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.ECI">
+            <summary>
+            ECI(信用卡專屬)
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.PayTime">
+            <summary>
+            支付完成時間
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.Result.PaymentMethod">
+            <summary>
+            交易類別(電子支付)
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Blue.SpgatewayInputModel">
+            <summary>
+            [智付通]介接資料模型
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.SpgatewayInputModel.MerchantID">
+            <summary>
+            商店代號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.SpgatewayInputModel.TradeInfo">
+            <summary>
+            交易資料AES 加密
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.SpgatewayInputModel.TradeSha">
+            <summary>
+            交易資料SHA256 加密
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.SpgatewayInputModel.Version">
+            <summary>
+            串接程式版本
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Blue.SpgatewayOutputDataModel">
+            <summary>
+            智付通交易支付系統回傳解密後資料
+            <para>1. 即時交易支付方式：信用卡(CREDIT)、WebATM(WEBATM) 、Pay2go 電子錢包(P2G)、Google Pay(ANDROIDPAY)、Samsung Pay(SAMSUNGPAY)。</para>
+            <para>2. 非即時交易支付方式：超商代碼繳費(CVS)、ATM 轉帳(VACC)、超商條碼繳費(BARCODE) 、超商取貨付款(CVSCOM)。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.SpgatewayOutputDataModel.Status">
+            <summary>
+            回傳狀態
+            <para>1.若交易付款成功，則回傳SUCCESS。</para>
+            <para>2.若交易付款失敗，則回傳錯誤代碼。</para>
+            <para>3.若使用新增自訂支付欄位之交易，則回傳CUSTOM。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.SpgatewayOutputDataModel.Message">
+            <summary>
+            回傳訊息(敘述此次交易狀態。)
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.SpgatewayOutputDataModel.MerchantID">
+            <summary>
+            商店代號(智付通商店代號)
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.SpgatewayOutputDataModel.Amt">
+            <summary>
+            交易金額
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.SpgatewayOutputDataModel.TradeNo">
+            <summary>
+            智付通交易序號
+            <para>智付通在此筆交易取號成功時所產生的序號。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.SpgatewayOutputDataModel.MerchantOrderNo">
+            <summary>
+            商店訂單編號
+            <para>商店自訂訂單編號。</para>
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Blue.StringExtension">
+            <summary>
+            字串擴充功能
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Blue.StringExtension.ToByteArray(System.String)">
+            <summary>
+            將16進位字串轉換為byteArray
+            </summary>
+            <param name="source">欲轉換之字串</param>
+            <returns></returns>
+        </member>
+        <member name="T:testdatamodel.Blue.TradeInfo">
+            <summary>
+            交易資訊
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.MerchantID">
+            <summary>
+            * 商店代號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.RespondType">
+            <summary>
+            * 回傳格式
+            <para>JSON 或是 String</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.TimeStamp">
+            <summary>
+            * TimeStamp
+            <para>自從 Unix 纪元（格林威治時間 1970 年 1 月 1 日 00:00:00）到當前時間的秒數。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.Version">
+            <summary>
+            * 串接程式版本
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.LangType">
+            <summary>
+            語系
+            <para>英文版參數為en、繁體中文版參數為zh-tw</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.MerchantOrderNo">
+            <summary>
+            * 商店訂單編號
+            <para>限英、數字、_ 格式</para>
+            <para>長度限制為20字</para>
+            <para>同一商店中此編號不可重覆。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.Amt">
+            <summary>
+            * 訂單金額
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.ItemDesc">
+            <summary>
+            * 商品資訊
+            <para>1.限制長度為50字。</para>
+            <para>2.編碼為Utf-8格式。</para>
+            <para>3.請勿使用斷行符號、單引號等特殊符號，避免無法顯示完整付款頁面。</para>
+            <para>4.若使用特殊符號，系統將自動過濾。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.TradeLimit">
+            <summary>
+            交易限制秒數
+            <para>1.限制交易的秒數，當秒數倒數至0時，交易當做失敗。</para>
+            <para>2.僅可接受數字格式。</para>
+            <para>3.秒數下限為60秒，當秒數介於1 ~59秒時，會以60秒計算。</para>
+            <para>4.秒數上限為900秒，當超過900秒時，會以900秒計算。</para>
+            <para>5.若未帶此參數，或是為0時，會視作為不啟用交易限制秒數。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.ExpireDate">
+            <summary>
+            繳費有效期限(適用於非即時交易)
+            <para>1.格式為 date('Ymd') ，例：20140620</para>
+            <para>2.此參數若為空值，系統預設為7天。自取號時間起算至第7天23:59:59。 例：2014-06-23 14:35:51完成取號，則繳費有效期限為2014-06-29 23:59:59。</para>
+            <para>3.可接受最大值為180天。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.ReturnURL">
+            <summary>
+            支付完成 返回商店網址
+            <para>1.交易完成後，以 Form Post 方式導回商店頁面。</para>
+            <para>2.若為空值，交易完成後，消費者將停留在智付通付款或取號完成頁面。</para>
+            <para>3.只接受80與443 Port。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.NotifyURL">
+            <summary>
+            支付通知網址
+            <para>1.以幕後方式回傳給商店相關支付結果資料</para>
+            <para>2.只接受80與443 Port。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.CustomerURL">
+            <summary>
+            商店取號網址
+            <para>1.系統取號後以 form post 方式將結果導回商店指定的網址</para>
+            <para>2.此參數若為空值，則會顯示取號結果在智付通頁面。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.ClientBackURL">
+            <summary>
+            支付取消 返回商店網址
+            <para>1.當交易取消時，平台會出現返回鈕，使消費者依以此參數網址返回商店指定的頁面。</para>
+            <para>2.此參數若為空值時，則無返回鈕。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.Email">
+            <summary>
+            * 付款人電子信箱
+            <para>於交易完成或付款完成時，通知付款人使用。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.EmailModify">
+            <summary>
+            付款人電子信箱 是否開放修改
+            <para>1=可修改 0=不可修改</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.LoginType">
+            <summary>
+            * 智付通會員
+            <para>0=不須登入智付通會員</para>
+            <para>1=須要登入智付通會員</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.OrderComment">
+            <summary>
+            商店備註
+            <para>1.限制長度為300字。</para>
+            <para>2.若有提供此參數，將會於MPG頁面呈現商店備註內容。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.CREDIT">
+            <summary>
+            信用卡 一次付清啟用
+            <para>設定是否啟用信用卡一次付清支付方式。</para>
+            <para>1 =啟用</para>
+            <para>0或者未有此參數=不啟用</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.ANDROIDPAY">
+            <summary>
+            Google Pay 啟用
+            <para>設定是否啟用Google Pay支付方式。</para>
+            <para>1 =啟用</para>
+            <para>0或者未有此參數=不啟用</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.SAMSUNGPAY">
+            <summary>
+            Samsung Pay 啟用
+            <para>設定是否啟用Samsung Pay支付方式。</para>
+            <para>1 =啟用</para>
+            <para>0或者未有此參數=不啟用</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.InstFlag">
+            <summary>
+            信用卡 分期付款啟用
+            <para>1. 此欄位值=1 時，即代表開啟所有分期期別，且不可帶入其他期別參數。</para>
+            <para>2. 此欄位值為下列數值時，即代表開啟該分期期別。(3=分 3 期功能、6=分 6 期功能、12=分 12 期功能、18=分 18 期功能、24=分 24 期功能、30=分 30 期功能)</para>
+            <para>同時開啟多期別時，將此參數用"，"(半形)分隔，例如：3,6,12，代表開啟分3、6、12 期的功能。</para>
+            <para>此欄位值=0或無值時，即代表不開啟分期。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.CreditRed">
+            <summary>
+            信用卡 紅利啟用
+            <para>設定是否啟用信用卡紅利支付方式。</para>
+            <para>1 =啟用</para>
+            <para>0或者未有此參數=不啟用</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.UNIONPAY">
+            <summary>
+            信用卡 銀聯卡啟用
+            <para>設定是否啟用銀聯卡支付方式。</para>
+            <para>1 =啟用</para>
+            <para>0或者未有此參數=不啟用</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.WEBATM">
+            <summary>
+            WEBATM啟用
+            <para>設定是否啟用WEBATM支付方式。</para>
+            <para>1 =啟用</para>
+            <para>0 或者未有此參數，即代表不開啟</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.VACC">
+            <summary>
+            ATM 轉帳啟用
+            <para>設定是否啟用ATM 轉帳支付方式。</para>
+            <para>1 =啟用</para>
+            <para>0 或者未有此參數，即代表不開啟</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.CVS">
+            <summary>
+            超商代碼繳費啟用
+            <para>設定是否啟用超商代碼繳費支付方式。</para>
+            <para>1 =啟用</para>
+            <para>0 或者未有此參數，即代表不開啟</para>
+            <para>當該筆訂單金額小於 30 元或超過 2 萬元時，即使此參數設定為啟用，MPG 付款頁面仍不會顯示此支付方式選項。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.BARCODE">
+            <summary>
+            超商條碼繳費啟用
+            <para>設定是否啟用超商條碼繳費支付方式。</para>
+            <para>1 =啟用</para>
+            <para>0 或者未有此參數，即代表不開啟</para>
+            <para>當該筆訂單金額小於 20 元或超過 4 萬元時，即使此參數設定為啟用，MPG 付款頁面仍不會顯示此支付方式選項。</para>
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.P2G">
+            <summary>
+            Pay2go 電子錢包啟用
+            <para>設定是否啟用Pay2go 電子錢包支付方式。</para>
+            <para>1 =啟用</para>
+            <para>0 或者未有此參數，即代表不開啟</para>
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:testdatamodel.Blue.TradeInfo.CVSCOM" -->
+        <member name="P:testdatamodel.Blue.TradeInfo.PeriodType">
+            <summary>
+            週期類別(D=固定天期,W=每周,M=每月,Y=每年)
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.PeriodPoint">
+            <summary>
+            交易週期授權時間1.修改此委託單於週期間，執行信用卡授權交易的時間點。
+            2.當週期參數為 D 時，此欄位值限為數字 2~999，以授權日期隔日起算。例：數值為 2，則表示每隔兩天會執行一次委託單。
+            3.當週期參數為 W 時，此欄位值限為數字 1~7，數字 1~7 表示每週一 ~週日。例：每週日執行授權，則此欄位值為7；若週日與週一皆需執行授權，請分別建立 2 張委託單。
+            4.當週期參數為 M 時，此欄位值限為數字 01~31，數字 01~31 表示每月1 號 ~31 號，若當月沒該日期則由該月的最後一天做為扣款日。例：每月 1 號執行授權，則此欄位值為 01；若設定為 30，該排程遇2 月時將在 28 發動；若於 1 個月內需授權多次，請以建立多張委託單方式執行。
+            5.當週期參數為 Y 時，此欄位值格式為MMDD。例：每年的 3 月 15 號執行授權，則此欄位值為 0315；若於 1 年內需授權多次，請以建立多張委託單方式執行
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.PeriodStartType">
+            <summary>
+            檢查卡號模式
+            １=立即執行十元授權（因部分發卡銀行會阻擋一元交易，因此調整為十元）
+            ２=立即執行委託金額授權
+            ３=不檢查信用卡資訊，不授權
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.PeriodTimes">
+            <summary>
+            授權期數
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.ProdDesc">
+            <summary>
+            產品名稱 
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Blue.TradeInfo.PeriodAmt">
+            <summary>
+            委託金額
+            </summary>
+        </member>
         <member name="T:testdatamodel.Controllers.ArticleController">
             <summary>
             切切的文章
@@ -575,11 +1178,13 @@
             <param name="articleid">收藏文章的ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.GetAllcollectart(System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleController.GetAllcollectart(System.Int32,System.Int32,System.Int32)">
             <summary>
             取得會員收藏的切切文章
             </summary>
             <param name="memberid">會員ID</param>
+            <param name="Nowpage">現在頁數(預設為1)</param>
+            <param name="showcount">一頁顯示幾筆</param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.ArticleNormalController">
@@ -625,7 +1230,7 @@
             <param name="putlove">是否按愛心</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetArticleNormal(System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetArticleNormal(System.Nullable{System.Int32})">
             <summary>
             取得一般文章頁面所需資訊
             </summary>
@@ -679,11 +1284,13 @@
             <param name="articleid">文章ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetAllcollectart(System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetAllcollectart(System.Int32,System.Int32,System.Int32)">
             <summary>
             取得會員收藏的一般文章
             </summary>
             <param name="memberid">會員ID</param>
+            <param name="Nowpage">現在頁數(預設為1)</param>
+            <param name="showcount">一頁顯示幾筆</param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.BackmemberController">
@@ -730,53 +1337,171 @@
             <param name="qaID">QA的ID</param>
             <returns></returns>
         </member>
+        <member name="M:testdatamodel.Controllers.BackmemberController.Checkemail(System.String,System.String)">
+            <summary>
+            信箱驗證
+            </summary>
+            <param name="ID">註冊者ID</param>
+            <param name="email">信箱認證的字串</param>
+            <returns></returns>
+        </member>
+        <member name="T:testdatamodel.Controllers.BankController">
+            <summary>
+            藍星金流
+            </summary>
+        </member>
+        <member name="F:testdatamodel.Controllers.BankController._bankInfoModel">
+            <summary>
+            金流基本資料(可再移到Web.config或資料庫設定)
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPayBill(System.Int32,System.String,System.Int32,System.String)">
+            <summary>
+            [智付通支付]金流介接
+            </summary>
+             <param name="userid">會員ID</param>
+            <param name="main">訂單內容</param>
+            <param name="amount">訂單金額</param>
+            <param name="payType">請款類型(CREDIT=信用卡付款\WEBATM=網路銀行轉帳付款)</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.BankController.SpgatewayReturn(testdatamodel.Blue.NewebPayreturn)">
+            <summary>
+            [智付通]金流介接(結果: 支付完成 返回商店網址)這是藍星傳給後端的資料讓後端去知道是否成功交易去更改訂單的狀態
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPeriodic(System.Int32,System.String,System.Int32,System.String)">
+            <summary>
+            定期定額
+            </summary>
+            <param name="userid">會員ID</param>
+            <param name="main">訂單內容</param>
+            <param name="amount">訂單金額</param>
+            <param name="peroidtype">訂閱(年/月)</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.BankController.Ecpay(System.Int32,System.String,System.Int32,System.String)">
+            <summary>
+            綠界金流單筆
+            </summary>
+            <param name="userid">會員ID</param>
+            <param name="main">內容(訂閱的帳號)</param>
+            <param name="amount">價錢</param>
+            <param name="Payment">預設(ALL)</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.BankController.Ecpayperiod(System.Int32,System.String,System.Int32,System.String)">
+            <summary>
+            綠界金流 定期
+            </summary>
+            <param name="userid">會員ID</param>
+            <param name="main">內容(訂閱帳號)</param>
+            <param name="PeriodAmount">訂閱金額</param>
+            <param name="PeriodType">月費還是年費(M/Y)</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.BankController.BuildCheckMacValue(System.String,System.Int32)">
+            <summary>
+             產生檢查碼。
+             </summary>
+             <param name="parameters"></param>
+             <returns></returns>
+             傳遞 parameters 參數,需要先經過英文字母 A-Z 排序
+        </member>
         <member name="T:testdatamodel.Controllers.HomepageController">
             <summary>
             首頁的API
             </summary>
         </member>
-        <member name="M:testdatamodel.Controllers.HomepageController.SeekArticle(System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.HomepageController.SeekArticle(System.Int32,System.Int32,System.Int32)">
             <summary>
-            依類別取得一般文章和切切文章(按照時間最新排列
+            依類別取切切文章(按照時間最新排列
             </summary>
             <param name="artlog">類別的數字值</param>
             <param name="nowpage">現在的頁數(一開始請填1)</param>
-            <param name="pagecount">總共幾筆資料(一開始請填0)</param>
             <param name="showcount">要顯示幾筆資料</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.HomepageController.SeekTimeArticle(System.String,System.String,System.Int32,System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.HomepageController.SeekTimeArticle(System.String,System.String,System.Int32,System.Int32)">
             <summary>
-            依照時間範圍搜尋文章
+            依照時間範圍搜尋切切文章
             </summary>
             <param name="datetime1">較早的時間(ex:2022.03.08)</param>
             <param name="datetime2">較晚的時間(ex:2022.03.10)</param>
             <param name="nowpage">現在頁數(一開始請直接傳1)</param>
-            <param name="totalcount">總共有幾筆資料(一開始請填0)</param>
             <param name="showcount">顯示幾筆資料</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.HomepageController.NewArticle">
             <summary>
-            最新文章排列(前三筆
+            最新的切切文章排列(前三筆
             </summary>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.HomepageController.Lovearticle">
             <summary>
-            最熱門文章排列(前四筆
+            最熱門的切切文章排列(前四筆
             </summary>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.HomepageController.Seekstringarticle(System.String,System.Int32,System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.HomepageController.Seekstringarticle(System.String,System.Int32,System.Int32)">
             <summary>
-            關鍵字搜尋文章標題
+            關鍵字搜尋切切文章標題
             </summary>
             <param name="keywords">關鍵字</param>
             <param name="nowpage">現在的頁數(一開始就是第一頁,請填1)</param>
-            <param name="datacount">總共幾筆資料(一開始請填0,後端會傳回總共幾筆)</param>
             <param name="showcount">顯示筆數</param>
             <returns></returns>
+        </member>
+        <member name="T:testdatamodel.Controllers.HomepagenormalController">
+            <summary>
+            首頁顯示一般文章
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Controllers.HomepagenormalController.SeekArticle(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            依類別搜尋一般文章(按照時間排列)
+            </summary>
+            <param name="artlog">類別ID</param>
+            <param name="nowpage">現在的頁數(一開始請填1)</param>
+            <param name="showcount">要顯示幾筆資料</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.HomepagenormalController.SeekTimeArticle(System.String,System.String,System.Int32,System.Int32)">
+            <summary>
+            依照時間搜尋一般文章
+            </summary>
+            <param name="datetime1">較早的時間(ex:2022.03.08)</param>
+            <param name="datetime2">較晚的時間(ex:2022.03.10)</param>
+            <param name="nowpage">現在頁數(一開始請直接傳1)</param>
+            <param name="showcount">顯示幾筆資料</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.HomepagenormalController.NewArticle">
+            <summary>
+            最新的一般文章(前三筆)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.HomepagenormalController.Lovearticle">
+            <summary>
+            最熱門的一般文章(前四筆)
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.HomepagenormalController.Seekstringarticle(System.String,System.Int32,System.Int32)">
+            <summary>
+            依關鍵字搜尋一般文章
+            </summary>
+            <param name="keywords">關鍵字</param>
+            <param name="nowpage">現在的頁數(一開始就是第一頁,請填1)</param>
+            <param name="showcount">顯示筆數</param>
+            <returns></returns>
+        </member>
+        <member name="T:testdatamodel.Controllers.MemberController">
+            <summary>
+            會員資料處理
+            </summary>
         </member>
         <member name="M:testdatamodel.Controllers.MemberController.CreatMember(testdatamodel.PutData.DataMember)">
             <summary>
@@ -785,12 +1510,11 @@
             <param name="data">會員資料</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.Login(System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.MemberController.Login(testdatamodel.PutData.Logintable)">
             <summary>
             登入
             </summary>
-            <param name="username">帳號</param>
-            <param name="password">密碼</param>
+            <param name="login">登入表單</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.MemberController.NewPassWord(System.String)">
@@ -800,21 +1524,19 @@
             <param name="username">帳號</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.ChangPassword(System.String,System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.MemberController.ChangPassword(testdatamodel.PutData.ChangePassword)">
             <summary>
             更改密碼
             </summary>
-            <param name="username">帳號</param>
-            <param name="O_password">舊密碼</param>
-            <param name="password">新密碼</param>
+            <param name="changePassworddata">會員輸入帳密表單(O_Password為舊密碼N_Password為新密碼</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.MemberController.ChangeName(System.String,System.String)">
             <summary>
             更改會員名字
             </summary>
-            <param name="username">會員帳號</param>
             <param name="name">會員更新名字</param>
+            <param name="username">會員帳號</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.MemberController.ChangeInfo(System.String,System.String)">
@@ -841,18 +1563,11 @@
             <param name="opencollect">是否公開</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.CollectArticlenumber(System.Int32)">
+        <member name="M:testdatamodel.Controllers.MemberController.GetArticlenumber(System.Int32)">
             <summary>
             找到會員收藏文章的數量
             </summary>
             <param name="memberid">會員ID</param>
-            <returns></returns>
-        </member>
-        <member name="M:testdatamodel.Controllers.MemberController.GetAllMemberarticle(System.Int32)">
-            <summary>
-            會員的收藏文章列表
-            </summary>
-            <param name="userid">會員ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.MemberController.GetMemberartnumber(System.String)">
@@ -862,11 +1577,24 @@
             <param name="authorname">作者的帳號</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.Collectauthorarticle(System.String)">
+        <member name="M:testdatamodel.Controllers.MemberController.Collectauthorarticle(System.String,System.Int32,System.Int32,System.Int32)">
             <summary>
             查詢作者蒐藏的文章
             </summary>
             <param name="authorusername">作者帳號名稱</param>
+            <param name="pageNow">現在頁面(預設為1)</param>
+            <param name="totalpagecount">全部筆數(預設為0)</param>
+            <param name="showcount">一頁顯示幾筆資料</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.GetMyArticles(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            作者所有文章
+            </summary>
+            <param name="userid">使用者ID</param>
+            <param name="pageNow">現在頁面(預設為1)</param>
+            <param name="totalpagecount">全部筆數(預設為0)</param>
+            <param name="showcount">一頁顯示幾筆資料</param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.TestController">
@@ -878,7 +1606,7 @@
             <summary>
             回傳會員資料
             </summary>
-            <param name="userName">會員帳號</param>
+            <param name="token">回傳TOKEN</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.TestController.CreateArticlecategory(System.String)">
@@ -908,14 +1636,7 @@
             <param name="Artid">找到文章類別的ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.TestController.CreatMember(testdatamodel.PutData.DataMember)">
-            <summary>
-            會員註冊
-            </summary>
-            <param name="data">會員資料</param>
-            <returns></returns>
-        </member>
-        <member name="M:testdatamodel.Controllers.TestController.Login(System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.TestController.HashWithSaltResult(System.String,System.String,System.Security.Cryptography.HashAlgorithm)">
             <summary>
             登入
             </summary>
@@ -945,11 +1666,38 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.JWT.JwtAuthUtil.GenerateToken(System.Int32)">
+        <member name="F:testdatamodel.Ecpay.MD5Encoder.Crypto">
+            <summary>
+            雜湊加密演算法物件。
+            </summary>
+        </member>
+        <member name="F:testdatamodel.Ecpay.SHA256Encoder.Crypto">
+            <summary>
+            雜湊加密演算法物件。
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Email.Sendmail">
+            <summary>
+            寄信
+            </summary>
+        </member>
+        <member name="M:testdatamodel.Email.Sendmail.Sendemail(System.Int32,System.String,System.String,System.String,System.String)">
+            <summary>
+            寄信
+            </summary>
+            <param name="id">註冊好資料庫回傳的ID</param>
+            <param name="username">註冊帳號</param>
+            <param name="name">註冊者名字</param>
+            <param name="mailaddress">註冊者信箱</param>
+            <param name="emailidentify">信箱驗證號碼</param>
+        </member>
+        <member name="M:testdatamodel.JWT.JwtAuthUtil.GenerateToken(System.Int32,System.String,System.String)">
             <summary>
             產生Token
             </summary>
             <param name="id">使用者id</param>
+            <param name="username">帳號</param>
+            <param name="name">名字</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.JWT.JwtAuthUtil.GetId(System.String)">
@@ -959,9 +1707,28 @@
             <param name="Token">輸入前面拿到的Token key</param>
             <returns></returns>
         </member>
+        <member name="M:testdatamodel.JWT.JwtAuthUtil.GetUsername(System.String)">
+            <summary>
+            查詢使用者名字
+            </summary>
+            <param name="Token"></param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.JWT.JwtAuthUtil.GetuserList(System.String)">
+            <summary>
+            查詢使用者Token的內容
+            </summary>
+            <param name="Token">Token</param>
+            <returns></returns>
+        </member>
         <member name="T:testdatamodel.listclass.NewArticle">
             <summary>
             最新文章列表
+            </summary>
+        </member>
+        <member name="T:testdatamodel.listclass.NormalArticles">
+            <summary>
+            正常文章列表
             </summary>
         </member>
         <member name="T:testdatamodel.Models.Article">
@@ -1259,6 +2026,11 @@
             訂單ID
             </summary>
         </member>
+        <member name="P:testdatamodel.Models.Orderlist.Ordernumber">
+            <summary>
+            訂單編號
+            </summary>
+        </member>
         <member name="P:testdatamodel.Models.Orderlist.MemberID">
             <summary>
             訂閱者的ID
@@ -1267,6 +2039,11 @@
         <member name="P:testdatamodel.Models.Orderlist.AuthorName">
             <summary>
             被訂閱者的帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.Orderlist.Issuccess">
+            <summary>
+            是否交易成功
             </summary>
         </member>
         <member name="P:testdatamodel.Models.Orderlist.InitDateTime">
@@ -1359,6 +2136,26 @@
             被訂閱者的帳號
             </summary>
         </member>
+        <member name="T:testdatamodel.PutData.ChangePassword">
+            <summary>
+            更改密碼
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.ChangePassword.Username">
+            <summary>
+            帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.ChangePassword.O_Password">
+            <summary>
+            舊密碼
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.ChangePassword.N_Password">
+            <summary>
+            新密碼
+            </summary>
+        </member>
         <member name="T:testdatamodel.PutData.DataArticlecategorie">
             <summary>
             回傳Data文章種類
@@ -1367,6 +2164,21 @@
         <member name="T:testdatamodel.PutData.GetMainData">
             <summary>
             取得切切的list
+            </summary>
+        </member>
+        <member name="T:testdatamodel.PutData.Logintable">
+            <summary>
+            登入表單
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Logintable.Username">
+            <summary>
+            帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Logintable.Password">
+            <summary>
+            密碼
             </summary>
         </member>
         <member name="T:testdatamodel.Secret.HashWithSaltResult">

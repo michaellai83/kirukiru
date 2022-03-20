@@ -21,7 +21,7 @@ namespace testdatamodel.JWT
                 var errorMessage = new HttpResponseMessage()
                 {
                     ReasonPhrase = "Lost Token",
-                    Content = new StringContent(" code = 8888"),//自訂的code
+                    Content = new StringContent("code = 8888"),//自訂的code
                 };
                 throw new HttpResponseException(errorMessage);
                

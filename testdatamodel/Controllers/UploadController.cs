@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using testdatamodel.JWT;
 using testdatamodel.Models;
 
 namespace testdatamodel.Controllers
@@ -19,9 +20,9 @@ namespace testdatamodel.Controllers
         /// 新頭像上傳方法，通過表單的形式上傳
         /// </summary>
         /// <returns></returns>
-
-        [HttpPost]
         [Route("upload")]
+        [HttpPost]
+        [JwtAuthFilter]
         public async Task<IHttpActionResult> Upload()
         {
             if (!this.Request.Content.IsMimeMultipartContent())
