@@ -504,6 +504,15 @@ namespace testdatamodel.Controllers
                 //訂單編號先處理好 存進去資料庫 先用狀態 是否成功去判斷回傳回來有沒有成功
                 string orderno = $"T{DateTime.Now.ToString("yyyyMMddHHmm")}";
                 var time = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
+                string returnurl = "https://kirukiru.rocket-coding.com/api/ecreturn";
+                Orderlist orderlist = new Orderlist();
+                orderlist.Ordernumber = orderno;
+                orderlist.MemberID = userid;
+                orderlist.AuthorName = main;
+                orderlist.Issuccess = false;
+                orderlist.InitDateTime = DateTime.Now;
+                db.Orderlists.Add(orderlist);
+                db.SaveChanges();
 
                 if (string.Equals(PeriodType,"M"))
                 {
@@ -521,16 +530,16 @@ namespace testdatamodel.Controllers
                     new KeyValuePair<string, string>("ChoosePayment", Payment),
                     new KeyValuePair<string, string>("EncryptType", "1"),
                     new KeyValuePair<string, string>("ExecTimes", ExecTimes.ToString()),
-                    new KeyValuePair<string, string>("Frequency ", Frequency.ToString()),
+                    new KeyValuePair<string, string>("Frequency", Frequency.ToString()),
                     new KeyValuePair<string, string>("ItemName", main),
                     new KeyValuePair<string, string>("MerchantID", Merchantid),
                     new KeyValuePair<string, string>("MerchantTradeDate", time),
                     new KeyValuePair<string, string>("MerchantTradeNo", orderno.ToString()),
                     new KeyValuePair<string, string>("PaymentType", "aio"),
                     new KeyValuePair<string, string>("PeriodAmount", PeriodAmount.ToString()),
-                    new KeyValuePair<string, string>("PeriodReturnURL", _bankInfoModel.ReturnURL),
+                    //new KeyValuePair<string, string>("PeriodReturnURL", _bankInfoModel.ReturnURL),
                     new KeyValuePair<string, string>("PeriodType", PeriodType),
-                    new KeyValuePair<string, string>("ReturnURL", _bankInfoModel.ReturnURL),
+                    new KeyValuePair<string, string>("ReturnURL", returnurl),
                     new KeyValuePair<string, string>("TotalAmount", PeriodAmount.ToString()),
                     new KeyValuePair<string, string>("TradeDesc", "註記")
                 };
@@ -552,7 +561,7 @@ namespace testdatamodel.Controllers
                     MerchantTradeDate = time,
                     MerchantTradeNo = orderno.ToString(),
                     PaymentType = "aio",
-                    ReturnURL = _bankInfoModel.ReturnURL,
+                    ReturnURL = returnurl,
                     TotalAmount = PeriodAmount,
                     TradeDesc = "註記",
                     PeriodAmount=PeriodAmount,
@@ -568,6 +577,37 @@ namespace testdatamodel.Controllers
                     PayData = postary
                 });
             }
+
+        }
+        /// <summary>
+        /// 綠界回傳資訊
+        /// </summary>
+        /// <param name="returndata"></param>
+        /// <returns></returns>
+        [Route("api/ecreturn")]
+        [HttpPost]
+        public HttpResponseMessage EcReturn([FromBody] Ecreturndata returndata)
+        {
+
+            var response = Request.CreateResponse(HttpStatusCode.OK);
+
+            var data = returndata.RtnCode;
+            if (data != 1)
+            {
+                return response;
+            }
+            var orderNo = returndata.MerchantTradeNo;
+
+            var q = from p in db.Orderlists
+                where p.Ordernumber == orderNo
+                select p;
+            foreach (var p in q)
+            {
+                p.Issuccess = true;
+            }
+            db.SaveChanges();
+
+            return response;
 
         }
 

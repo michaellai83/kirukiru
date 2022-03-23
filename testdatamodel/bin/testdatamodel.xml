@@ -481,6 +481,11 @@
             </summary>
             <param name="documentPath">The physical path to XML document.</param>
         </member>
+        <member name="T:testdatamodel.Bankdata.Backarticledata">
+            <summary>
+            後台精選文章
+            </summary>
+        </member>
         <member name="T:testdatamodel.Blue.Atom">
             <summary>執行結果基元</summary>
         </member>
@@ -1089,54 +1094,68 @@
             切切的文章
             </summary>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.AddArticle">
+        <member name="M:testdatamodel.Controllers.ArticleController.AddArticle(testdatamodel.PutData.DataArticle)">
             <summary>
             添加切切文章
             </summary>
+            <param name="dataArticle ">切切前端傳進來資料</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.AddMessage(System.String,System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.ArticleController.AddMessage(System.String,System.Int32)">
             <summary>
             訪客留言
             </summary>
-            <param name="UserName">訪客名稱</param>
             <param name="Main">留言內容</param>
             <param name="ArtID">文章ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.GetMessage(System.String)">
+        <member name="M:testdatamodel.Controllers.ArticleController.GetAllMessage(System.Int32)">
             <summary>
-            取得留言資料
+            取得此篇文章所有留言資料
             </summary>
-            <param name="ArtId">文章ID</param>
+            <param name="artId">文章Id</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.AddReMessage(System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.ArticleController.Getmessage(System.Int32)">
+            <summary>
+            取得留言資料(單筆)
+            </summary>
+            <param name="messageId">留言的ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.AddReMessage(System.Int32,System.String)">
             <summary>
             回覆留言
             </summary>
-            <param name="Messageid">留言的ID</param>
+            <param name="MessageId">留言的ID</param>
             <param name="main">留言內容</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.GetReMessage(System.String)">
+        <member name="M:testdatamodel.Controllers.ArticleController.GetReMessage(System.Int32)">
             <summary>
             取得留言回覆的內容
             </summary>
-            <param name="ReMsgId">留言的ID</param>
+            <param name="reMsgId">留言的ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.GetArctile(System.String)">
+        <member name="M:testdatamodel.Controllers.ArticleController.GetArctile(System.Int32)">
             <summary>
             取得文章資料
             </summary>
-            <param name="articleid">文章ID</param>
+            <param name="artId">文章ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.EditArticle">
+        <member name="M:testdatamodel.Controllers.ArticleController.EditArticle(testdatamodel.PutData.Editkirukiru)">
             <summary>
             編輯文章(會把舊的圖片刪除後重新建立)
             </summary>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.GetEditArticle(System.Int32)">
+            <summary>
+            編輯用回傳文章資料
+            </summary>
+            <param name="artId">文章ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleController.DeleteActile(System.String)">
@@ -1146,12 +1165,13 @@
             <param name="artid">文章ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.GetUserArticle(System.String,System.Boolean)">
+        <member name="M:testdatamodel.Controllers.ArticleController.GetUserArticle(System.Boolean,System.Int32,System.Int32)">
             <summary>
             找到作者的所有切切
             </summary>
-            <param name="username">作者的會員帳號</param>
-            <param name="ispush">是否發布</param>
+            <param name="ispush">是否發布(用來查詢是否在草稿</param>
+            <param name="nowPage">現在頁數(預設1)</param>
+            <param name="showCount">每頁顯示幾筆資料</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleController.AddLoveArticle(System.Int32,System.Boolean)">
@@ -1162,27 +1182,24 @@
             <param name="putlove">是否按愛心</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.Collectarticle(System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleController.Collectarticle(System.Int32)">
             <summary>
             收藏切切文章
             </summary>
             <param name="artid">文章ID</param>
-            <param name="memberid">收藏者的ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.Deletecollect(System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleController.Deletecollect(System.Int32)">
             <summary>
             取消收藏文章
             </summary>
-            <param name="userid">會員ID</param>
             <param name="articleid">收藏文章的ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.GetAllcollectart(System.Int32,System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleController.GetAllcollectart(System.Int32,System.Int32)">
             <summary>
             取得會員收藏的切切文章
             </summary>
-            <param name="memberid">會員ID</param>
             <param name="Nowpage">現在頁數(預設為1)</param>
             <param name="showcount">一頁顯示幾筆</param>
             <returns></returns>
@@ -1199,12 +1216,13 @@
             <param name="data">回傳給後端的格式</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetUserAllArticleNormal(System.String,System.Boolean)">
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetUserAllArticleNormal(System.Boolean,System.Int32,System.Int32)">
             <summary>
-            找到作者的所有文章
+            找到作者自己的所有一般文章
             </summary>
-            <param name="username">作者會員帳號</param>
-            <param name="ispush">是否發布</param>
+            <param name="ispush">是否發布(判斷是否在草稿)</param>
+            <param name="nowPage">現在頁數(預設1)</param>
+            <param name="showNum">一頁顯示幾筆資料</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.DeleteArticleNormal(System.Int32)">
@@ -1237,12 +1255,18 @@
             <param name="artid">文章ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleNormalController.AddmessageArticleNrmal(System.Int32,System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetNormalArticleForEdit(System.Nullable{System.Int32})">
+            <summary>
+            編輯用一般文章資訊
+            </summary>
+            <param name="artId">文章ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.AddmessageArticleNrmal(System.Int32,System.String)">
             <summary>
             一般文章的留言
             </summary>
             <param name="artid">文章ID</param>
-            <param name="username">留言者帳號</param>
             <param name="messagemain">留言內容</param>
             <returns></returns>
         </member>
@@ -1261,6 +1285,20 @@
             <param name="artid">文章ID</param>
             <returns></returns>
         </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetOneMessage(System.Int32)">
+            <summary>
+            取得一般文章一筆留言
+            </summary>
+            <param name="messageId">留言ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.DeleteMessage(System.Int32)">
+            <summary>
+            作者刪除留言
+            </summary>
+            <param name="messageID">留言ID</param>
+            <returns></returns>
+        </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.Getrmessage(System.Int32)">
             <summary>
             取得此留言回覆
@@ -1268,27 +1306,24 @@
             <param name="messageid">留言id</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleNormalController.Collectarticle(System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.Collectarticle(System.Int32)">
             <summary>
             收藏一般文章
             </summary>
             <param name="artid">文章ID</param>
-            <param name="memberid">收藏者的ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleNormalController.Deletecollect(System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.Deletecollect(System.Int32)">
             <summary>
             取消收藏
             </summary>
-            <param name="userid">會員ID</param>
             <param name="articleid">文章ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetAllcollectart(System.Int32,System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetAllcollectart(System.Int32,System.Int32)">
             <summary>
             取得會員收藏的一般文章
             </summary>
-            <param name="memberid">會員ID</param>
             <param name="Nowpage">現在頁數(預設為1)</param>
             <param name="showcount">一頁顯示幾筆</param>
             <returns></returns>
@@ -1343,6 +1378,13 @@
             </summary>
             <param name="ID">註冊者ID</param>
             <param name="email">信箱認證的字串</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.BackmemberController.Addarticle(testdatamodel.Bankdata.Backarticledata)">
+            <summary>
+            新增精選文章
+            </summary>
+            <param name="backarticledata">文章所需資料</param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.BankController">
@@ -1400,6 +1442,13 @@
             <param name="PeriodType">月費還是年費(M/Y)</param>
             <returns></returns>
         </member>
+        <member name="M:testdatamodel.Controllers.BankController.EcReturn(testdatamodel.Ecpay.Ecreturndata)">
+            <summary>
+            綠界回傳資訊
+            </summary>
+            <param name="returndata"></param>
+            <returns></returns>
+        </member>
         <member name="M:testdatamodel.Controllers.BankController.BuildCheckMacValue(System.String,System.Int32)">
             <summary>
              產生檢查碼。
@@ -1415,7 +1464,7 @@
         </member>
         <member name="M:testdatamodel.Controllers.HomepageController.SeekArticle(System.Int32,System.Int32,System.Int32)">
             <summary>
-            依類別取切切文章(按照時間最新排列
+            依類別取切切文章(按照時間最新排列(有完成訂閱作者的話他的文章都會解鎖
             </summary>
             <param name="artlog">類別的數字值</param>
             <param name="nowpage">現在的頁數(一開始請填1)</param>
@@ -1517,11 +1566,12 @@
             <param name="login">登入表單</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.NewPassWord(System.String)">
+        <member name="M:testdatamodel.Controllers.MemberController.NewPassWord(System.String,System.String)">
             <summary>
             忘記密碼
             </summary>
             <param name="username">帳號</param>
+            <param name="eMail">註冊信箱</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.MemberController.ChangPassword(testdatamodel.PutData.ChangePassword)">
@@ -1531,55 +1581,49 @@
             <param name="changePassworddata">會員輸入帳密表單(O_Password為舊密碼N_Password為新密碼</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.ChangeName(System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.MemberController.ChangeName(System.String)">
             <summary>
             更改會員名字
             </summary>
             <param name="name">會員更新名字</param>
-            <param name="username">會員帳號</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.ChangeInfo(System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.MemberController.ChangeInfo(System.String)">
             <summary>
             更改會員敘述
             </summary>
-            <param name="username">會員帳號</param>
             <param name="introduction">會員敘述</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.ChangeEmail(System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.MemberController.ChangeEmail(System.String)">
             <summary>
             更改會員信箱
             </summary>
-            <param name="username">會員帳號</param>
             <param name="email">會員信箱</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.ChagneOpenCollect(System.String,System.Boolean)">
+        <member name="M:testdatamodel.Controllers.MemberController.ChagneOpenCollect(System.Boolean)">
             <summary>
             是否公開會員收藏文章
             </summary>
-            <param name="username">會員帳號</param>
             <param name="opencollect">是否公開</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.GetArticlenumber(System.Int32)">
+        <member name="M:testdatamodel.Controllers.MemberController.GetArticlenumber">
             <summary>
             找到會員收藏文章的數量
             </summary>
-            <param name="memberid">會員ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.GetMemberartnumber(System.String)">
+        <member name="M:testdatamodel.Controllers.MemberController.GetMemberartnumber">
             <summary>
             取得作者發布的文章數量
             </summary>
-            <param name="authorname">作者的帳號</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.MemberController.Collectauthorarticle(System.String,System.Int32,System.Int32,System.Int32)">
             <summary>
-            查詢作者蒐藏的文章
+            查詢作者蒐藏的切切文章
             </summary>
             <param name="authorusername">作者帳號名稱</param>
             <param name="pageNow">現在頁面(預設為1)</param>
@@ -1587,14 +1631,39 @@
             <param name="showcount">一頁顯示幾筆資料</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.GetMyArticles(System.Int32,System.Int32,System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.MemberController.CollectauthorNormalarticle(System.String,System.Int32,System.Int32,System.Int32)">
             <summary>
-            作者所有文章
+            查詢作者的蒐藏的一般文章
             </summary>
-            <param name="userid">使用者ID</param>
+            <param name="authorusername">作者帳號名稱</param>
+            <param name="pageNow">現在頁面(預設為1)</param>
+            <param name="totalpagecount">全部筆數(預設為0</param>
+            <param name="showcount">一頁顯示幾筆資料</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.GetMyArticles(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            作者所有切切文章
+            </summary>
             <param name="pageNow">現在頁面(預設為1)</param>
             <param name="totalpagecount">全部筆數(預設為0)</param>
             <param name="showcount">一頁顯示幾筆資料</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.GetMyNormalArticles(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            作者所有一般文章
+            </summary>
+            <param name="pageNow">現在頁面(預設為1)</param>
+            <param name="totalpagecount">全部筆數(預設為0)</param>
+            <param name="showcount">一頁顯示幾筆資料</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.ChangePhoto(System.String)">
+            <summary>
+            更改會員大頭貼
+            </summary>
+            <param name="photoName">圖片名稱</param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.TestController">
@@ -1602,11 +1671,10 @@
             測試的API
             </summary>
         </member>
-        <member name="M:testdatamodel.Controllers.TestController.GetName(System.String)">
+        <member name="M:testdatamodel.Controllers.TestController.GetName">
             <summary>
             回傳會員資料
             </summary>
-            <param name="token">回傳TOKEN</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.TestController.CreateArticlecategory(System.String)">
@@ -1662,9 +1730,24 @@
         </member>
         <member name="M:testdatamodel.Controllers.UploadController.Upload">
             <summary>
-            新頭像上傳方法，通過表單的形式上傳
+            圖片上傳專區
             </summary>
             <returns></returns>
+        </member>
+        <member name="T:testdatamodel.Ecpay.Ecreturndata">
+            <summary>
+            綠界回傳資料
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Ecpay.Ecreturndata.MerchantTradeNo">
+            <summary>
+            訂單編號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Ecpay.Ecreturndata.RtnCode">
+            <summary>
+            RtnCode成功為1
+            </summary>
         </member>
         <member name="F:testdatamodel.Ecpay.MD5Encoder.Crypto">
             <summary>
@@ -1876,6 +1959,11 @@
             愛心的數量
             </summary>
         </member>
+        <member name="P:testdatamodel.Models.ArticleNormal.CheckArticle">
+            <summary>
+            每篇文章專屬
+            </summary>
+        </member>
         <member name="T:testdatamodel.Models.BackArticle">
             <summary>
             後台文章
@@ -1924,6 +2012,11 @@
         <member name="P:testdatamodel.Models.Collect.UserName">
             <summary>
             會員的帳號
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Models.FinalMission">
+            <summary>
+            附屬任務
             </summary>
         </member>
         <member name="T:testdatamodel.Models.Firstmission">
@@ -2136,6 +2229,16 @@
             被訂閱者的帳號
             </summary>
         </member>
+        <member name="T:testdatamodel.Models.Subscriptionplan">
+            <summary>
+            訂閱方案
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.Subscriptionplan.MemberID">
+            <summary>
+            會員的ID
+            </summary>
+        </member>
         <member name="T:testdatamodel.PutData.ChangePassword">
             <summary>
             更改密碼
@@ -2156,9 +2259,234 @@
             新密碼
             </summary>
         </member>
+        <member name="T:testdatamodel.PutData.ChangePhoto">
+            <summary>
+            更改會員頭像
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.ChangePhoto.userName">
+            <summary>
+            會員帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.ChangePhoto.userPhoto">
+            <summary>
+            會員圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.memberUserName">
+            <summary>
+            會員帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.title">
+            <summary>
+            切切標題
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.firstPhoto">
+            <summary>
+            切切封面圖
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.introduction">
+            <summary>
+            切切簡介
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.articlecategoryId">
+            <summary>
+            切切文章分類ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.fArrayList">
+            <summary>
+            前置任務內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.mArrayList">
+            <summary>
+            切切內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.isFree">
+            <summary>
+            是否付費
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.isPush">
+            <summary>
+            是否發布
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.fMissionList">
+            <summary>
+            附屬任務內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.final">
+            <summary>
+            備註
+            </summary>
+        </member>
+        <member name="T:testdatamodel.PutData.DataArticle.FirstM">
+            <summary>
+            前置任務
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.FirstM.secPhoto">
+            <summary>
+            前置任務圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.FirstM.mission">
+            <summary>
+            前置任務內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.PutData.DataArticle.Main">
+            <summary>
+            切切
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.Main.thirdPhoto">
+            <summary>
+            切切圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.Main.main">
+            <summary>
+            切切內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.PutData.DataArticle.FinalM">
+            <summary>
+            附屬任務
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.FinalM.auxiliary">
+            <summary>
+            附屬任務標題
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.DataArticle.FinalM.auxiliarymain">
+            <summary>
+            附屬任務內容
+            </summary>
+        </member>
         <member name="T:testdatamodel.PutData.DataArticlecategorie">
             <summary>
             回傳Data文章種類
+            </summary>
+        </member>
+        <member name="T:testdatamodel.PutData.Editkirukiru">
+            <summary>
+            編輯切切頁面
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.artId">
+            <summary>
+            文章ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.userName">
+            <summary>
+            作者會員帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.title">
+            <summary>
+            文章標題
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.firstPhoto">
+            <summary>
+            文章封面圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.introduction">
+            <summary>
+            文章簡介
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.articlecategoryId">
+            <summary>
+            文章類型ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.fArrayList">
+            <summary>
+            前置內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.mArrayList">
+            <summary>
+            切切內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.fMissionList">
+            <summary>
+            附屬任務內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.isFree">
+            <summary>
+            是否付費
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.isPush">
+            <summary>
+            是否發布
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Editkirukiru.final">
+            <summary>
+            備註
+            </summary>
+        </member>
+        <member name="T:testdatamodel.PutData.FirstM">
+            <summary>
+            前置任務內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.FirstM.secPhoto">
+            <summary>
+            前置任務圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.FirstM.mission">
+            <summary>
+            前置任務內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.PutData.Main">
+            <summary>
+            切切內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Main.thirdPhoto">
+            <summary>
+            切切圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.Main.main">
+            <summary>
+            切切內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.PutData.FinamlM">
+            <summary>
+            附屬任務
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.FinamlM.auxiliary">
+            <summary>
+            附屬任務標題
+            </summary>
+        </member>
+        <member name="P:testdatamodel.PutData.FinamlM.auxiliarymain">
+            <summary>
+            附屬任務內容
             </summary>
         </member>
         <member name="T:testdatamodel.PutData.GetMainData">
@@ -2194,6 +2522,346 @@
         <member name="T:testdatamodel.Secret.Rng">
             <summary>
             隨機
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.Kirukiruoutput">
+            <summary>
+            切切回傳格式
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.success">
+            <summary>
+            是否成功
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.data">
+            <summary>
+            回傳資料內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.Kirukiruoutput.Data">
+            <summary>
+            回傳資料
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.artId">
+            <summary>
+            文章ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.title">
+            <summary>
+            文章標題
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.firstPhoto">
+            <summary>
+            文章封面圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.introduction">
+            <summary>
+            文章簡介
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.articlecategoryId">
+            <summary>
+            文章類型ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.artArtlog">
+            <summary>
+            文章類型名稱
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.fArrayList">
+            <summary>
+            前置內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.mArrayList">
+            <summary>
+            切切內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.fMissionList">
+            <summary>
+            附屬任務內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.isFree">
+            <summary>
+            是否付費
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.isPush">
+            <summary>
+            是否發布
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.final">
+            <summary>
+            備註
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.messageArrayList">
+            <summary>
+            留言內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.Kirukiruoutput.FirstM">
+            <summary>
+            前置任務內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.FirstM.fId">
+            <summary>
+            前置任務ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.FirstM.secPhoto">
+            <summary>
+            前置任務圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.FirstM.mission">
+            <summary>
+            前置任務內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.Kirukiruoutput.Main">
+            <summary>
+            切切內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Main.mId">
+            <summary>
+            切切ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Main.thirdPhoto">
+            <summary>
+            切切圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Main.main">
+            <summary>
+            切切內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.Kirukiruoutput.FinamlM">
+            <summary>
+            附屬任務
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.FinamlM.fId">
+            <summary>
+            附屬任務ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.FinamlM.auxiliary">
+            <summary>
+            附屬任務標題
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.FinamlM.auxiliarymain">
+            <summary>
+            附屬任務內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.Kirukiruoutput.Message">
+            <summary>
+            留言
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Message.messageId">
+            <summary>
+            留言ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Message.messageMember">
+            <summary>
+            留言人的帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Message.messageMain">
+            <summary>
+            留言內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Message.messageInitDate">
+            <summary>
+            留言時間
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Message.reMessageArrayList">
+            <summary>
+            回覆留言的內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.Kirukiruoutput.ReMessage">
+            <summary>
+            回覆留言內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.ReMessage.reMessageId">
+            <summary>
+            回覆的ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.ReMessage.reMessageMain">
+            <summary>
+            回覆內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.ReMessage.reMessageInitDate">
+            <summary>
+            回覆時間
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.KiruOutPutForEdit">
+            <summary>
+            切切回傳格式給編輯文章用
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.success">
+            <summary>
+            是否成功
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.data">
+            <summary>
+            回傳資料內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.KiruOutPutForEdit.Data">
+            <summary>
+            回傳資料
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.artId">
+            <summary>
+            文章ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.title">
+            <summary>
+            文章標題
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.firstPhoto">
+            <summary>
+            文章封面圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.introduction">
+            <summary>
+            文章簡介
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.articlecategoryId">
+            <summary>
+            文章類型ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.artArtlog">
+            <summary>
+            文章類型名稱
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.fArrayList">
+            <summary>
+            前置內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.mArrayList">
+            <summary>
+            切切內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.fMissionList">
+            <summary>
+            附屬任務內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.isFree">
+            <summary>
+            是否付費
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.isPush">
+            <summary>
+            是否發布
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Data.final">
+            <summary>
+            備註
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.KiruOutPutForEdit.FirstM">
+            <summary>
+            前置任務內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.FirstM.fId">
+            <summary>
+            前置任務ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.FirstM.secPhoto">
+            <summary>
+            前置任務圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.FirstM.mission">
+            <summary>
+            前置任務內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.KiruOutPutForEdit.Main">
+            <summary>
+            切切內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Main.mId">
+            <summary>
+            切切ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Main.thirdPhoto">
+            <summary>
+            切切圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.Main.main">
+            <summary>
+            切切內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.KiruOutPutForEdit.FinamlM">
+            <summary>
+            附屬任務
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.FinamlM.fId">
+            <summary>
+            附屬任務ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.FinamlM.auxiliary">
+            <summary>
+            附屬任務標題
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruOutPutForEdit.FinamlM.auxiliarymain">
+            <summary>
+            附屬任務內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.NormalArticleOutPutForEdit">
+            <summary>
+            一般文章的編輯資訊
             </summary>
         </member>
     </members>

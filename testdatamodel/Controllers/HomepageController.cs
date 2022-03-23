@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Web.Http;
+using testdatamodel.JWT;
 using testdatamodel.listclass;
 using testdatamodel.Models;
 
@@ -19,7 +20,7 @@ namespace testdatamodel.Controllers
         ProjectDb db = new ProjectDb();
 
         /// <summary>
-        /// 依類別取切切文章(按照時間最新排列
+        /// 依類別取切切文章(按照時間最新排列(有完成訂閱作者的話他的文章都會解鎖
         /// </summary>
         /// <param name="artlog">類別的數字值</param>
         /// <param name="nowpage">現在的頁數(一開始請填1)</param>
@@ -28,6 +29,24 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult SeekArticle(int artlog,int nowpage,int showcount)
         {
+            var member = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
+            var memberorder = db.Members.FirstOrDefault(x => x.ID == member).Orderlists.ToList();
+            List<string> checkorder = new List<string>();
+            if (memberorder != null)
+            {
+                //拿取訂閱資料(要成功交易完才能有資料
+                foreach (var str in memberorder)
+                {
+                    if (str.Issuccess == true)
+                    {
+                        checkorder.Add(str.AuthorName);
+                    }
+                    
+                }
+                
+                
+            }
+            int ordernum = checkorder.Count;
             var data = from a in db.Articles
                 where (a.ArticlecategoryId == artlog &
                        a.IsPush == true)
@@ -41,26 +60,44 @@ namespace testdatamodel.Controllers
             {
                 
                 List<NewArticle> arrayList = new List<NewArticle>();
+                foreach (var content in data.ToList())
+                {
 
+                    //var good = db.Goods.Where(m => m.ArticleId == artid).Count();//不要在迴圈裡面開資料庫
+                    NewArticle newartary = new NewArticle();
+                    newartary.ArticleID = content.ID;
+                    newartary.UserName = content.UserName;
+                    newartary.Title = content.Title;
+                    newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
+                    newartary.ArtInfo = content.Introduction;
+                    newartary.Articlecategory = content.Articlecategory.Name;
+                    newartary.Isfree = content.IsFree;
+                    newartary.Lovecount = content.Lovecount;
+                    newartary.InitDateTime = content.InitDate;
+
+                    arrayList.Add(newartary);
+                }
+                //這邊是去確認有訂閱的作者會去把isfree狀態都改成免費
+                if (ordernum != 0)
+                {
+                    foreach (var str in arrayList)
+                    {
+
+                        for (int i = 0; i < ordernum; i++)
+                        {
+                            if (checkorder[i] == str.UserName && str.Isfree == false)
+                            {
+                                str.Isfree = true;
+                                break;
+                            }
+                        }
+                    }
+                }
                 if (nowpage == 1)
                 {
-                    foreach (var content in data.ToList())
-                    {
-                        //var good = db.Goods.Where(m => m.ArticleId == artid).Count();//不要在迴圈裡面開資料庫
-                        NewArticle newartary = new NewArticle();
-                        newartary.ArticleID = content.ID;
-                        newartary.UserName = content.UserName;
-                        newartary.Title = content.Title;
-                        newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                        newartary.ArtInfo = content.Introduction;
-                        newartary.Articlecategory = content.Articlecategory.Name;
-                        newartary.Isfree = content.IsFree;
-                        newartary.Lovecount = content.Lovecount;
-                        newartary.InitDateTime = content.InitDate;
-
-                        arrayList.Add(newartary);
-                    }
-
+                    
+                    
+                   
                     //foreach (var content in datanormal.ToList())
                     //{
 
@@ -94,22 +131,6 @@ namespace testdatamodel.Controllers
                 }
                 else
                 {
-                    foreach (var content in data.ToList())
-                    {
-                        //var good = db.Goods.Where(m => m.ArticleId == artid).Count();//不要在迴圈裡面開資料庫
-                        NewArticle newartary = new NewArticle();
-                        newartary.ArticleID = content.ID;
-                        newartary.UserName = content.UserName;
-                        newartary.Title = content.Title;
-                        newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                        newartary.ArtInfo = content.Introduction;
-                        newartary.Articlecategory = content.Articlecategory.Name;
-                        newartary.Isfree = content.IsFree;
-                        newartary.Lovecount = content.Lovecount;
-                        newartary.InitDateTime = content.InitDate;
-
-                        arrayList.Add(newartary);
-                    }
 
                     //foreach (var content in datanormal.ToList())
                     //{

@@ -32,13 +32,13 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 回傳會員資料
         /// </summary>
-        /// <param name="token">回傳TOKEN</param>
         /// <returns></returns>
+        [Route("GetName")]
         [HttpGet]
         [JwtAuthFilter]
-        public IHttpActionResult GetName(string token)
+        public IHttpActionResult GetName()
         {
-            var data = JwtAuthUtil.GetuserList(token);
+            var data = JwtAuthUtil.GetuserList(Request.Headers.Authorization.Parameter);
             
             if (data == null)
             {
@@ -65,7 +65,8 @@ namespace testdatamodel.Controllers
             }
             var result = new
             {
-                Username=user.UserName,
+                UserId = user.ID,
+                Username =user.UserName,
                 user.Name,
                 Userpic = pic,
                 user.Email,

@@ -11,10 +11,16 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
+using System.Web.Http.Description;
+using Microsoft.Ajax.Utilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using testdatamodel.JWT;
 using testdatamodel.listclass;
 using testdatamodel.Models;
 using testdatamodel.PutData;
+using testdatamodel.Swagger;
+using Member = testdatamodel.Models.Member;
 
 namespace testdatamodel.Controllers
 {
@@ -25,231 +31,260 @@ namespace testdatamodel.Controllers
     {
         ProjectDb db = new ProjectDb();
 
-        /// <summary>
-        /// 添加切切文章
-        /// </summary>
-        /// <returns></returns>
-        [HttpPost]
-        [JwtAuthFilter]
+        ///// <summary>
+        ///// 添加切切文章
+        ///// </summary>
+        ///// <returns></returns>
+        //[HttpPost]
+        //[JwtAuthFilter]
 
-        public async Task<IHttpActionResult> AddArticle()
-        {
-            if (!this.Request.Content.IsMimeMultipartContent())
-            {
-                throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-            }
+        //public async Task<IHttpActionResult> AddArticle()
+        //{
+        //    //if (!this.Request.Content.IsMimeMultipartContent())
+        //    //{
+        //    //    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+        //    //}
 
-            var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Pic");
-            var exists = Directory.Exists(root);
-            if (!exists)
-            {
-                Directory.CreateDirectory("Pic");
-            }
+        //    //var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Pic");
+        //    //var exists = Directory.Exists(root);
+        //    //if (!exists)
+        //    //{
+        //    //    Directory.CreateDirectory("Pic");
+        //    //}
 
-            try
-            {
-                //var _MemberID = HttpContext.Current.Request.Form.GetValues("MemberID");
-                //string MemberID = _MemberID[0];
-                //int UserID = Convert.ToInt32(MemberID);
-                var _username = HttpContext.Current.Request.Form.GetValues("userName"); //找到formdata 文字檔 key值為 username的values值
-                string username = _username[0]; //value值
-                var _title = HttpContext.Current.Request.Form.GetValues("title");
-                string title = _title[0];
-                var _Isfree = HttpContext.Current.Request.Form.GetValues("isFree");
-                string Isfree = _Isfree[0];
-                bool Is_Free = true;
-                if (Isfree == "False")
-                {
-                    Is_Free = false;
-                }
+        //    //try
+        //    //{
+        //    //    //var _MemberID = HttpContext.Current.Request.Form.GetValues("MemberID");
+        //    //    //string MemberID = _MemberID[0];
+        //    //    //int UserID = Convert.ToInt32(MemberID);
+        //    //    var _username = HttpContext.Current.Request.Form.GetValues("userName"); //找到formdata 文字檔 key值為 username的values值
+        //    //    string username = _username[0]; //value值
+        //    //    var _title = HttpContext.Current.Request.Form.GetValues("title");
+        //    //    string title = _title[0];
+        //    //    var _Isfree = HttpContext.Current.Request.Form.GetValues("isFree");
+        //    //    string Isfree = _Isfree[0];
+        //    //    bool Is_Free = true;
+        //    //    if (Isfree == "False")
+        //    //    {
+        //    //        Is_Free = false;
+        //    //    }
 
-                var _Introduction = HttpContext.Current.Request.Form.GetValues("introduction");
-                string Introduction = _Introduction[0];
-                var _ArticlecategoryId = HttpContext.Current.Request.Form.GetValues("articlecategoryId");
-                string ArticlecategoryId = _ArticlecategoryId[0];
-                var _IsPush = HttpContext.Current.Request.Form.GetValues("isPush");
-                string IsPush = _IsPush[0];
-                bool Is_Push = true;
-                if (IsPush == "False")
-                {
-                    Is_Push = false;
-                }
-
-
-                var _ArtMain = HttpContext.Current.Request.Form.GetValues("main");
-                int artmaincount = 0;
+        //    //    var _Introduction = HttpContext.Current.Request.Form.GetValues("introduction");
+        //    //    string Introduction = _Introduction[0];
+        //    //    var _ArticlecategoryId = HttpContext.Current.Request.Form.GetValues("articlecategoryId");
+        //    //    string ArticlecategoryId = _ArticlecategoryId[0];
+        //    //    var _IsPush = HttpContext.Current.Request.Form.GetValues("isPush");
+        //    //    string IsPush = _IsPush[0];
+        //    //    bool Is_Push = true;
+        //    //    if (IsPush == "False")
+        //    //    {
+        //    //        Is_Push = false;
+        //    //    }
 
 
-
-                //下面是前置任務
-                var _FirstMission = HttpContext.Current.Request.Form.GetValues("mission");
-                int firstcount = 0;
-                
-                int ArtId = 0;
-                
-                var provider = new MultipartMemoryStreamProvider();
-                await this.Request.Content.ReadAsMultipartAsync(provider);
-
-                //var uploadResponse = new UploadResponse();
-                foreach (var content in provider.Contents)
-                {
-                    var KeyName = content.Headers.ContentDisposition.Name.Trim('\"');
-
-                    if (KeyName.Contains("first"))
-                    {
-                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                        string[] fileary = filerealName.Split('.');
-                        var fileBytes = await content.ReadAsByteArrayAsync();
-
-                        var filefirst = DateTime.Now.ToFileTime() + username;
-                        var fileName = filefirst +"." + fileary[1];
-                        
-                        var outputPath = Path.Combine(root, fileName);
-                        using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
-                        {
-                            await output.WriteAsync(fileBytes, 0, fileBytes.Length);
-                        }
+        //    //    var _ArtMain = HttpContext.Current.Request.Form.GetValues("main");
+        //    //    int artmaincount = 0;
 
 
-                        Article article = new Article();
 
-                        article.UserName = username;
-                        article.Title = title;
-                        article.IsFree = Is_Free;
-                        article.Introduction = Introduction;
-                        article.ArticlecategoryId = Convert.ToInt32(ArticlecategoryId);
-                        article.IsPush = Is_Push;
-                        article.FirstPicName = filefirst;
-                        article.FirstPicFileName = fileary[1];
-                        article.InitDate = DateTime.Now;
-                        db.Articles.Add(article);
-                        db.SaveChanges();
-                        var result = db.Articles.FirstOrDefault(m => m.FirstPicName == filefirst);
-                        ArtId = result.ID;
+        //    //    //下面是前置任務
+        //    //    var _FirstMission = HttpContext.Current.Request.Form.GetValues("mission");
 
-                    }
-                    else if (KeyName.Contains("sec"))
-                    {
-                        
-                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                        if (filerealName.Equals(""))
-                        {
-                            Firstmission firstmission = new Firstmission();
-                            firstmission.PicName = "";
-                            firstmission.PicFileName = "";
-                            firstmission.ArticleId = ArtId;
-                            firstmission.FirstItem = _FirstMission[firstcount];
-                            firstmission.InitDate = DateTime.Now;
-                            db.Firstmissions.Add(firstmission);
-                        }
-                        else
-                        {
-                            string[] fileary = filerealName.Split('.');
-                            var fileBytes = await content.ReadAsByteArrayAsync();
 
-                            var filefirst = DateTime.Now.ToFileTime() + username;
-                            var fileName = filefirst + "." + fileary[1];
+        //    //    var _finMission = HttpContext.Current.Request.Form.GetValues("auxiliary");
+        //    //    var _finMissionMain = HttpContext.Current.Request.Form.GetValues("auxiliarymain");
+        //    //    int finMissionCount = 0;
 
-                            var outputPath = Path.Combine(root, fileName);
-                            using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
-                            {
-                                await output.WriteAsync(fileBytes, 0, fileBytes.Length);
-                            }
 
-                            Firstmission firstmission = new Firstmission();
-                            firstmission.PicName = filefirst;
-                            firstmission.PicFileName = fileary[1];
-                            firstmission.ArticleId = ArtId;
-                            firstmission.FirstItem = _FirstMission[firstcount];
-                            firstmission.InitDate = DateTime.Now;
-                            db.Firstmissions.Add(firstmission);
-                        }
-                           
-                        //db.SaveChanges();
-                        firstcount++;
-                    }
-                    else if (KeyName.Contains("third"))
-                    {
-                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                        if (filerealName.Equals(""))
-                        {
-                            ArticleMain articleMain = new ArticleMain();
-                            articleMain.PicName = "";
-                            articleMain.PicFileName = "";
-                            articleMain.ArticleId = ArtId;
-                            articleMain.Main = _ArtMain[artmaincount];
-                            articleMain.InDateTime = DateTime.Now;
-                            db.ArticleMains.Add(articleMain);
-                            //db.SaveChanges();
-                        }
-                        else
-                        {
-                            string[] fileary = filerealName.Split('.');
-                            var fileBytes = await content.ReadAsByteArrayAsync();
+        //    //    int firstcount = 0;
 
-                            var filefirst = DateTime.Now.ToFileTime() + username;
-                            var fileName = filefirst + "." + fileary[1];
+        //    //    int ArtId = 0;
 
-                            var outputPath = Path.Combine(root, fileName);
-                            using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
-                            {
-                                await output.WriteAsync(fileBytes, 0, fileBytes.Length);
-                            }
+        //    //    var provider = new MultipartMemoryStreamProvider();
+        //    //    await this.Request.Content.ReadAsMultipartAsync(provider);
 
-                            ArticleMain articleMain = new ArticleMain();
-                            articleMain.PicName = filefirst;
-                            articleMain.PicFileName = fileary[1];
-                            articleMain.ArticleId = ArtId;
-                            articleMain.Main = _ArtMain[artmaincount];
-                            articleMain.InDateTime = DateTime.Now;
-                            db.ArticleMains.Add(articleMain);
-                            
-                            //db.SaveChanges();
-                            
-                        }
-                        artmaincount++;
-                    }
-                    else
-                    {
+        //    //    //var uploadResponse = new UploadResponse();
+        //    //    foreach (var content in provider.Contents)
+        //    //    {
+        //    //        var KeyName = content.Headers.ContentDisposition.Name.Trim('\"');
 
-                    }
+        //    //        if (KeyName.Contains("first"))
+        //    //        {
+        //    //            var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
 
-                    //uploadResponse.Names.Add(fileName);
-                    //uploadResponse.FileNames.Add(outputPath);
-                    //uploadResponse.ContentTypes.Add(content.Headers.ContentType.MediaType);
-                }
-                
-                
-                var _Final = HttpContext.Current.Request.Form.GetValues("final");
-                if (_Final != null)
-                {
-                    foreach (var str in _Final)
-                    {
-                        Remark remark = new Remark();
-                        remark.Main = str;
-                        remark.InitTime = DateTime.Now;
-                        remark.ArticleId = ArtId;
-                        db.Remarks.Add(remark);
+        //    //            if (filerealName.Equals(""))
+        //    //            {
+        //    //                return Ok(new
+        //    //                {
+        //    //                    success = false,
+        //    //                    message = "請上傳首圖"
+        //    //                });
+        //    //            }
+        //    //            string[] fileary = filerealName.Split('.');
+        //    //            var fileBytes = await content.ReadAsByteArrayAsync();
 
-                    }
-                    //db.SaveChanges();
-                }
-                db.SaveChanges();
-                return Ok(new
-                {
-                    success = true,
-                    message = "已新增文章"
-                });
-                //return this.Ok(uploadResponse);
-            }
-            catch (Exception e)
-            {
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                {
-                    Content = new StringContent(e.Message)
-                });
-            }
-        }
+        //    //            var filefirst = DateTime.Now.ToFileTime() + username;
+        //    //            var fileName = filefirst + "." + fileary[1];
+
+        //    //            var outputPath = Path.Combine(root, fileName);
+        //    //            using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+        //    //            {
+        //    //                await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+        //    //            }
+        //    //            Article article = new Article();
+
+        //    //            article.UserName = username;
+        //    //            article.Title = title;
+        //    //            article.IsFree = Is_Free;
+        //    //            article.Introduction = Introduction;
+        //    //            article.ArticlecategoryId = Convert.ToInt32(ArticlecategoryId);
+        //    //            article.IsPush = Is_Push;
+        //    //            article.FirstPicName = filefirst;
+        //    //            article.FirstPicFileName = fileary[1];
+        //    //            article.InitDate = DateTime.Now;
+        //    //            db.Articles.Add(article);
+        //    //            db.SaveChanges();
+        //    //            var result = db.Articles.FirstOrDefault(m => m.FirstPicName == filefirst);
+        //    //            ArtId = result.ID;
+
+
+        //    //        }
+        //    //        else if (KeyName.Contains("sec"))
+        //    //        {
+
+        //    //            var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+        //    //            if (filerealName.Equals(""))
+        //    //            {
+        //    //                Firstmission firstmission = new Firstmission();
+        //    //                firstmission.PicName = "";
+        //    //                firstmission.PicFileName = "";
+        //    //                firstmission.ArticleId = ArtId;
+        //    //                firstmission.FirstItem = _FirstMission[firstcount];
+        //    //                firstmission.InitDate = DateTime.Now;
+        //    //                db.Firstmissions.Add(firstmission);
+        //    //            }
+        //    //            else
+        //    //            {
+        //    //                string[] fileary = filerealName.Split('.');
+        //    //                var fileBytes = await content.ReadAsByteArrayAsync();
+
+        //    //                var filefirst = DateTime.Now.ToFileTime() + username;
+        //    //                var fileName = filefirst + "." + fileary[1];
+
+        //    //                var outputPath = Path.Combine(root, fileName);
+        //    //                using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+        //    //                {
+        //    //                    await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+        //    //                }
+
+        //    //                Firstmission firstmission = new Firstmission();
+        //    //                firstmission.PicName = filefirst;
+        //    //                firstmission.PicFileName = fileary[1];
+        //    //                firstmission.ArticleId = ArtId;
+        //    //                firstmission.FirstItem = _FirstMission[firstcount];
+        //    //                firstmission.InitDate = DateTime.Now;
+        //    //                db.Firstmissions.Add(firstmission);
+        //    //            }
+
+        //    //            //db.SaveChanges();
+        //    //            firstcount++;
+        //    //        }
+        //    //        else if (KeyName.Contains("third"))
+        //    //        {
+        //    //            var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+        //    //            if (filerealName.Equals(""))
+        //    //            {
+        //    //                ArticleMain articleMain = new ArticleMain();
+        //    //                articleMain.PicName = "";
+        //    //                articleMain.PicFileName = "";
+        //    //                articleMain.ArticleId = ArtId;
+        //    //                articleMain.Main = _ArtMain[artmaincount];
+        //    //                articleMain.InDateTime = DateTime.Now;
+        //    //                db.ArticleMains.Add(articleMain);
+        //    //                //db.SaveChanges();
+        //    //            }
+        //    //            else
+        //    //            {
+        //    //                string[] fileary = filerealName.Split('.');
+        //    //                var fileBytes = await content.ReadAsByteArrayAsync();
+
+        //    //                var filefirst = DateTime.Now.ToFileTime() + username;
+        //    //                var fileName = filefirst + "." + fileary[1];
+
+        //    //                var outputPath = Path.Combine(root, fileName);
+        //    //                using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+        //    //                {
+        //    //                    await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+        //    //                }
+
+        //    //                ArticleMain articleMain = new ArticleMain();
+        //    //                articleMain.PicName = filefirst;
+        //    //                articleMain.PicFileName = fileary[1];
+        //    //                articleMain.ArticleId = ArtId;
+        //    //                articleMain.Main = _ArtMain[artmaincount];
+        //    //                articleMain.InDateTime = DateTime.Now;
+        //    //                db.ArticleMains.Add(articleMain);
+
+        //    //                //db.SaveChanges();
+
+        //    //            }
+        //    //            artmaincount++;
+        //    //        }
+        //    //        else 
+        //    //        {
+
+        //    //        }
+
+        //    //        //uploadResponse.Names.Add(fileName);
+        //    //        //uploadResponse.FileNames.Add(outputPath);
+        //    //        //uploadResponse.ContentTypes.Add(content.Headers.ContentType.MediaType);
+        //    //    }
+        //    //    if (_finMission.Length > 0)
+        //    //    {
+        //    //        foreach (var str in _finMission)
+        //    //        {
+        //    //            FinalMission finalMission = new FinalMission();
+        //    //            finalMission.Title = str;
+        //    //            finalMission.Main = _finMissionMain[finMissionCount];
+        //    //            finalMission.InitDateTime = DateTime.Now;
+        //    //            finalMission.ArticleId = ArtId;
+        //    //            db.FinalMissions.Add(finalMission);
+        //    //            finMissionCount++;
+        //    //        }
+
+        //    //    }
+
+        //    //    var _Final = HttpContext.Current.Request.Form.GetValues("final");
+        //    //    if (_Final != null)
+        //    //    {
+        //    //        foreach (var str in _Final)
+        //    //        {
+        //    //            Remark remark = new Remark();
+        //    //            remark.Main = str;
+        //    //            remark.InitTime = DateTime.Now;
+        //    //            remark.ArticleId = ArtId;
+        //    //            db.Remarks.Add(remark);
+
+        //    //        }
+        //    //        //db.SaveChanges();
+        //    //    }
+        //    //    db.SaveChanges();
+        //    //    return Ok(new
+        //    //    {
+        //    //        success = true,
+        //    //        message = "已新增文章"
+        //    //    });
+        //    //    //return this.Ok(uploadResponse);
+        //    //}
+        //    //catch (Exception e)
+        //    //{
+        //    //    throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.InternalServerError)
+        //    //    {
+        //    //        Content = new StringContent(e.Message)
+        //    //    });
+        //    //}
+
+        //}
 
         //[HttpGet]
         //public IHttpActionResult GetArticle(string username)
@@ -257,18 +292,166 @@ namespace testdatamodel.Controllers
         //    var data = db.Articles.Where(m => m.UserName == username).ToList();
         //}
         /// <summary>
+        /// 添加切切文章
+        /// </summary>
+        /// <param name="dataArticle ">切切前端傳進來資料</param>
+        /// <returns></returns>
+        [HttpPost]
+        //[JwtAuthFilter]
+        public IHttpActionResult AddArticle([FromBody] DataArticle dataArticle)
+        {
+            /// var jObject = JsonConvert.SerializeObject(dataArticleInput);
+            //var dataArticle = JsonConvert.DeserializeObject<DataArticle>(jObject);
+            var username = dataArticle.memberUserName;
+            var arttitle = dataArticle.title;
+            if (dataArticle.firstPhoto.Equals("") || dataArticle.title.Equals("") || dataArticle.articlecategoryId == 0)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "請上傳首圖和填寫標題和填寫分類"
+                });
+            }
+            var artTitlePic = dataArticle.firstPhoto.Split('.');
+            string titlePicName = artTitlePic[0];
+            string titleFileName = artTitlePic[1];
+            var artinfo = dataArticle.introduction;
+
+            var artlogid = dataArticle.articlecategoryId;
+            var artisFree = dataArticle.isFree;
+            //bool isfree = true;
+            //if (artisFree.Equals("False"))
+            //{
+            //    isfree = false;
+            //}
+            var artisPush = dataArticle.isPush;
+            //bool ispush = true;
+            //if (artisPush.Equals("False"))
+            //{
+            //    ispush = false;
+            //}
+            Article article = new Article();
+            article.UserName = username;
+            article.Title = arttitle;
+            article.FirstPicName = titlePicName;
+            article.FirstPicFileName = titleFileName;
+            article.Introduction = artinfo;
+            article.ArticlecategoryId = artlogid;
+            article.InitDate = DateTime.Now;
+            article.IsFree = artisFree;
+            article.IsPush = artisPush;
+            db.Articles.Add(article);
+            db.SaveChanges();
+            var artId = db.Articles.FirstOrDefault(x => x.FirstPicName == titlePicName).ID;
+
+
+            var firstMission = dataArticle.fArrayList;
+            var kiruMain = dataArticle.mArrayList;
+            var finalMission = dataArticle.fMissionList;
+            var remark = dataArticle.final;
+
+            foreach (var data in firstMission)
+            {
+                string picName = "";
+                string picFileName = "";
+                if (data.secPhoto.Equals(""))
+                {
+                    Firstmission firstmission = new Firstmission();
+                    firstmission.ArticleId = artId;
+                    firstmission.PicName = picName;
+                    firstmission.PicFileName = picFileName;
+                    firstmission.FirstItem = data.mission;
+                    firstmission.InitDate = DateTime.Now;
+                    db.Firstmissions.Add(firstmission);
+
+                }
+                else
+                {
+                    var picname = data.secPhoto.Split('.');
+                    picName = picname[0];
+                    picFileName = picname[1];
+                    Firstmission firstmission = new Firstmission();
+                    firstmission.ArticleId = artId;
+                    firstmission.PicName = picName;
+                    firstmission.PicFileName = picFileName;
+                    firstmission.FirstItem = data.mission;
+                    firstmission.InitDate = DateTime.Now;
+                    db.Firstmissions.Add(firstmission);
+                }
+
+            }
+
+            foreach (var data in kiruMain)
+            {
+                string picName = "";
+                string picFileName = "";
+                if (data.thirdPhoto.Equals(""))
+                {
+                    ArticleMain articleMain = new ArticleMain();
+                    articleMain.ArticleId = artId;
+                    articleMain.PicName = picName;
+                    articleMain.PicFileName = picFileName;
+                    articleMain.Main = data.main;
+                    articleMain.InDateTime = DateTime.Now;
+                    db.ArticleMains.Add(articleMain);
+                }
+                else
+                {
+                    var kiruPhoto = data.thirdPhoto.Split('.');
+                    picName = kiruPhoto[0];
+                    picFileName = kiruPhoto[1];
+                    ArticleMain articleMain = new ArticleMain();
+                    articleMain.ArticleId = artId;
+                    articleMain.PicName = picName;
+                    articleMain.PicFileName = picFileName;
+                    articleMain.Main = data.main;
+                    articleMain.InDateTime = DateTime.Now;
+                    db.ArticleMains.Add(articleMain);
+                }
+
+
+
+            }
+
+            foreach (var data in finalMission)
+            {
+                FinalMission finalmission = new FinalMission();
+                finalmission.Title = data.auxiliary;
+                finalmission.Main = data.auxiliarymain;
+                finalmission.ArticleId = artId;
+                finalmission.InitDateTime = DateTime.Now;
+                db.FinalMissions.Add(finalmission);
+            }
+
+            Remark lastData = new Remark();
+            lastData.ArticleId = artId;
+            lastData.Main = remark;
+            lastData.InitTime = DateTime.Now;
+            db.Remarks.Add(lastData);
+
+            db.SaveChanges();
+
+            return Ok(new
+            {
+                success = true,
+                message = "新增成功",
+                artId = artId
+            });
+
+        }
+        /// <summary>
         /// 訪客留言
         /// </summary>
-        /// <param name="UserName">訪客名稱</param>
         /// <param name="Main">留言內容</param>
         /// <param name="ArtID">文章ID</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult AddMessage(string UserName, string Main, string ArtID)
+        public IHttpActionResult AddMessage( string Main, int ArtID)
         {
-            int id = Convert.ToInt32(ArtID);
-            var data = db.Messages.FirstOrDefault(x => x.Id ==id);
+            var UserName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+        
+            var data = db.Articles.FirstOrDefault(x => x.ID == ArtID);
             if (data == null)
             {
                 return Ok(new
@@ -281,7 +464,7 @@ namespace testdatamodel.Controllers
             {
                 Message message = new Message();
                 message.UserName = UserName;
-                message.ArticleId = Convert.ToInt32(ArtID);
+                message.ArticleId = ArtID;
                 message.Main = Main;
                 message.InitDate = DateTime.Now;
                 db.Messages.Add(message);
@@ -296,15 +479,14 @@ namespace testdatamodel.Controllers
         }
 
         /// <summary>
-        /// 取得留言資料
+        /// 取得此篇文章所有留言資料
         /// </summary>
-        /// <param name="ArtId">文章ID</param>
+        /// <param name="artId">文章Id</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult GetMessage(string ArtId)
+        public IHttpActionResult GetAllMessage(int artId)
         {
-            int artid = Convert.ToInt32(ArtId);
-            var data = db.Messages.Where(m => m.ArticleId == artid).ToList();
+            var data = db.Messages.Where(m => m.ArticleId == artId).ToList();
             if (data.Count > 0)
             {
                 ArrayList array = new ArrayList();
@@ -331,19 +513,47 @@ namespace testdatamodel.Controllers
             }
 
         }
+        /// <summary>
+        /// 取得留言資料(單筆)
+        /// </summary>
+        /// <param name="messageId">留言的ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        public IHttpActionResult Getmessage(int messageId)
+        {
+            var data = db.Messages.FirstOrDefault(x => x.Id == messageId);
+            if (data == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此留言"
+                });
+            }
+
+            var result = new
+            {
+                messageMain = data.Main,
+                messageInitDate = data.InitDate
+            };
+            return Ok(new
+            {
+                success = true,
+                data = result
+            });
+        }
 
         /// <summary>
         /// 回覆留言
         /// </summary>
-        /// <param name="Messageid">留言的ID</param>
+        /// <param name="MessageId">留言的ID</param>
         /// <param name="main">留言內容</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult AddReMessage(string Messageid, string main)
+        public IHttpActionResult AddReMessage(int MessageId, string main)
         {
-            int id = Convert.ToInt32(Messageid);
-            var data = db.Messages.FirstOrDefault(x => x.Id == id);
+            var data = db.Messages.FirstOrDefault(x => x.Id == MessageId);
             if (data == null)
             {
                 return Ok(new
@@ -356,7 +566,7 @@ namespace testdatamodel.Controllers
             else
             {
                 R_Message rMessage = new R_Message();
-                rMessage.MessageId = Convert.ToInt32(Messageid);
+                rMessage.MessageId = MessageId;
                 rMessage.Main = main;
                 rMessage.InitDate = DateTime.Now;
                 db.R_Messages.Add(rMessage);
@@ -373,13 +583,12 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取得留言回覆的內容
         /// </summary>
-        /// <param name="ReMsgId">留言的ID</param>
+        /// <param name="reMsgId">留言的ID</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult GetReMessage(string ReMsgId)
+        public IHttpActionResult GetReMessage(int reMsgId)
         {
-            int remsgid = Convert.ToInt32(ReMsgId);
-            var data = db.R_Messages.Where(m => m.MessageId == remsgid).ToList();
+            var data = db.R_Messages.Where(m => m.MessageId == reMsgId).ToList();
             if (data.Count > 0)
             {
                 ArrayList arrayList = new ArrayList();
@@ -408,13 +617,15 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取得文章資料
         /// </summary>
-        /// <param name="articleid">文章ID</param>
+        /// <param name="artId">文章ID</param>
         /// <returns></returns>
+
         [HttpGet]
-        public IHttpActionResult GetArctile(string articleid)
+        [Route("api/intoArticle")]
+        [ResponseType(typeof(Kirukiruoutput))]
+        public IHttpActionResult GetArctile(int artId)
         {
-            int Art_ID = Convert.ToInt32(articleid);
-            var havdata = db.Articles.FirstOrDefault(m => m.ID == Art_ID);
+            var havdata = db.Articles.FirstOrDefault(m => m.ID == artId);
             if (havdata == null)
             {
                 return Ok(new
@@ -429,6 +640,7 @@ namespace testdatamodel.Controllers
                                havdata.FirstPicFileName.ToString();
             var Art_Info = havdata.Introduction;
             var Art_Artlog = havdata.Articlecategory.Name.ToString();
+            var artlogid = havdata.Articlecategory.Id;
 
             var Art_FirstMissionData = havdata.Firstmissions.ToList();
             ArrayList fArrayList = new ArrayList();
@@ -436,9 +648,9 @@ namespace testdatamodel.Controllers
             {
                 var Fdata = new
                 {
-                    FID = str.Id,
-                    FpicName = str.PicName + "." + str.PicFileName,
-                    Fstr = str.FirstItem,
+                    fId = str.Id,
+                    secPhoto = str.PicName + "." + str.PicFileName,
+                    mission = str.FirstItem,
                 };
                 fArrayList.Add(Fdata);
             }
@@ -447,15 +659,31 @@ namespace testdatamodel.Controllers
             var Art_IsPush = havdata.IsPush.ToString();
             var Art_MainData = havdata.ArticleMains.ToList();
             var Art_message = havdata.Messages.ToList();
+            var ArtInitDate = havdata.InitDate.ToString();
+            var artRemark = havdata.Remarks.ToList();
+
+            var finalMission = havdata.FinalMissions.ToList();
+            ArrayList fMissionList = new ArrayList();
+            foreach (var str in finalMission)
+            {
+                var fdata = new
+                {
+                    fId = str.ID,
+                    auxiliary = str.Title,
+                    auxiliarymain = str.Main
+                };
+                fMissionList.Add(fdata);
+            }
+            
             
             ArrayList mArrayList = new ArrayList();
             foreach (var str in Art_MainData)
             {
                 var Mdata = new
                 {
-                    MId = str.Id,
-                    MpicName = str.PicName + "." + str.PicFileName,
-                    Mstr = str.Main
+                    mId = str.Id,
+                    thirdPhoto = str.PicName + "." + str.PicFileName,
+                    main = str.Main
                 };
                 mArrayList.Add(Mdata);
             }
@@ -463,40 +691,53 @@ namespace testdatamodel.Controllers
             ArrayList remessageArrayList = new ArrayList();
             foreach (var str in Art_message)
             {
-                
-                var mdata = new
-                {
-                    messageid = str.Id,
-                    messagemain = str.Main,
-                    messageinitdate=str.InitDate,
-                };
-                messageArrayList.Add(mdata);
                 var rmessagedata = str.R_Messages.ToList();
                 foreach (var rstr in rmessagedata)
                 {
                     var rdata = new
                     {
-                        remessageid = rstr.Id,
-                        remessagemain = rstr.Main,
-                        remessageinitdate = rstr.InitDate,
+                        reMessageId = rstr.Id,
+                        reMessageMain = rstr.Main,
+                        reMessageInitDate = rstr.InitDate,
                     };
                     remessageArrayList.Add(rdata);
                 }
+                var mdata = new
+                {
+                    messageId = str.Id,
+                    messageMember = str.UserName,
+                    messageMain = str.Main,
+                    messageInitDate =str.InitDate,
+                    reMessageData= remessageArrayList
+                };
+                messageArrayList.Add(mdata);
+                
             }
+
+            string artRemarkStr = "";
+            foreach (var str in artRemark)
+            {
+                artRemarkStr = str.Main;
+            }
+            
             var result = new
             {
-                Art_ID,
-                Art_Title,
-                Art_TitlePic,
-                Art_Info,
-                Art_Artlog,
+                artId= artId,
+                title = Art_Title,
+                firstPhoto = Art_TitlePic,
+                introduction = Art_Info,
+                articlecategoryId=artlogid,
+                artArtlog =Art_Artlog,
                 fArrayList,
                 mArrayList,
-                Art_Isfree,
-                Art_IsPush,
+                fMissionList,
+                isFree = Art_Isfree,
+                isPush = Art_IsPush,
+                ArtInitDate,
                 messageArrayList,
-                remessageArrayList,
-               
+                finaldata= artRemarkStr
+                //reMessageArrayList=remessageArrayList,
+
             };
             return Ok(new
             {
@@ -504,292 +745,770 @@ namespace testdatamodel.Controllers
                 data =result
             });
         }
+
         /// <summary>
         /// 編輯文章(會把舊的圖片刪除後重新建立)
         /// </summary>
         /// <returns></returns>
+        //[HttpPost]
+        //[JwtAuthFilter]
+        //[Route("EditArticle")]
+        //public async Task<IHttpActionResult> EditArticle()
+        //{
+        //    var _ArtId = HttpContext.Current.Request.Form.GetValues("articleId"); ;
+        //    int ArtId = Convert.ToInt32(_ArtId[0]);
+        //    var _username = HttpContext.Current.Request.Form.GetValues("userName");
+        //    string username = _username[0];
+
+        //    var ArtData = db.Articles.FirstOrDefault(m => m.ID == ArtId);
+        //    if (ArtData == null)
+        //    {
+        //        return Ok(new
+        //        {
+        //            success = false,
+        //            message = "查無此文章"
+        //        });
+        //    }
+        //    else
+        //    {
+        //        //try
+        //        //{
+
+        //        //}
+        //        //catch (Exception e)
+        //        //{
+        //        //    return Ok(e.ToString());
+        //        //    throw;
+        //        //}
+
+        //        string picpath = "~/Pic/";
+        //        //刪除封面照片
+
+        //        var otpicdata = db.Articles.FirstOrDefault(m => m.ID == ArtId);
+        //        //刪除資料夾的圖片
+        //        string picname = otpicdata.FirstPicName + "." + otpicdata.FirstPicFileName;
+        //        string savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
+
+        //        File.Delete(savpath);
+        //        //db.FirstPics.Remove(otpicdata);
+        //        //刪除前置步驟
+        //        var OFpicary = db.Firstmissions.Where(m => m.ArticleId == ArtId).ToList();
+        //        foreach (var pic in OFpicary)
+        //        {
+        //            int picid = pic.Id;
+        //            var fdata = db.Firstmissions.FirstOrDefault(m => m.Id == picid);
+        //            picname = fdata.PicName + "." + fdata.PicFileName;
+        //            if (picname.Equals("."))
+        //            {
+        //                db.Firstmissions.Remove(fdata);
+        //            }
+        //            else
+        //            {
+        //                savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
+        //                File.Delete(savpath);
+        //                db.Firstmissions.Remove(fdata);
+        //            }
+
+        //        }
+        //        //刪除切切
+        //        var OMpicary = db.ArticleMains.Where(m => m.ArticleId == ArtId).ToList();
+        //        foreach (var str in OMpicary)
+        //        {
+        //            int picid = str.Id;
+        //            var mdata = db.ArticleMains.FirstOrDefault(m => m.Id == picid);
+        //            picname = mdata.PicName + "." + mdata.PicFileName;
+        //            if (picname.Equals("."))
+        //            {
+        //                db.ArticleMains.Remove(mdata);
+        //            }
+        //            else
+        //            {
+        //                savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
+        //                File.Delete(savpath);
+        //                db.ArticleMains.Remove(mdata);
+        //            }
+
+        //        }
+
+        //        var oFinalMission = db.FinalMissions.Where(m => m.ArticleId == ArtId).ToList();
+        //        foreach (var str in oFinalMission)
+        //        {
+        //            int oFinalId = str.ID;
+        //            var odata = db.FinalMissions.FirstOrDefault(x => x.ID == oFinalId);
+        //            db.FinalMissions.Remove(odata);
+        //        }
+
+
+        //        var ORemark = db.Remarks.Where(m => m.ArticleId == ArtId).ToList();
+        //        foreach (var str in ORemark)
+        //        {
+        //            int remarkid = str.Id;
+        //            var redata = db.Remarks.FirstOrDefault(m => m.Id == remarkid);
+        //            db.Remarks.Remove(redata);
+        //        }
+        //        db.SaveChanges();
+
+        //        if (!this.Request.Content.IsMimeMultipartContent())
+        //        {
+        //            throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
+        //        }
+
+        //        var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Pic");
+        //        var exists = Directory.Exists(root);
+        //        if (!exists)
+        //        {
+        //            Directory.CreateDirectory("Pic");
+        //        }
+
+        //        var _title = HttpContext.Current.Request.Form.GetValues("title");
+        //        string title = _title[0];
+        //        var _Isfree = HttpContext.Current.Request.Form.GetValues("isFree");
+        //        string Isfree = _Isfree[0];
+        //        bool Is_Free = true;
+        //        if (Isfree == "False")
+        //        {
+        //            Is_Free = false;
+        //        }
+
+        //        var _Introduction = HttpContext.Current.Request.Form.GetValues("introduction");
+        //        string Introduction = _Introduction[0];
+        //        var _ArticlecategoryId = HttpContext.Current.Request.Form.GetValues("articlecategoryId");
+        //        string ArticlecategoryId = _ArticlecategoryId[0];
+        //        var _IsPush = HttpContext.Current.Request.Form.GetValues("isPush");
+        //        string IsPush = _IsPush[0];
+        //        bool Is_Push = true;
+        //        if (IsPush == "False")
+        //        {
+        //            Is_Push = false;
+        //        }
+
+        //        var _ArtMain = HttpContext.Current.Request.Form.GetValues("main");
+
+
+        //        //下面是前置任務
+        //        var _FirstMission = HttpContext.Current.Request.Form.GetValues("mission");
+
+        //        int firstcount = 0;
+        //        int artmaincount = 0;
+
+
+        //        var provider = new MultipartMemoryStreamProvider();
+        //        await this.Request.Content.ReadAsMultipartAsync(provider);
+
+
+        //        foreach (var content in provider.Contents)
+        //        {
+
+        //            var KeyName = content.Headers.ContentDisposition.Name.Trim('\"');
+
+        //            if (KeyName.Contains("first"))
+        //            {
+        //                var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+        //                string[] fileary = filerealName.Split('.');
+        //                var fileBytes = await content.ReadAsByteArrayAsync();
+
+        //                var filefirst = DateTime.Now.ToFileTime() + username;
+        //                var fileName = filefirst + "." + fileary[1];
+
+        //                var outputPath = Path.Combine(root, fileName);
+        //                using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+        //                {
+        //                    await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+        //                }
+
+        //                var q = from p in db.Articles where p.ID == ArtId select p;
+        //                foreach (var p in q)
+        //                {
+        //                    p.ArticlecategoryId = Convert.ToInt32(ArticlecategoryId);
+        //                    p.Title = title;
+        //                    p.Introduction = Introduction;
+        //                    p.IsFree = Is_Free;
+        //                    p.IsPush = Is_Push;
+        //                    p.FirstPicName = fileary[0];
+        //                    p.FirstPicFileName = fileary[1];
+
+        //                }
+
+        //                db.SaveChanges();
+
+
+
+        //            }
+        //            else if (KeyName.Contains("sec"))
+        //            {
+
+        //                var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+        //                if (filerealName.Equals(""))
+        //                {
+        //                    Firstmission firstmission = new Firstmission();
+        //                    firstmission.PicName = "";
+        //                    firstmission.PicFileName = "";
+        //                    firstmission.ArticleId = ArtId;
+        //                    firstmission.FirstItem = _FirstMission[firstcount];
+        //                    firstmission.InitDate = DateTime.Now;
+        //                    db.Firstmissions.Add(firstmission);
+        //                }
+        //                else
+        //                {
+        //                    string[] fileary = filerealName.Split('.');
+        //                    var fileBytes = await content.ReadAsByteArrayAsync();
+
+        //                    var filefirst = DateTime.Now.ToFileTime() + username;
+        //                    var fileName = filefirst + "." + fileary[1];
+
+        //                    var outputPath = Path.Combine(root, fileName);
+        //                    using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+        //                    {
+        //                        await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+        //                    }
+
+        //                    Firstmission firstmission = new Firstmission();
+        //                    firstmission.PicName = filefirst;
+        //                    firstmission.PicFileName = fileary[1];
+        //                    firstmission.ArticleId = ArtId;
+        //                    firstmission.FirstItem = _FirstMission[firstcount];
+        //                    firstmission.InitDate = DateTime.Now;
+        //                    db.Firstmissions.Add(firstmission);
+        //                }
+
+        //                //db.SaveChanges();
+        //                firstcount++;
+        //            }
+        //            else if (KeyName.Contains("third"))
+        //            {
+        //                var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+        //                if (filerealName.Equals(""))
+        //                {
+        //                    ArticleMain articleMain = new ArticleMain();
+        //                    articleMain.PicName = "";
+        //                    articleMain.PicFileName = "";
+        //                    articleMain.ArticleId = ArtId;
+        //                    articleMain.Main = _ArtMain[artmaincount];
+        //                    articleMain.InDateTime = DateTime.Now;
+        //                    db.ArticleMains.Add(articleMain);
+        //                    //db.SaveChanges();
+        //                }
+        //                else
+        //                {
+        //                    string[] fileary = filerealName.Split('.');
+        //                    var fileBytes = await content.ReadAsByteArrayAsync();
+
+        //                    var filefirst = DateTime.Now.ToFileTime() + username;
+        //                    var fileName = filefirst + "." + fileary[1];
+
+        //                    var outputPath = Path.Combine(root, fileName);
+        //                    using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+        //                    {
+        //                        await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+        //                    }
+
+        //                    ArticleMain articleMain = new ArticleMain();
+        //                    articleMain.PicName = filefirst;
+        //                    articleMain.PicFileName = fileary[1];
+        //                    articleMain.ArticleId = ArtId;
+        //                    articleMain.Main = _ArtMain[artmaincount];
+        //                    articleMain.InDateTime = DateTime.Now;
+        //                    db.ArticleMains.Add(articleMain);
+
+        //                    //db.SaveChanges();
+
+        //                }
+        //                artmaincount++;
+        //            }
+        //        }
+        //        var _finMission = HttpContext.Current.Request.Form.GetValues("auxiliary");
+        //        var _finMissionMain = HttpContext.Current.Request.Form.GetValues("auxiliarymain");
+        //        int finMissionCount = 0;
+
+        //        foreach (var content in provider.Contents)
+        //        {
+        //            var KeyName = content.Headers.ContentDisposition.Name.Trim('\"');
+
+        //            if (KeyName.Contains("first"))
+        //            {
+        //                var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+        //                string[] fileary = filerealName.Split('.');
+        //                var fileBytes = await content.ReadAsByteArrayAsync();
+
+        //                var filefirst = DateTime.Now.ToFileTime() + username;
+        //                var fileName = filefirst + "." + fileary[1];
+
+        //                var outputPath = Path.Combine(root, fileName);
+        //                using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+        //                {
+        //                    await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+        //                }
+        //                Article article = new Article();
+
+        //                article.UserName = username;
+        //                article.Title = title;
+        //                article.IsFree = Is_Free;
+        //                article.Introduction = Introduction;
+        //                article.ArticlecategoryId = Convert.ToInt32(ArticlecategoryId);
+        //                article.IsPush = Is_Push;
+        //                article.FirstPicName = filefirst;
+        //                article.FirstPicFileName = fileary[1];
+        //                article.InitDate = DateTime.Now;
+        //                db.Articles.Add(article);
+        //                db.SaveChanges();
+        //                var result = db.Articles.FirstOrDefault(m => m.FirstPicName == filefirst);
+        //                ArtId = result.ID;
+
+
+        //            }
+        //            else if (KeyName.Contains("sec"))
+        //            {
+
+        //                var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+        //                if (filerealName.Equals(""))
+        //                {
+        //                    Firstmission firstmission = new Firstmission();
+        //                    firstmission.PicName = "";
+        //                    firstmission.PicFileName = "";
+        //                    firstmission.ArticleId = ArtId;
+        //                    firstmission.FirstItem = _FirstMission[firstcount];
+        //                    firstmission.InitDate = DateTime.Now;
+        //                    db.Firstmissions.Add(firstmission);
+        //                }
+        //                else
+        //                {
+        //                    string[] fileary = filerealName.Split('.');
+        //                    var fileBytes = await content.ReadAsByteArrayAsync();
+
+        //                    var filefirst = DateTime.Now.ToFileTime() + username;
+        //                    var fileName = filefirst + "." + fileary[1];
+
+        //                    var outputPath = Path.Combine(root, fileName);
+        //                    using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+        //                    {
+        //                        await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+        //                    }
+
+        //                    Firstmission firstmission = new Firstmission();
+        //                    firstmission.PicName = filefirst;
+        //                    firstmission.PicFileName = fileary[1];
+        //                    firstmission.ArticleId = ArtId;
+        //                    firstmission.FirstItem = _FirstMission[firstcount];
+        //                    firstmission.InitDate = DateTime.Now;
+        //                    db.Firstmissions.Add(firstmission);
+        //                }
+
+        //                //db.SaveChanges();
+        //                firstcount++;
+        //            }
+        //            else if (KeyName.Contains("third"))
+        //            {
+        //                var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
+        //                if (filerealName.Equals(""))
+        //                {
+        //                    ArticleMain articleMain = new ArticleMain();
+        //                    articleMain.PicName = "";
+        //                    articleMain.PicFileName = "";
+        //                    articleMain.ArticleId = ArtId;
+        //                    articleMain.Main = _ArtMain[artmaincount];
+        //                    articleMain.InDateTime = DateTime.Now;
+        //                    db.ArticleMains.Add(articleMain);
+        //                    //db.SaveChanges();
+        //                }
+        //                else
+        //                {
+        //                    string[] fileary = filerealName.Split('.');
+        //                    var fileBytes = await content.ReadAsByteArrayAsync();
+
+        //                    var filefirst = DateTime.Now.ToFileTime() + username;
+        //                    var fileName = filefirst + "." + fileary[1];
+
+        //                    var outputPath = Path.Combine(root, fileName);
+        //                    using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
+        //                    {
+        //                        await output.WriteAsync(fileBytes, 0, fileBytes.Length);
+        //                    }
+
+        //                    ArticleMain articleMain = new ArticleMain();
+        //                    articleMain.PicName = filefirst;
+        //                    articleMain.PicFileName = fileary[1];
+        //                    articleMain.ArticleId = ArtId;
+        //                    articleMain.Main = _ArtMain[artmaincount];
+        //                    articleMain.InDateTime = DateTime.Now;
+        //                    db.ArticleMains.Add(articleMain);
+
+        //                    //db.SaveChanges();
+
+        //                }
+        //                artmaincount++;
+        //            }
+        //            else
+        //            {
+
+        //            }
+
+        //            //uploadResponse.Names.Add(fileName);
+        //            //uploadResponse.FileNames.Add(outputPath);
+        //            //uploadResponse.ContentTypes.Add(content.Headers.ContentType.MediaType);
+        //        }
+        //        if (_finMission.Length > 0)
+        //        {
+        //            foreach (var str in _finMission)
+        //            {
+        //                FinalMission finalMission = new FinalMission();
+        //                finalMission.Title = str;
+        //                finalMission.Main = _finMissionMain[finMissionCount];
+        //                finalMission.InitDateTime = DateTime.Now;
+        //                finalMission.ArticleId = ArtId;
+        //                db.FinalMissions.Add(finalMission);
+        //                finMissionCount++;
+        //            }
+
+        //        }
+
+
+        //        var _Final = HttpContext.Current.Request.Form.GetValues("final");
+        //        if (_Final != null)
+        //        {
+        //            foreach (var str in _Final)
+        //            {
+        //                Remark remark = new Remark();
+        //                remark.Main = str;
+        //                remark.InitTime = DateTime.Now;
+        //                remark.ArticleId = ArtId;
+        //                db.Remarks.Add(remark);
+
+        //            }
+        //            //db.SaveChanges();
+        //        }
+        //        db.SaveChanges();
+        //        return Ok(new {
+        //            success = true,
+        //            message = "已編輯"
+        //        });
+        //    }
+
+
+        //}
         [HttpPost]
         [JwtAuthFilter]
         [Route("EditArticle")]
-        public async Task<IHttpActionResult> EditArticle()
+        public IHttpActionResult EditArticle([FromBody] Editkirukiru editkirukiru)
         {
-            var _ArtId = HttpContext.Current.Request.Form.GetValues("articleId"); ;
-            int ArtId = Convert.ToInt32(_ArtId[0]);
-            var _username = HttpContext.Current.Request.Form.GetValues("userName");
-            string username = _username[0];
-
-            var ArtData = db.Articles.FirstOrDefault(m => m.ID == ArtId);
-            if (ArtData == null)
+            var artId = editkirukiru.artId;
+            var otpicdata = db.Articles.FirstOrDefault(m => m.ID == artId);
+            if (otpicdata == null)
             {
                 return Ok(new
                 {
                     success = false,
-                    message = "查無此文章"
+                    message = "無此篇文章"
                 });
             }
-            else
+
+           
+            string picpath = "~/Pic/";
+            //刪除封面照片
+
+           
+            //刪除資料夾的圖片
+            string picname = otpicdata.FirstPicName + "." + otpicdata.FirstPicFileName;
+            string savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
+
+            File.Delete(savpath);
+            //db.FirstPics.Remove(otpicdata);
+            //刪除前置步驟
+            var OFpicary = db.Firstmissions.Where(m => m.ArticleId == artId).ToList();
+            foreach (var pic in OFpicary)
             {
-                //try
-                //{
-
-                //}
-                //catch (Exception e)
-                //{
-                //    return Ok(e.ToString());
-                //    throw;
-                //}
-
-                string picpath = "~/Pic/";
-                //刪除封面照片
-
-                var otpicdata = db.Articles.FirstOrDefault(m => m.ID == ArtId);
-                //刪除資料夾的圖片
-                string picname = otpicdata.FirstPicName + "." + otpicdata.FirstPicFileName;
-                string savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
-
-                File.Delete(savpath);
-                //db.FirstPics.Remove(otpicdata);
-                //刪除前置步驟
-                var OFpicary = db.Firstmissions.Where(m => m.ArticleId == ArtId).ToList();
-                foreach (var pic in OFpicary)
+                int picid = pic.Id;
+                var fdata = db.Firstmissions.FirstOrDefault(m => m.Id == picid);
+                picname = fdata.PicName + "." + fdata.PicFileName;
+                if (picname.Equals("."))
                 {
-                    int picid = pic.Id;
-                    var fdata = db.Firstmissions.FirstOrDefault(m => m.Id == picid);
-                    picname = fdata.PicName + "." + fdata.PicFileName;
-                    if (picname.Equals("."))
-                    {
-                        db.Firstmissions.Remove(fdata);
-                    }
-                    else
-                    {
-                        savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
-                        File.Delete(savpath);
-                        db.Firstmissions.Remove(fdata);
-                    }
-                    
+                    db.Firstmissions.Remove(fdata);
                 }
-                //刪除切切
-                var OMpicary = db.ArticleMains.Where(m => m.ArticleId == ArtId).ToList();
-                foreach (var str in OMpicary)
+                else
                 {
-                    int picid = str.Id;
-                    var mdata = db.ArticleMains.FirstOrDefault(m => m.Id == picid);
-                    picname = mdata.PicName + "." + mdata.PicFileName;
-                    if (picname.Equals("."))
-                    {
-                        db.ArticleMains.Remove(mdata);
-                    }
-                    else
-                    {
-                        savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
-                        File.Delete(savpath);
-                        db.ArticleMains.Remove(mdata);
-                    }
-                    
+                    savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
+                    File.Delete(savpath);
+                    db.Firstmissions.Remove(fdata);
                 }
 
-                var ORemark = db.Remarks.Where(m => m.ArticleId == ArtId).ToList();
-                foreach (var str in ORemark)
+            }
+            //刪除切切
+            var OMpicary = db.ArticleMains.Where(m => m.ArticleId == artId).ToList();
+            foreach (var str in OMpicary)
+            {
+                int picid = str.Id;
+                var mdata = db.ArticleMains.FirstOrDefault(m => m.Id == picid);
+                picname = mdata.PicName + "." + mdata.PicFileName;
+                if (picname.Equals("."))
                 {
-                    int remarkid = str.Id;
-                    var redata = db.Remarks.FirstOrDefault(m => m.Id == remarkid);
-                    db.Remarks.Remove(redata);
+                    db.ArticleMains.Remove(mdata);
                 }
-                db.SaveChanges();
-
-                if (!this.Request.Content.IsMimeMultipartContent())
+                else
                 {
-                    throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
-                }
-
-                var root = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Pic");
-                var exists = Directory.Exists(root);
-                if (!exists)
-                {
-                    Directory.CreateDirectory("Pic");
+                    savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
+                    File.Delete(savpath);
+                    db.ArticleMains.Remove(mdata);
                 }
 
-                var _title = HttpContext.Current.Request.Form.GetValues("title");
-                string title = _title[0];
-                var _Isfree = HttpContext.Current.Request.Form.GetValues("isFree");
-                string Isfree = _Isfree[0];
-                bool Is_Free = true;
-                if (Isfree == "False")
+            }
+            //刪除附屬任務
+            var oFinalMission = db.FinalMissions.Where(m => m.ArticleId == artId).ToList();
+            foreach (var str in oFinalMission)
+            {
+                int oFinalId = str.ID;
+                var odata = db.FinalMissions.FirstOrDefault(x => x.ID == oFinalId);
+                db.FinalMissions.Remove(odata);
+            }
+            //刪除備註
+            var ORemark = db.Remarks.Where(m => m.ArticleId == artId).ToList();
+            foreach (var str in ORemark)
+            {
+                int remarkid = str.Id;
+                var redata = db.Remarks.FirstOrDefault(m => m.Id == remarkid);
+                db.Remarks.Remove(redata);
+            }
+            db.SaveChanges();
+            var username = editkirukiru.userName;
+            var arttitle = editkirukiru.title;
+            if (editkirukiru.firstPhoto.Equals("") && editkirukiru.title.Equals(""))
+            {
+                return Ok(new
                 {
-                    Is_Free = false;
+                    success = false,
+                    message = "請上傳首圖和填寫標題"
+                });
+            }
+            var artTitlePic = editkirukiru.firstPhoto.Split('.');
+            string titlePicName = artTitlePic[0];
+            string titleFileName = artTitlePic[1];
+            var artinfo = editkirukiru.introduction;
+
+            var artlogid = editkirukiru.articlecategoryId;
+            var artisFree = editkirukiru.isFree;
+            //bool isfree = true;
+            //if (artisFree.Equals("False"))
+            //{
+            //    isfree = false;
+            //}
+            var artisPush = editkirukiru.isPush;
+            //bool ispush = true;
+            //if (artisPush.Equals("False"))
+            //{
+            //    ispush = false;
+            //}
+            var q = from p in db.Articles where p.ID == artId select p;
+            foreach (var p in q)
+            {
+                p.Title= arttitle;
+                p.UserName = username;
+                p.Title = arttitle;
+                p.FirstPicName = titlePicName;
+                p.FirstPicFileName = titleFileName;
+                p.Introduction = artinfo;
+                p.ArticlecategoryId = artlogid;
+                p.InitDate = DateTime.Now;
+                p.IsFree = artisFree;
+                p.IsPush = artisPush;
+            }
+           
+            db.SaveChanges();
+           
+
+
+            var firstMission = editkirukiru.fArrayList.ToList();
+            var kiruMain = editkirukiru.mArrayList.ToList();
+            var finalMission = editkirukiru.fMissionList.ToList();
+            var remark = editkirukiru.final;
+
+            foreach (var data in firstMission)
+            {
+                string picName = "";
+                string picFileName = "";
+                if (data.secPhoto.Equals(""))
+                {
+                    Firstmission firstmission = new Firstmission();
+                    firstmission.ArticleId = artId;
+                    firstmission.PicName = picName;
+                    firstmission.PicFileName = picFileName;
+                    firstmission.FirstItem = data.mission;
+                    firstmission.InitDate = DateTime.Now;
+                    db.Firstmissions.Add(firstmission);
+
+                }
+                else
+                {
+                    var PicName = data.secPhoto.Split('.');
+                    picName = PicName[0];
+                    picFileName = PicName[1];
+                    Firstmission firstmission = new Firstmission();
+                    firstmission.ArticleId = artId;
+                    firstmission.PicName = picName;
+                    firstmission.PicFileName = picFileName;
+                    firstmission.FirstItem = data.mission;
+                    firstmission.InitDate = DateTime.Now;
+                    db.Firstmissions.Add(firstmission);
                 }
 
-                var _Introduction = HttpContext.Current.Request.Form.GetValues("introduction");
-                string Introduction = _Introduction[0];
-                var _ArticlecategoryId = HttpContext.Current.Request.Form.GetValues("articlecategoryId");
-                string ArticlecategoryId = _ArticlecategoryId[0];
-                var _IsPush = HttpContext.Current.Request.Form.GetValues("isPush");
-                string IsPush = _IsPush[0];
-                bool Is_Push = true;
-                if (IsPush == "False")
+            }
+
+            foreach (var data in kiruMain)
+            {
+                string picName = "";
+                string picFileName = "";
+                if (data.thirdPhoto.Equals(""))
                 {
-                    Is_Push = false;
+                    ArticleMain articleMain = new ArticleMain();
+                    articleMain.ArticleId = artId;
+                    articleMain.PicName = picName;
+                    articleMain.PicFileName = picFileName;
+                    articleMain.Main = data.main;
+                    articleMain.InDateTime = DateTime.Now;
+                    db.ArticleMains.Add(articleMain);
+                }
+                else
+                {
+                    var kiruPhoto = data.thirdPhoto.Split('.');
+                    picName = kiruPhoto[0];
+                    picFileName = kiruPhoto[1];
+                    ArticleMain articleMain = new ArticleMain();
+                    articleMain.ArticleId = artId;
+                    articleMain.PicName = picName;
+                    articleMain.PicFileName = picFileName;
+                    articleMain.Main = data.main;
+                    articleMain.InDateTime = DateTime.Now;
+                    db.ArticleMains.Add(articleMain);
                 }
 
-                var _ArtMain = HttpContext.Current.Request.Form.GetValues("main");
 
 
-                //下面是前置任務
-                var _FirstMission = HttpContext.Current.Request.Form.GetValues("mission");
+            }
 
-                int firstcount = 0;
-                int artmaincount = 0;
+            foreach (var data in finalMission)
+            {
+                FinalMission finalmission = new FinalMission();
+                finalmission.Title = data.auxiliary;
+                finalmission.Main = data.auxiliarymain;
+                finalmission.ArticleId = artId;
+                finalmission.InitDateTime = DateTime.Now;
+                db.FinalMissions.Add(finalmission);
+            }
 
+            Remark lastData = new Remark();
+            lastData.ArticleId = artId;
+            lastData.Main = remark;
+            lastData.InitTime = DateTime.Now;
+            db.Remarks.Add(lastData);
 
-                var provider = new MultipartMemoryStreamProvider();
-                await this.Request.Content.ReadAsMultipartAsync(provider);
+            db.SaveChanges();
 
-
-                foreach (var content in provider.Contents)
+            return Ok(new
+            {
+                success = true,
+                message = "修改成功"
+            });
+        }
+        /// <summary>
+        /// 編輯用回傳文章資料
+        /// </summary>
+        /// <param name="artId">文章ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        [JwtAuthFilter]
+        [Route("api/Geteditarticle")]
+        [ResponseType(typeof(KiruOutPutForEdit))]
+        public IHttpActionResult GetEditArticle(int artId)
+        {
+            var havdata = db.Articles.FirstOrDefault(m => m.ID == artId);
+            if (havdata == null)
+            {
+                return Ok(new
                 {
-
-                    var KeyName = content.Headers.ContentDisposition.Name.Trim('\"');
-
-                    if (KeyName.Contains("first"))
-                    {
-                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                        string[] fileary = filerealName.Split('.');
-                        var fileBytes = await content.ReadAsByteArrayAsync();
-
-                        var filefirst = DateTime.Now.ToFileTime() + username;
-                        var fileName = filefirst + "." + fileary[1];
-
-                        var outputPath = Path.Combine(root, fileName);
-                        using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
-                        {
-                            await output.WriteAsync(fileBytes, 0, fileBytes.Length);
-                        }
-
-                        var q = from p in db.Articles where p.ID == ArtId select p;
-                        foreach (var p in q)
-                        {
-                            p.ArticlecategoryId = Convert.ToInt32(ArticlecategoryId);
-                            p.Title = title;
-                            p.Introduction = Introduction;
-                            p.IsFree = Is_Free;
-                            p.IsPush = Is_Push;
-                            p.FirstPicName = fileary[0];
-                            p.FirstPicFileName = fileary[1];
-
-                        }
-
-                        db.SaveChanges();
-
-
-
-                    }
-                    else if (KeyName.Contains("sec"))
-                    {
-
-                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                        if (filerealName.Equals(""))
-                        {
-                            Firstmission firstmission = new Firstmission();
-                            firstmission.PicName = "";
-                            firstmission.PicFileName = "";
-                            firstmission.ArticleId = ArtId;
-                            firstmission.FirstItem = _FirstMission[firstcount];
-                            firstmission.InitDate = DateTime.Now;
-                            db.Firstmissions.Add(firstmission);
-                        }
-                        else
-                        {
-                            string[] fileary = filerealName.Split('.');
-                            var fileBytes = await content.ReadAsByteArrayAsync();
-
-                            var filefirst = DateTime.Now.ToFileTime() + username;
-                            var fileName = filefirst + "." + fileary[1];
-
-                            var outputPath = Path.Combine(root, fileName);
-                            using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
-                            {
-                                await output.WriteAsync(fileBytes, 0, fileBytes.Length);
-                            }
-
-                            Firstmission firstmission = new Firstmission();
-                            firstmission.PicName = filefirst;
-                            firstmission.PicFileName = fileary[1];
-                            firstmission.ArticleId = ArtId;
-                            firstmission.FirstItem = _FirstMission[firstcount];
-                            firstmission.InitDate = DateTime.Now;
-                            db.Firstmissions.Add(firstmission);
-                        }
-
-                        //db.SaveChanges();
-                        firstcount++;
-                    }
-                    else if (KeyName.Contains("third"))
-                    {
-                        var filerealName = content.Headers.ContentDisposition.FileName.Trim('\"');
-                        if (filerealName.Equals(""))
-                        {
-                            ArticleMain articleMain = new ArticleMain();
-                            articleMain.PicName = "";
-                            articleMain.PicFileName = "";
-                            articleMain.ArticleId = ArtId;
-                            articleMain.Main = _ArtMain[artmaincount];
-                            articleMain.InDateTime = DateTime.Now;
-                            db.ArticleMains.Add(articleMain);
-                            //db.SaveChanges();
-                        }
-                        else
-                        {
-                            string[] fileary = filerealName.Split('.');
-                            var fileBytes = await content.ReadAsByteArrayAsync();
-
-                            var filefirst = DateTime.Now.ToFileTime() + username;
-                            var fileName = filefirst + "." + fileary[1];
-
-                            var outputPath = Path.Combine(root, fileName);
-                            using (var output = new FileStream(outputPath, FileMode.Create, FileAccess.Write))
-                            {
-                                await output.WriteAsync(fileBytes, 0, fileBytes.Length);
-                            }
-
-                            ArticleMain articleMain = new ArticleMain();
-                            articleMain.PicName = filefirst;
-                            articleMain.PicFileName = fileary[1];
-                            articleMain.ArticleId = ArtId;
-                            articleMain.Main = _ArtMain[artmaincount];
-                            articleMain.InDateTime = DateTime.Now;
-                            db.ArticleMains.Add(articleMain);
-
-                            //db.SaveChanges();
-
-                        }
-                        artmaincount++;
-                    }
-                }
-
-                var _Final = HttpContext.Current.Request.Form.GetValues("final");
-                if (_Final != null)
-                {
-                    foreach (var str in _Final)
-                    {
-                        Remark remark = new Remark();
-                        remark.Main = str;
-                        remark.InitTime = DateTime.Now;
-                        remark.ArticleId = ArtId;
-                        db.Remarks.Add(remark);
-
-                    }
-                    //db.SaveChanges();
-                }
-                db.SaveChanges();
-                return Ok(new {
-                    success = true,
-                    message = "已編輯"
+                    success = false,
+                    message = "沒有此文章"
                 });
             }
 
+            var Art_Title = havdata.Title.ToString();
+            var Art_TitlePic = havdata.FirstPicName.ToString() + "." +
+                               havdata.FirstPicFileName.ToString();
+            var Art_Info = havdata.Introduction;
+            var Art_Artlog = havdata.Articlecategory.Name.ToString();
+            var artlogid = havdata.Articlecategory.Id;
+
+            var Art_FirstMissionData = havdata.Firstmissions.ToList();
+            ArrayList fArrayList = new ArrayList();
+            foreach (var str in Art_FirstMissionData)
+            {
+                var Fdata = new
+                {
+                    fId = str.Id,
+                    secPhoto = str.PicName + "." + str.PicFileName,
+                    mission = str.FirstItem,
+                };
+                fArrayList.Add(Fdata);
+            }
+
+            var Art_Isfree = havdata.IsFree.ToString();
+            var Art_IsPush = havdata.IsPush.ToString();
+            var Art_MainData = havdata.ArticleMains.ToList();
+            var Art_message = havdata.Messages.ToList();
+            var ArtInitDate = havdata.InitDate.ToString();
+            var artRemark = havdata.Remarks.ToList();
+
+            var finalMission = havdata.FinalMissions.ToList();
+            ArrayList fMissionList = new ArrayList();
+            foreach (var str in finalMission)
+            {
+                var fdata = new
+                {
+                    fId = str.ID,
+                    auxiliary = str.Title,
+                    auxiliarymain = str.Main
+                };
+                fMissionList.Add(fdata);
+            }
+
+
+            ArrayList mArrayList = new ArrayList();
+            foreach (var str in Art_MainData)
+            {
+                var Mdata = new
+                {
+                    mId = str.Id,
+                    thirdPhoto = str.PicName + "." + str.PicFileName,
+                    main = str.Main
+                };
+                mArrayList.Add(Mdata);
+            }
+
+            string artRemarkStr = "";
+            foreach (var str in artRemark)
+            {
+                artRemarkStr = str.Main;
+            }
+
+            var result = new
+            {
+                artId = artId,
+                title = Art_Title,
+                firstPhoto = Art_TitlePic,
+                introduction = Art_Info,
+                articlecategoryId = artlogid,
+                artArtlog = Art_Artlog,
+                fArrayList,
+                mArrayList,
+                fMissionList,
+                isFree = Art_Isfree,
+                isPush = Art_IsPush,
+                ArtInitDate,
+                finaldata = artRemarkStr
+            };
+            return Ok(new
+            {
+                success = true,
+                data = result
+            });
 
         }
-
         /// <summary>
         /// 刪除文章
         /// </summary>
@@ -890,47 +1609,72 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 找到作者的所有切切
         /// </summary>
-        /// <param name="username">作者的會員帳號</param>
-        /// <param name="ispush">是否發布</param>
+        /// <param name="ispush">是否發布(用來查詢是否在草稿</param>
+        /// <param name="nowPage">現在頁數(預設1)</param>
+        /// <param name="showCount">每頁顯示幾筆資料</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult GetUserArticle(string username, bool ispush)
+        [JwtAuthFilter]
+        public IHttpActionResult GetUserArticle( bool ispush, int nowPage,int showCount)
         {
+            var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var havedata = db.Articles.FirstOrDefault(m => m.UserName == username);
             if (havedata == null)
             {
                 return Ok(new
                 {
                     success = false,
-                    message = "查無此文章"
+                    message = "沒有文章"
                 });
 
             }
             var data = from q in db.Articles
                 where (q.UserName == username & q.IsPush == ispush)
                 select q;
-            ArrayList arrayList = new ArrayList();
-            foreach (var art in data.ToList())
+            List<NewArticle> arrayList = new List<NewArticle>();
+
+            foreach (var content in data.ToList())
             {
-                var result = new
-                {
-                    art.ID,
-                    art.Title,
-                    art.Introduction,
-                    picture = art.FirstPicName + "." + art.FirstPicFileName,
-                    art.Articlecategory.Name,
-                    art.IsFree,
-                    art.Lovecount,
-                    art.InitDate
-                };
-                arrayList.Add(result);
+                NewArticle newartary = new NewArticle();
+                newartary.ArticleID = content.ID;
+                newartary.UserName = content.UserName;
+                newartary.Title = content.Title;
+                newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
+                newartary.ArtInfo = content.Introduction;
+                newartary.Articlecategory = content.Articlecategory.Name;
+                newartary.Isfree = content.IsFree;
+                newartary.Lovecount = content.Lovecount;
+                newartary.InitDateTime = content.InitDate;
+
+                arrayList.Add(newartary);
             }
 
-            return Ok(new
+            int pagecount = arrayList.Count;
+            if (nowPage == 1)
             {
-                success = true,
-                data =arrayList
-            });
+                var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(showCount);
+               
+                return Ok(new
+                {
+                    success = true,
+                    total = pagecount,
+                    data = result
+                });
+            }
+            else
+            {
+                int page = (nowPage - 1) * showCount;
+                //排序依照日期
+
+                var result = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showCount);
+                return Ok(new
+                {
+                    success = true,
+                    total = pagecount,
+                    data = result
+                });
+            }
+            
         }
         /// <summary>
         /// 按愛心
@@ -986,12 +1730,12 @@ namespace testdatamodel.Controllers
         /// 收藏切切文章
         /// </summary>
         /// <param name="artid">文章ID</param>
-        /// <param name="memberid">收藏者的ID</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult Collectarticle(int artid, int memberid)
+        public IHttpActionResult Collectarticle(int artid)
         {
+            var memberid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var datArticle = db.Articles.FirstOrDefault(x => x.ID == artid);
 
             if (datArticle == null)
@@ -1015,13 +1759,13 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取消收藏文章
         /// </summary>
-        /// <param name="userid">會員ID</param>
         /// <param name="articleid">收藏文章的ID</param>
         /// <returns></returns>
         [HttpDelete]
         [JwtAuthFilter]
-        public IHttpActionResult Deletecollect(int userid, int articleid)
+        public IHttpActionResult Deletecollect(int articleid)
         {
+            var userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var data = db.Articles.FirstOrDefault(x => x.ID == articleid);
             if (data == null)
             {
@@ -1044,14 +1788,14 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取得會員收藏的切切文章
         /// </summary>
-        /// <param name="memberid">會員ID</param>
         /// <param name="Nowpage">現在頁數(預設為1)</param>
         /// <param name="showcount">一頁顯示幾筆</param>
         /// <returns></returns>
         [HttpGet]
         [JwtAuthFilter]
-        public IHttpActionResult GetAllcollectart(int memberid, int Nowpage, int showcount)
+        public IHttpActionResult GetAllcollectart(int Nowpage, int showcount)
         {
+            var memberid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var data = db.Members.FirstOrDefault(x => x.ID == memberid);
             var art = data.Articles.ToList();
             //ArrayList artlList = new ArrayList();

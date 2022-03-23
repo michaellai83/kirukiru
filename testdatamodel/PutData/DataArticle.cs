@@ -8,31 +8,107 @@ namespace testdatamodel.PutData
 {
     public class DataArticle
     {
-        public int ArtID { get; set; }
-        public string Art_Title { get; set; }
-        public string Art_TitlePic { get; set; }
-        public string Art_Info { get; set; }
-        public int Art_ArtlogId { get; set; }
-        public ICollection <FirstM> Art_firstmission { get; set; }
+        /// <summary>
+        /// 會員帳號
+        /// </summary>
+        public string memberUserName { get; set; }
+        /// <summary>
+        /// 切切標題
+        /// </summary>
+        public string title { get; set; }
+        /// <summary>
+        /// 切切封面圖
+        /// </summary>
+        public string firstPhoto { get; set; }
+        /// <summary>
+        /// 切切簡介
+        /// </summary>
+        public string introduction { get; set; }
+        /// <summary>
+        /// 切切文章分類ID
+        /// </summary>
+        public int articlecategoryId { get; set; }
+        /// <summary>
+        /// 前置任務內容
+        /// </summary>
+        public List<FirstM> fArrayList { get; set; }
+        /// <summary>
+        /// 切切內容
+        /// </summary>
+        public List<Main> mArrayList { get; set; }
+        /// <summary>
+        /// 是否付費
+        /// </summary>
+        public  bool isFree { get; set; }
+        /// <summary>
+        /// 是否發布
+        /// </summary>
+        public bool isPush { get; set; }
+        /// <summary>
+        /// 附屬任務內容
+        /// </summary>
+        public  List<FinalM> fMissionList { get; set; }
+        /// <summary>
+        /// 備註
+        /// </summary>
+        public string final { get; set; }
 
-        public ICollection <Main> Art_main { get; set; }
-        
-        public  string Art_Isfree { get; set; }
-        public string Art_Ispush { get; set; }
+        ///// <summary>
+        ///// 備註
+        ///// </summary>
+        //public ICollection<Final> finaldata { get; set; }
+        /// <summary>
+        /// 前置任務
+        /// </summary>
         public class  FirstM 
         {
-            public int FirstID { get; set; }
-            public string FirstPic { get; set; }
-            public string FirstMain { get; set; }
-            
-            public virtual List<DataArticle> DataArticles { get; set; }
+            public string uuid { get; set; }
+            /// <summary>
+            /// 前置任務圖片
+            /// </summary>
+            public string secPhoto { get; set; }
+            /// <summary>
+            /// 前置任務內容
+            /// </summary>
+            public string mission { get; set; }
         }
+        /// <summary>
+        /// 切切
+        /// </summary>
         public class Main
         {
-            public int MainID { get; set; }
-            public string MainPic { get; set; }
-            public string MainStr { get; set; }
-            public virtual List<DataArticle> DataArticles { get; set; }
+            public string uuid { get; set; }
+            /// <summary>
+            /// 切切圖片
+            /// </summary>
+            public string thirdPhoto { get; set; }
+            /// <summary>
+            /// 切切內容
+            /// </summary>
+            public string main { get; set; }
         }
+        /// <summary>
+        /// 附屬任務
+        /// </summary>
+        public class FinalM
+        {
+            public string uuid { get; set; }
+            /// <summary>
+            /// 附屬任務標題
+            /// </summary>
+            public string auxiliary { get; set; }
+            /// <summary>
+            /// 附屬任務內容
+            /// </summary>
+            public string auxiliarymain { get; set; }
+        }
+
+        //public class Final
+        //{
+        //    /// <summary>
+        //    /// 備註內容
+        //    /// </summary>
+        //    public string final { get; set; }
+        //}
     }
 }

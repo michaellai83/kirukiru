@@ -85,5 +85,7 @@ namespace testdatamodel.Models
 
         public virtual ICollection<Member> Members { get; set; }
 
+        public virtual ICollection<FinalMission> FinalMissions { get; set; }
+
     }
 }

@@ -65,6 +65,11 @@ namespace testdatamodel.Models
         /// </summary>
         [Display(Name = "愛心數量")]
         public int Lovecount { get; set; }
+        /// <summary>
+        /// 每篇文章專屬
+        /// </summary>
+        [Display(Name = "文章用認證")]
+        public string CheckArticle { get; set; }
 
         public virtual ICollection<MessageNormal> MessageNormals { get; set; }
 

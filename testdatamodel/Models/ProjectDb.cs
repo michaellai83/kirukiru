@@ -40,11 +40,15 @@ namespace testdatamodel.Models
         public virtual DbSet<R_MessageNormal> R_MessageNormals { get; set; }
         public virtual DbSet<Subscription> Subscriptions { get; set; }
         public virtual DbSet<Remark> Remarks { get; set; }
+        
+        public virtual DbSet<FinalMission> FinalMissions { get; set; }
+        public virtual DbSet<Subscriptionplan> Subscriptionplans { get; set; }
         public virtual DbSet<Backmember> Backmembers { get; set; }
         public virtual DbSet<BackArticle> BackArticles { get; set; }
         public virtual DbSet<Orderlist> Orderlists { get; set; }
         
         public virtual DbSet<BackQA> BackQas { get; set; }
+        
     }
 
     //public class MyEntity

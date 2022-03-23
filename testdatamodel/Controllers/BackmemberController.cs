@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Web.Http;
+using testdatamodel.Bankdata;
 using testdatamodel.JWT;
 using testdatamodel.Models;
 using testdatamodel.Secret;
@@ -155,6 +156,27 @@ namespace testdatamodel.Controllers
             db.SaveChanges();
             //回傳網址
             return Redirect("https://kirukiru.rocket-coding.com/");
+        }
+        /// <summary>
+        /// 新增精選文章
+        /// </summary>
+        /// <param name="backarticledata">文章所需資料</param>
+        /// <returns></returns>
+        [HttpPost]
+        public IHttpActionResult Addarticle([FromBody] Backarticledata backarticledata)
+        {
+            BackArticle backdata = new BackArticle();
+            backdata.BackmemberID = backarticledata.backMemberId;
+            backdata.Title = backarticledata.title;
+            backdata.Main = backarticledata.main;
+            backdata.IniDateTime = DateTime.Now;
+            db.BackArticles.Add(backdata);
+            db.SaveChanges();
+            return Ok(new
+            {
+                success = true,
+                message = "已新增文章"
+            });
         }
     }
 }

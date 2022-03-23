@@ -410,6 +410,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Bankdata\Backarticledata.cs" />
     <Compile Include="Blue\Atom.cs" />
     <Compile Include="Blue\Atom.T.cs" />
     <Compile Include="Blue\BankInfoModel.cs" />
@@ -437,6 +438,7 @@
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="DataCommon.cs" />
+    <Compile Include="Ecpay\Ecreturndata.cs" />
     <Compile Include="Ecpay\MD5Encoder.cs" />
     <Compile Include="Ecpay\SHA256Encoder.cs" />
     <Compile Include="Email\Sendmail.cs" />
@@ -519,6 +521,18 @@
     <Compile Include="Migrations\202203180816028_EditmemberV2.Designer.cs">
       <DependentUpon>202203180816028_EditmemberV2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203210347465_AddFinalMission.cs" />
+    <Compile Include="Migrations\202203210347465_AddFinalMission.Designer.cs">
+      <DependentUpon>202203210347465_AddFinalMission.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203210426110_AddSubscriptionplan.cs" />
+    <Compile Include="Migrations\202203210426110_AddSubscriptionplan.Designer.cs">
+      <DependentUpon>202203210426110_AddSubscriptionplan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203220223125_EditArticleNormalAddCheckArticle.cs" />
+    <Compile Include="Migrations\202203220223125_EditArticleNormalAddCheckArticle.Designer.cs">
+      <DependentUpon>202203220223125_EditArticleNormalAddCheckArticle.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Articlecategory.cs" />
@@ -528,6 +542,7 @@
     <Compile Include="Models\Backmember.cs" />
     <Compile Include="Models\BackQA.cs" />
     <Compile Include="Models\Collect.cs" />
+    <Compile Include="Models\FinalMission.cs" />
     <Compile Include="Models\Firstmission.cs" />
     <Compile Include="Models\Member.cs" />
     <Compile Include="Models\Message.cs" />
@@ -538,18 +553,24 @@
     <Compile Include="Models\R_Message.cs" />
     <Compile Include="Models\R_MessageNormal.cs" />
     <Compile Include="Models\Subscription.cs" />
+    <Compile Include="Models\Subscriptionplan .cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PutData\ChangePassword.cs" />
+    <Compile Include="PutData\ChangePhoto.cs" />
     <Compile Include="PutData\DataArticle.cs" />
     <Compile Include="PutData\DataArticlecategorie.cs" />
     <Compile Include="PutData\DataArticleNormal.cs" />
     <Compile Include="PutData\DataMember.cs" />
+    <Compile Include="PutData\Editkirukiru.cs" />
     <Compile Include="PutData\GetMainData.cs" />
     <Compile Include="PutData\Logintable.cs" />
     <Compile Include="Secret\HashWithSaltResult.cs" />
     <Compile Include="Secret\PasswordWithSaltHasher.cs" />
     <Compile Include="Secret\Rng.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Swagger\Kirukiruoutput.cs" />
+    <Compile Include="Swagger\KiruOutPutForEdit.cs" />
+    <Compile Include="Swagger\NormalArticleOutPutForEdit.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -560,7 +581,6 @@
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
-    <Content Include="index.html" />
     <Content Include="Pic\origin.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -690,6 +710,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203180816028_EditmemberV2.resx">
       <DependentUpon>202203180816028_EditmemberV2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203210347465_AddFinalMission.resx">
+      <DependentUpon>202203210347465_AddFinalMission.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203210426110_AddSubscriptionplan.resx">
+      <DependentUpon>202203210426110_AddSubscriptionplan.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203220223125_EditArticleNormalAddCheckArticle.resx">
+      <DependentUpon>202203220223125_EditArticleNormalAddCheckArticle.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

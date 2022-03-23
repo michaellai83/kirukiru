@@ -1,6 +1,7 @@
 ﻿
 
 
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -157,6 +158,7 @@ namespace testdatamodel.Controllers
                     }
                     var data = new
                     {
+                        UserId = Isusername.ID,
                         Username = Isusername.UserName,
                         Isusername.Name,
                         Userpic = pic,
@@ -202,12 +204,14 @@ namespace testdatamodel.Controllers
         /// 忘記密碼
         /// </summary>
         /// <param name="username">帳號</param>
+        /// <param name="eMail">註冊信箱</param>
         /// <returns></returns>
         [HttpPut]
-        public IHttpActionResult NewPassWord(string username)
+        public IHttpActionResult NewPassWord(string username,string eMail)
         {
-            var Ismember = db.Members.FirstOrDefault(m => m.UserName == username);
-            if (Ismember != null)
+            var Ismember = db.Members.FirstOrDefault(m => m.UserName == username );
+            var mail = Ismember.Email;
+            if (Ismember != null && eMail == mail)
             {
                 string password = "000000";
                 PasswordWithSaltHasher passwordWithSalt = new PasswordWithSaltHasher();
@@ -278,14 +282,18 @@ namespace testdatamodel.Controllers
                 {
                     return Ok(new
                     {
-                        success = true,
-                        message = "密碼錯誤"
+                        success = false,
+                        message = "帳號密碼錯誤"
                     });
                 }
             }
             else
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success = false,
+                    message = "帳號密碼錯誤"
+                });
             }
         }
 
@@ -293,16 +301,21 @@ namespace testdatamodel.Controllers
         /// 更改會員名字
         /// </summary>
         /// <param name="name">會員更新名字</param>
-        /// <param name="username">會員帳號</param>
         /// <returns></returns>
         [HttpPut]
         [JwtAuthFilter]
-        public IHttpActionResult ChangeName(string name, string username)
+        public IHttpActionResult ChangeName(string name)
         {
+            ///從Token取
+            var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter); 
             var data = db.Members.FirstOrDefault(m => m.UserName == username);
             if (data == null)
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success=false,
+                    message="沒有此帳號"
+                });
             }
             var q = from p in db.Members where p.UserName == username select p;
             foreach (var p in q)
@@ -320,14 +333,14 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 更改會員敘述
         /// </summary>
-        /// <param name="username">會員帳號</param>
         /// <param name="introduction">會員敘述</param>
         /// <returns></returns>
+        [Route("api/ChangeInfo")]
         [HttpPut]
         [JwtAuthFilter]
-        public IHttpActionResult ChangeInfo(string username, string introduction)
+        public IHttpActionResult ChangeInfo([FromBody]string introduction)
         {
-            
+            var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var data = db.Members.FirstOrDefault(m => m.UserName == username);
             if (data == null)
             {
@@ -354,13 +367,13 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 更改會員信箱
         /// </summary>
-        /// <param name="username">會員帳號</param>
         /// <param name="email">會員信箱</param>
         /// <returns></returns>
         [HttpPut]
         [JwtAuthFilter]
-        public IHttpActionResult ChangeEmail(string username, string email)
+        public IHttpActionResult ChangeEmail(string email)
         {
+            var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var data = db.Members.FirstOrDefault(m => m.UserName == username);
             if (data == null)
             {
@@ -387,13 +400,13 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 是否公開會員收藏文章
         /// </summary>
-        /// <param name="username">會員帳號</param>
         /// <param name="opencollect">是否公開</param>
         /// <returns></returns>
         [HttpPut]
         [JwtAuthFilter]
-        public IHttpActionResult ChagneOpenCollect(string username, bool opencollect)
+        public IHttpActionResult ChagneOpenCollect(bool opencollect)
         {
+            var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var data = db.Members.FirstOrDefault(x => x.UserName == username);
             var q = from p in db.Members where p.UserName == username select p;
             foreach (var p in q)
@@ -410,12 +423,12 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 找到會員收藏文章的數量
         /// </summary>
-        /// <param name="memberid">會員ID</param>
         /// <returns></returns>
         [HttpGet]
         [JwtAuthFilter]
-        public IHttpActionResult GetArticlenumber(int memberid)
+        public IHttpActionResult GetArticlenumber()
         {
+            var memberid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var memberdata = db.Members.FirstOrDefault(x => x.ID == memberid);
             if (memberdata == null)
             {
@@ -642,11 +655,13 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取得作者發布的文章數量
         /// </summary>
-        /// <param name="authorname">作者的帳號</param>
         /// <returns></returns>
+        [Route("api/getmemberartnumber")]
         [HttpGet]
-        public IHttpActionResult GetMemberartnumber(string authorname)
+        [JwtAuthFilter]
+        public IHttpActionResult GetMemberartnumber()
         {
+            string authorname =JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var artdata = from q in db.Articles
                           where (q.UserName == authorname & q.IsPush == true)
                           select q;
@@ -657,7 +672,7 @@ namespace testdatamodel.Controllers
             return Ok(new { status = "success", artcount = number });
         }
         /// <summary>
-        /// 查詢作者蒐藏的文章
+        /// 查詢作者蒐藏的切切文章
         /// </summary>
         /// <param name="authorusername">作者帳號名稱</param>
         /// <param name="pageNow">現在頁面(預設為1)</param>
@@ -670,7 +685,14 @@ namespace testdatamodel.Controllers
             var memberdata = from q in db.Members
                              where (q.UserName == authorusername & q.Opencollectarticles == true)
                              select q;
-
+            if (memberdata == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此作者"
+                });
+            }
             int memberid = 0;
             foreach (var str in memberdata)
             {
@@ -679,10 +701,13 @@ namespace testdatamodel.Controllers
             var authordata = db.Members.FirstOrDefault(m => m.ID == memberid);
             if (authordata == null)
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有資料或者不公開"
+                });
             }
             var artdata = authordata.Articles.ToList();
-            var noratrdata = authordata.ArticleNormals.ToList();
             List<NewArticle> arrayList = new List<NewArticle>();
 
             foreach (var content in artdata)
@@ -697,6 +722,90 @@ namespace testdatamodel.Controllers
 
                 arrayList.Add(newartary);
             }
+
+
+            if (totalpagecount == 0)
+            {
+                totalpagecount = arrayList.Count();
+                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
+                ArrayList result = new ArrayList();
+                foreach (var str in newArticles)
+                {
+                    var resultdata = new
+                    {
+                        str.ArticleID,
+                        str.UserName,
+                        str.Title,
+                        str.Articlecategory,
+                        str.Lovecount,
+                        str.InitDateTime
+                    };
+                    result.Add(resultdata);
+                }
+                return Ok(new { total = totalpagecount, result });
+            }
+            else
+            {
+                var page = (pageNow - 1) * showcount;
+                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
+                ArrayList result = new ArrayList();
+                foreach (var str in newArticles)
+                {
+                    var resultdata = new
+                    {
+                        str.ArticleID,
+                        str.UserName,
+                        str.Title,
+                        str.Articlecategory,
+                        str.Lovecount,
+                        str.InitDateTime
+                    };
+                    result.Add(resultdata);
+                }
+                return Ok(result);
+            }
+
+        }
+        /// <summary>
+        /// 查詢作者的蒐藏的一般文章
+        /// </summary>
+        /// <param name="authorusername">作者帳號名稱</param>
+        /// <param name="pageNow">現在頁面(預設為1)</param>
+        /// <param name="totalpagecount">全部筆數(預設為0</param>
+        /// <param name="showcount">一頁顯示幾筆資料</param>
+        /// <returns></returns>
+        [Route("api/collectnormalarticle")]
+        [HttpGet]
+        public IHttpActionResult CollectauthorNormalarticle(string authorusername, int pageNow, int totalpagecount, int showcount)
+        {
+            var memberdata = from q in db.Members
+                             where (q.UserName == authorusername & q.Opencollectarticles == true)
+                             select q;
+            if (memberdata == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此作者"
+                });
+            }
+            int memberid = 0;
+            foreach (var str in memberdata)
+            {
+                memberid = str.ID;
+            }
+            var authordata = db.Members.FirstOrDefault(m => m.ID == memberid);
+            if (authordata == null)
+            {
+                return Ok(new
+                {
+                    success=false,
+                    message="沒有資料或者不公開"
+                });
+            }
+            var noratrdata = authordata.ArticleNormals.ToList();
+            List<NewArticle> arrayList = new List<NewArticle>();
+
 
             foreach (var content in noratrdata)
             {
@@ -757,40 +866,112 @@ namespace testdatamodel.Controllers
 
         }
         /// <summary>
-        /// 作者所有文章
+        /// 作者所有切切文章
         /// </summary>
-        /// <param name="userid">使用者ID</param>
         /// <param name="pageNow">現在頁面(預設為1)</param>
         /// <param name="totalpagecount">全部筆數(預設為0)</param>
         /// <param name="showcount">一頁顯示幾筆資料</param>
         /// <returns></returns>
         [HttpGet]
         [JwtAuthFilter]
-        public IHttpActionResult GetMyArticles(int userid, int pageNow, int totalpagecount, int showcount)
+        public IHttpActionResult GetMyArticles( int pageNow, int totalpagecount, int showcount)
         {
+            int userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var data = db.Members.FirstOrDefault(x => x.ID == userid);
             if (data == null)
             {
-                return NotFound();
+                return Ok(new
+                {
+                    success=false,
+                    message="沒有此作者"
+                });
             }
 
             var username = data.UserName.ToString();
             var artdata = db.Articles.Where(x => x.UserName == username).ToList();
-            var noratrdata = db.ArticleNormals.Where(x => x.UserName == username).ToList();
             List<NewArticle> arrayList = new List<NewArticle>();
-
             foreach (var content in artdata)
             {
                 NewArticle newartary = new NewArticle();
                 newartary.ArticleID = content.ID;
                 newartary.UserName = content.UserName;
                 newartary.Title = content.Title;
+                newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
+                newartary.ArtInfo = content.Introduction;
                 newartary.Articlecategory = content.Articlecategory.Name;
+                newartary.Isfree = content.IsFree;
                 newartary.Lovecount = content.Lovecount;
                 newartary.InitDateTime = content.InitDate;
 
                 arrayList.Add(newartary);
             }
+
+            //foreach (var content in artdata)
+            //{
+            //    NewArticle newartary = new NewArticle();
+            //    newartary.ArticleID = content.ID;
+            //    newartary.UserName = content.UserName;
+            //    newartary.Title = content.Title;
+            //    newartary.Articlecategory = content.Articlecategory.Name;
+            //    newartary.Lovecount = content.Lovecount;
+            //    newartary.InitDateTime = content.InitDate;
+
+            //    arrayList.Add(newartary);
+            //}
+
+            if (pageNow == 1)
+            {
+                totalpagecount = arrayList.Count();
+
+                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
+
+                return Ok(new
+                {
+                    success = true,
+                    total = totalpagecount,
+                    data = newArticles
+                });
+            }
+            else
+            {
+                var page = (pageNow - 1) * showcount;
+                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
+                return Ok(new
+                {
+                    success = true,
+                    total = totalpagecount,
+                    data = newArticles
+                });
+            }
+
+        }
+        /// <summary>
+        /// 作者所有一般文章
+        /// </summary>
+        /// <param name="pageNow">現在頁面(預設為1)</param>
+        /// <param name="totalpagecount">全部筆數(預設為0)</param>
+        /// <param name="showcount">一頁顯示幾筆資料</param>
+        /// <returns></returns>
+        [Route("api/getnormalarticles")]
+        [HttpGet]
+        [JwtAuthFilter]
+        public IHttpActionResult GetMyNormalArticles( int pageNow, int totalpagecount, int showcount)
+        {
+            int userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
+            var data = db.Members.FirstOrDefault(x => x.ID == userid);
+            if (data == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此作者"
+                });
+            }
+
+            var username = data.UserName.ToString();
+            var noratrdata = db.ArticleNormals.Where(x => x.UserName == username).ToList();
+            List<NewArticle> arrayList = new List<NewArticle>();
+
 
             foreach (var content in noratrdata)
             {
@@ -808,7 +989,7 @@ namespace testdatamodel.Controllers
 
             }
 
-            if (totalpagecount == 0)
+            if (pageNow == 1)
             {
                 totalpagecount = arrayList.Count();
 
@@ -850,6 +1031,44 @@ namespace testdatamodel.Controllers
                 return Ok(result);
             }
 
+        }
+        /// <summary>
+        /// 更改會員大頭貼
+        /// </summary>
+        /// <param name="photoName">圖片名稱</param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route("api/changephoto")]
+        [JwtAuthFilter]
+        public IHttpActionResult ChangePhoto(string photoName)
+        {
+            var userName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var memeberdata = db.Members.FirstOrDefault(x => x.UserName == userName);
+            if (memeberdata == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "無此作者"
+                });
+            }
+
+            var photo = photoName.Split('.');
+            string memberPhoto = photo[0];
+            string PhotoFileName = photo[1];
+            var q = from p in db.Members where p.UserName == userName select p;
+            foreach (var p in q)
+            {
+                p.PicName = memberPhoto;
+                p.FileName = PhotoFileName;
+            }
+
+            db.SaveChanges();
+            return Ok(new
+            {
+                success = true,
+                message = "修改圖片成功"
+            });
         }
     }
 }

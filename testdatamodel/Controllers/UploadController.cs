@@ -17,7 +17,7 @@ namespace testdatamodel.Controllers
     {
         ProjectDb db = new ProjectDb();
         /// <summary>
-        /// 新頭像上傳方法，通過表單的形式上傳
+        /// 圖片上傳專區
         /// </summary>
         /// <returns></returns>
         [Route("upload")]
@@ -40,10 +40,10 @@ namespace testdatamodel.Controllers
             try
             {
                 
-                var _username = HttpContext.Current.Request.Form.GetValues("username");//找到formdata 文字檔 key值為 username的values值
-                string username = _username[0];//value值
+               
                 var provider = new MultipartMemoryStreamProvider();
                 await this.Request.Content.ReadAsMultipartAsync(provider);
+                string uploadfilename = "";
 
                 //var uploadResponse = new UploadResponse();
                 foreach (var content in provider.Contents)
@@ -54,7 +54,7 @@ namespace testdatamodel.Controllers
                     {
                         var fileName = content.Headers.ContentDisposition.FileName.Trim('\"');
                         string[] fileary = fileName.Split('.');
-                        string uploadfilename = username+DateTime.Now.ToFileTime() + "." + fileary[1];
+                        uploadfilename = "Photo"+DateTime.Now.ToFileTime() + "." + fileary[1];
                         var fileBytes = await content.ReadAsByteArrayAsync();
 
                         var outputPath = Path.Combine(root, uploadfilename);
@@ -62,15 +62,8 @@ namespace testdatamodel.Controllers
                         {
                             await output.WriteAsync(fileBytes, 0, fileBytes.Length);
                         }
-                        var q = from p in db.Members where p.UserName == username select p;
-                        foreach (var p in q)
-                        {
-                            ;
-                            p.PicName = username + DateTime.Now.ToFileTime();//檔名
-                            p.FileName = fileary[1];//副檔名
-                        }
 
-                        db.SaveChanges();
+                       
                     }
                     else 
                     {
@@ -83,7 +76,11 @@ namespace testdatamodel.Controllers
                     //uploadResponse.ContentTypes.Add(content.Headers.ContentType.MediaType);
                 }
 
-                return Ok(new{status= "success" });
+                return Ok(new
+                {
+                    success = true,
+                    picname = uploadfilename
+                });
                 //return this.Ok(uploadResponse);
             }
             catch (Exception e)
@@ -94,7 +91,8 @@ namespace testdatamodel.Controllers
                 });
             }
         }
-
         
+
+
     }
 }

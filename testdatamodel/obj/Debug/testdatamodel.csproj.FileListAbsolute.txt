@@ -192,3 +192,6 @@ C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\MailK
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\MailKit.xml
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\MimeKit.pdb
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\MimeKit.xml
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.AddFinalMission.resources
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.AddSubscriptionplan.resources
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.EditArticleNormalAddCheckArticle.resources
