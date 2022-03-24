@@ -465,7 +465,7 @@ namespace testdatamodel.Controllers
         /// 最熱門的切切文章排列(前四筆
         /// </summary>
         /// <returns></returns>
-        [Route("lovearticle")]
+        [Route("api/Homepage/lovearticle")]
         [HttpGet]
         
         public IHttpActionResult Lovearticle()

@@ -74,6 +74,10 @@ namespace testdatamodel.Swagger
             /// </summary>
             public string final { get; set; }
             /// <summary>
+            /// 愛心數量
+            /// </summary>
+            public int lovecount { get; set; }
+            /// <summary>
             /// 留言內容
             /// </summary>
             public List<Message> messageArrayList { get; set; }

@@ -11,10 +11,11 @@ namespace testdatamodel.Swagger
     public class NormalArticleOutPutForEdit
     {
         public bool success { get; set; }
-        public ICollection<NormalData> data { get; set; }
+        public List<NormalData> data { get; set; }
         public class NormalData
         {
             public int artId { get; set; }
+            public string title { get; set; }
             public string main { get; set; }
             public int articlecategoryId { get; set; }
             public DateTime artInitDate { get; set; }

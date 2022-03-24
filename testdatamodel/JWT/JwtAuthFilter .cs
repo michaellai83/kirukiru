@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web;
@@ -21,7 +22,7 @@ namespace testdatamodel.JWT
                 var errorMessage = new HttpResponseMessage()
                 {
                     ReasonPhrase = "Lost Token",
-                    Content = new StringContent("code = 8888"),//自訂的code
+                    Content = new StringContent("code = 8887"),//自訂的code
                 };
                 throw new HttpResponseException(errorMessage);
                
@@ -50,7 +51,7 @@ namespace testdatamodel.JWT
                     var errorMessage = new HttpResponseMessage()
                     {
                         ReasonPhrase = "Lost Token",
-                        Content = new StringContent($"code = 8888,發生錯誤：{e}"),
+                        Content = new StringContent($"code = 8886,發生錯誤：{e}"),
                     };
                     throw new HttpResponseException(errorMessage);
                 }

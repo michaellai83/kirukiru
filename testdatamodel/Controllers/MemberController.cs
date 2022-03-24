@@ -335,7 +335,7 @@ namespace testdatamodel.Controllers
         /// </summary>
         /// <param name="introduction">會員敘述</param>
         /// <returns></returns>
-        [Route("api/ChangeInfo")]
+        [Route("api/Member/ChangeInfo")]
         [HttpPut]
         [JwtAuthFilter]
         public IHttpActionResult ChangeInfo([FromBody]string introduction)
@@ -656,7 +656,7 @@ namespace testdatamodel.Controllers
         /// 取得作者發布的文章數量
         /// </summary>
         /// <returns></returns>
-        [Route("api/getmemberartnumber")]
+        [Route("api/Member/getmemberartnumber")]
         [HttpGet]
         [JwtAuthFilter]
         public IHttpActionResult GetMemberartnumber()
@@ -774,7 +774,7 @@ namespace testdatamodel.Controllers
         /// <param name="totalpagecount">全部筆數(預設為0</param>
         /// <param name="showcount">一頁顯示幾筆資料</param>
         /// <returns></returns>
-        [Route("api/collectnormalarticle")]
+        [Route("api/Member/collectnormalarticle")]
         [HttpGet]
         public IHttpActionResult CollectauthorNormalarticle(string authorusername, int pageNow, int totalpagecount, int showcount)
         {
@@ -952,7 +952,7 @@ namespace testdatamodel.Controllers
         /// <param name="totalpagecount">全部筆數(預設為0)</param>
         /// <param name="showcount">一頁顯示幾筆資料</param>
         /// <returns></returns>
-        [Route("api/getnormalarticles")]
+        [Route("api/Member/getnormalarticles")]
         [HttpGet]
         [JwtAuthFilter]
         public IHttpActionResult GetMyNormalArticles( int pageNow, int totalpagecount, int showcount)
@@ -1035,12 +1035,12 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 更改會員大頭貼
         /// </summary>
-        /// <param name="photoName">圖片名稱</param>
+        /// <param name="Userpic">圖片名稱</param>
         /// <returns></returns>
         [HttpPut]
-        [Route("api/changephoto")]
+        [Route("api/Member/changephoto")]
         [JwtAuthFilter]
-        public IHttpActionResult ChangePhoto(string photoName)
+        public IHttpActionResult ChangePhoto(string Userpic)
         {
             var userName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var memeberdata = db.Members.FirstOrDefault(x => x.UserName == userName);
@@ -1053,7 +1053,7 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var photo = photoName.Split('.');
+            var photo = Userpic.Split('.');
             string memberPhoto = photo[0];
             string PhotoFileName = photo[1];
             var q = from p in db.Members where p.UserName == userName select p;
@@ -1068,6 +1068,223 @@ namespace testdatamodel.Controllers
             {
                 success = true,
                 message = "修改圖片成功"
+            });
+        }
+        /// <summary>
+        /// 取得會員訂閱數量
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/Member/GetOrderNumber")]
+        [HttpGet]
+        [JwtAuthFilter]
+        public IHttpActionResult Getordernumber()
+        {
+            var memberId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
+            var orderData = from q in db.Orderlists
+                where (q.MemberID == memberId && q.Issuccess == true)
+                select q;
+            var oderlist = orderData.ToList();
+
+            int orderNum = oderlist.Count;
+            return Ok(new
+            {
+                success = true,
+                orderNumber = orderNum
+            });
+        }
+        /// <summary>
+        /// 取得會員被多少人訂閱的數量
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/Member/GetBeOrder")]
+        [HttpGet]
+        [JwtAuthFilter]
+        public IHttpActionResult GetBeordernumber()
+        {
+            var memberUserName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var beOrder = from q in db.Orderlists
+                where (q.AuthorName == memberUserName && q.Issuccess == true)
+                select q;
+            var oderlist = beOrder.ToList();
+            int beOrderNum = oderlist.Count;
+            return Ok(new
+            {
+                success = true,
+                beOrderNumber = beOrderNum
+            });
+        }
+        /// <summary>
+        /// 回傳作者個人資料
+        /// </summary>
+        /// <param name="author">會員帳號</param>
+        /// <returns></returns>
+        [HttpGet]
+        public IHttpActionResult GetName(string author)
+        {
+            var data = db.Members.FirstOrDefault(x => x.UserName == author);
+
+            if (data == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此作者"
+                });
+            }
+
+            
+           
+            var artlog = db.Articlecategory.FirstOrDefault(m => m.Id == data.ArticlecategoryId);
+            string pic = data.PicName + "." + data.FileName;
+            
+           
+            var result = new
+            {
+                UserId = data.ID,
+                Username = data.UserName,
+                data.Name,
+                Userpic = pic,
+                data.Introduction,
+
+            };
+            return Ok(new
+            {
+                success = true,
+                data = result
+            });
+        }
+        /// <summary>
+        /// 開通會員訂閱方案
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/Member/AddNewSubscriptionplans")]
+        [HttpPost]
+        [JwtAuthFilter]
+        public IHttpActionResult AddNewSubscriptionplans()
+        {
+            var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
+            Subscriptionplan subscriptionplan = new Subscriptionplan();
+            subscriptionplan.MemberID = userId;
+            subscriptionplan.Amount = "0";
+            subscriptionplan.InitDateTime = DateTime.Now;
+            db.Subscriptionplans.Add(subscriptionplan);
+            db.SaveChanges();
+            return Ok(new
+            {
+                success = true,
+                message = "已開通訂閱方案"
+            });
+        }
+        /// <summary>
+        /// 取得我的方案
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/Member/GetMySubscriptionplans")]
+        [HttpGet]
+        [JwtAuthFilter]
+        public IHttpActionResult GetMySubscriptionplans()
+        {
+            var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
+
+            var userName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+
+            var subData = db.Subscriptionplans.FirstOrDefault(x => x.MemberID == userId);
+            if (subData == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有開通訂閱"
+                });
+            }
+            var result = new
+            {
+                authorId =userId,
+                subId = subData.ID,
+                authorUserName = userName,
+                subData.Amount
+            };
+            return Ok(new
+            {
+                success = true,
+                data=result
+            });
+        }
+        /// <summary>
+        /// 修改訂閱金額
+        /// </summary>
+        /// <param name="Amount">訂閱金額</param>
+        /// <returns></returns>
+        [Route("api/Member/EditSubserciptionplans")]
+        [HttpPut]
+        [JwtAuthFilter]
+        public IHttpActionResult EditSubserciptionplans(string Amount)
+        {
+            var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
+            var data = from q in db.Subscriptionplans
+                where q.MemberID == userId
+                select q;
+            if (data == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "還沒開通訂閱方案"
+                });
+            }
+
+            foreach (var q in data)
+            {
+                q.Amount = Amount;
+            }
+
+            db.SaveChanges();
+            return Ok(new
+            {
+                success = true,
+                message = "修改訂閱金額成功"
+            });
+        }
+        /// <summary>
+        /// 取得作者方案
+        /// </summary>
+        /// <param name="author">作者帳號</param>
+        /// <returns></returns>
+        [Route("api/Member/GetAuthorSubscriptionplans")]
+        [HttpGet]
+        public IHttpActionResult GetAuthorSubscriptionplans(string author)
+        {
+            var memberdata = db.Members.FirstOrDefault(x => x.UserName == author);
+            if (memberdata == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此作者"
+                });
+            }
+
+            int memberId = memberdata.ID;
+            var subData = db.Subscriptionplans.FirstOrDefault(x => x.MemberID == memberId);
+            if (subData == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "此作者沒有開通訂閱"
+                });
+            }
+            var result = new
+            {
+                authorId = memberId,
+                subId = subData.ID,
+                authorUserName = author,
+                subData.Amount
+            };
+            return Ok(new
+            {
+                success = true,
+                data = result
             });
         }
     }

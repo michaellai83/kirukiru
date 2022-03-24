@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.ServiceModel.Security;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -64,18 +65,18 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 找到作者自己的所有一般文章
         /// </summary>
-        /// <param name="ispush">是否發布(判斷是否在草稿)</param>
+        /// <param name="isPush">是否發布(判斷是否在草稿)</param>
         /// <param name="nowPage">現在頁數(預設1)</param>
         /// <param name="showNum">一頁顯示幾筆資料</param>
         /// <returns></returns>
         [HttpGet]
         [JwtAuthFilter]
-        public IHttpActionResult GetUserAllArticleNormal( bool ispush,int nowPage,int showNum)
+        public IHttpActionResult GetUserAllArticleNormal( bool isPush,int nowPage,int showNum)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var data = from a in db.ArticleNormals
             where(a.UserName == username &
-                  a.IsPush == ispush)
+                  a.IsPush == isPush)
             select a;
             if (data == null)
             {
@@ -128,13 +129,24 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 刪除作者的文章
         /// </summary>
-        /// <param name="artID">要刪除的文章ID</param>
+        /// <param name="artId">要刪除的文章ID</param>
         /// <returns></returns>
+        [Route("api/ArticleNormal/DeleteArticleNormal")]
         [HttpDelete]
         [JwtAuthFilter]
-        public IHttpActionResult DeleteArticleNormal(int artID)
+        public IHttpActionResult DeleteArticleNormal(int artId)
         {
-            var data = db.ArticleNormals.FirstOrDefault(m => m.ID == artID);
+            var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var data = db.ArticleNormals.FirstOrDefault(m => m.ID == artId);
+            var dataUser = data.UserName;
+            if (dataUser != username)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "你沒有權限"
+                });
+            }
             if (data == null)
             {
                 return Ok(new
@@ -155,14 +167,14 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 更改一般文章
         /// </summary>
-        /// <param name="artID">文章的ID</param>
+        /// <param name="artId">文章的ID</param>
         /// <param name="data">更改過後的資料</param>
         /// <returns></returns>
         [HttpPut]
         [JwtAuthFilter]
-        public IHttpActionResult EditArticleNormal(int artID, DataArticleNormal data)
+        public IHttpActionResult EditArticleNormal(int artId, DataArticleNormal data)
         {
-            var havedata = db.ArticleNormals.FirstOrDefault(m => m.ID == artID);
+            var havedata = db.ArticleNormals.FirstOrDefault(m => m.ID == artId);
             if (havedata == null)
             {
                 return Ok(new
@@ -173,7 +185,7 @@ namespace testdatamodel.Controllers
             }
 
             var editdata = from q in db.ArticleNormals
-                where (q.ID == artID)
+                where (q.ID == artId)
                 select q;
             foreach (var q in editdata)
             {
@@ -195,14 +207,14 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 一般文章按愛心
         /// </summary>
-        /// <param name="artid">文章id</param>
+        /// <param name="artId">文章id</param>
         /// <param name="putlove">是否按愛心</param>
         /// <returns></returns>
         [HttpPut]
-        public IHttpActionResult AddLoveArticleNormal(int artid, bool putlove)
+        public IHttpActionResult AddLoveArticleNormal(int artId, bool putlove)
         {
             var data = from q in db.ArticleNormals
-                where (q.ID == artid)
+                where (q.ID == artId)
                 select q;
             if (data == null)
             {
@@ -213,7 +225,7 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            int lovecount = db.ArticleNormals.FirstOrDefault(m => m.ID == artid).Lovecount;
+            int lovecount = db.ArticleNormals.FirstOrDefault(m => m.ID == artId).Lovecount;
             if (putlove == true)
             {
                 lovecount++;
@@ -242,12 +254,12 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取得一般文章頁面所需資訊
         /// </summary>
-        /// <param name="artid">文章ID</param>
+        /// <param name="artId">文章ID</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult GetArticleNormal(int? artid)
+        public IHttpActionResult GetArticleNormal(int? artId)
         {
-            var data = db.ArticleNormals.FirstOrDefault(m => m.ID == artid);
+            var data = db.ArticleNormals.FirstOrDefault(m => m.ID == artId);
             if (data == null)
             {
                 return Ok(new
@@ -263,6 +275,7 @@ namespace testdatamodel.Controllers
             var Art_initdate = data.InitDate;
             var Art_ispush = data.IsPush;
             var Art_isfree = data.IsFree;
+            var lovenum = data.Lovecount;
 
             var artlogid = data.ArticlecategoryId;
             
@@ -270,14 +283,6 @@ namespace testdatamodel.Controllers
             ArrayList remessageArrayList = new ArrayList();
             foreach (var str in Art_message)
             {
-
-                var mdata = new
-                {
-                    messageId = str.Id,
-                    messageMain = str.Main,
-                    messageInitDate = str.InitDate,
-                };
-                messageArrayList.Add(mdata);
                 var rmessagedata = str.R_MessageNormals.ToList();
                 foreach (var rstr in rmessagedata)
                 {
@@ -289,6 +294,17 @@ namespace testdatamodel.Controllers
                     };
                     remessageArrayList.Add(rdata);
                 }
+                var mdata = new
+                {
+                    messageId = str.Id,
+                    messageMember = str.UserName,
+                    messageMain = str.Main,
+                    messageInitDate = str.InitDate,
+                    reMessageArrayList = remessageArrayList
+                };
+                messageArrayList.Add(mdata);
+                
+                
             }
             return Ok(new
             {
@@ -300,8 +316,8 @@ namespace testdatamodel.Controllers
                     artInitDate =Art_initdate,
                     isFree = Art_ispush,
                     isPush = Art_isfree,
-                    messageArrayList,
-                    reMessageArrayList=remessageArrayList}
+                    lovecount= lovenum,
+                    messageArrayList}
         });
         }
         /// <summary>
@@ -309,7 +325,7 @@ namespace testdatamodel.Controllers
         /// </summary>
         /// <param name="artId">文章ID</param>
         /// <returns></returns>
-        [Route("api/GetNormalArticle")]
+        [Route("api/ArticleNormal/GetNormalArticle")]
         [ResponseType(typeof(NormalArticleOutPutForEdit))]
         [HttpGet]
         [JwtAuthFilter]
@@ -351,15 +367,15 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 一般文章的留言
         /// </summary>
-        /// <param name="artid">文章ID</param>
+        /// <param name="artId">文章ID</param>
         /// <param name="messagemain">留言內容</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult AddmessageArticleNrmal(int artid, string messagemain)
+        public IHttpActionResult AddmessageArticleNrmal(int artId, string messagemain)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
-            var data = db.ArticleNormals.FirstOrDefault(m => m.ID == artid);
+            var data = db.ArticleNormals.FirstOrDefault(m => m.ID == artId);
             if (data == null)
             {
                 return Ok(new
@@ -369,7 +385,7 @@ namespace testdatamodel.Controllers
                 });
             }
             MessageNormal message = new MessageNormal();
-            message.ArticleNorId = artid;
+            message.ArticleNorId = artId;
             message.UserName = username;
             message.Main = messagemain;
             message.InitDate = DateTime.Now;
@@ -384,14 +400,15 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 回覆一般文章留言
         /// </summary>
-        /// <param name="messageid">留言ID</param>
+        /// <param name="messageId">留言ID</param>
         /// <param name="messagemain">回覆留言的內容</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult Addremessage(int messageid, string messagemain)
+        public IHttpActionResult Addremessage(int messageId, string messagemain)
         {
-            var data = db.MessageNormals.FirstOrDefault(m => m.Id == messageid);
+            var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var data = db.MessageNormals.FirstOrDefault(m => m.Id == messageId);
             if (data == null)
             {
                 return Ok(new
@@ -400,8 +417,19 @@ namespace testdatamodel.Controllers
                     message = "無此留言"
                 });
             }
+            var dataArtID = data.ArticleNorId;
+            var datausername = db.ArticleNormals.FirstOrDefault(x => x.ID == dataArtID).UserName;
+            if (username != datausername)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "你沒有權限"
+                });
+            }
+            
             R_MessageNormal rMessage = new R_MessageNormal();
-            rMessage.MessageNorId = messageid;
+            rMessage.MessageNorId = messageId;
             rMessage.Main = messagemain;
             rMessage.InitDate = DateTime.Now;
             db.R_MessageNormals.Add(rMessage);
@@ -415,13 +443,13 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 找到一般文章所有的留言
         /// </summary>
-        /// <param name="artid">文章ID</param>
+        /// <param name="artId">文章ID</param>
         /// <returns></returns>
-        [Route("GetAllmessage")]
+        [Route("api/ArticleNormal/GetAllmessage")]
         [HttpGet]
-        public IHttpActionResult Getmessage(int artid )
+        public IHttpActionResult Getmessage(int artId )
         {
-            var data = db.ArticleNormals.FirstOrDefault(x => x.ID == artid);
+            var data = db.ArticleNormals.FirstOrDefault(x => x.ID == artId);
             if (data == null)
             {
                 return Ok(new
@@ -437,9 +465,10 @@ namespace testdatamodel.Controllers
             {
                 var result = new
                 {
-                    str.Id,
-                    str.Main,
-                    str.InitDate
+                    messageId=str.Id,
+                    messageMember = str.UserName,
+                    messageMain = str.Main,
+                    messageInitDate = str.InitDate
                 };
                 resultList.Add(result);
             }
@@ -455,7 +484,7 @@ namespace testdatamodel.Controllers
         /// </summary>
         /// <param name="messageId">留言ID</param>
         /// <returns></returns>
-        [Route("Getmessage")]
+        [Route("api/ArticleNormal/Getmessage")]
         [HttpGet]
         public IHttpActionResult GetOneMessage(int messageId)
         {
@@ -469,24 +498,28 @@ namespace testdatamodel.Controllers
                 });
             }
 
+            var userName = data.UserName;
             var main = data.Main;
+            var initDate = data.InitDate;
             return Ok(new
             {
                 success = true,
-                messaageMain = main
+                messageMember = userName,
+                messaageMain = main,
+                messaageIniteDate = initDate
             });
         }
         /// <summary>
         /// 作者刪除留言
         /// </summary>
-        /// <param name="messageID">留言ID</param>
+        /// <param name="messageId">留言ID</param>
         /// <returns></returns>
         [HttpDelete]
         [JwtAuthFilter]
-        public IHttpActionResult DeleteMessage(int messageID)
+        public IHttpActionResult DeleteMessage(int messageId)
         {
             var user = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
-            var data = db.MessageNormals.FirstOrDefault(x => x.Id == messageID);
+            var data = db.MessageNormals.FirstOrDefault(x => x.Id == messageId);
             var dataId = data.ArticleNorId;
             var artmember = db.ArticleNormals.FirstOrDefault(x => x.ID == dataId).UserName;
             if (user != artmember)
@@ -510,12 +543,12 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取得此留言回覆
         /// </summary>
-        /// <param name="messageid">留言id</param>
+        /// <param name="messageId">留言id</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult Getrmessage(int messageid)
+        public IHttpActionResult Getrmessage(int messageId)
         {
-            var data = db.MessageNormals.FirstOrDefault(x => x.Id == messageid);
+            var data = db.MessageNormals.FirstOrDefault(x => x.Id == messageId);
             if (data == null)
             {
                 return Ok(new
@@ -531,9 +564,9 @@ namespace testdatamodel.Controllers
             {
                 var result = new
                 {
-                    str.Id,
-                    str.Main,
-                    str.InitDate
+                    reMessaageId = str.Id,
+                    reMessaageMain = str.Main,
+                    reMessaageInitDate = str.InitDate
                 };
                 resultList.Add(result);
             }
@@ -547,14 +580,14 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 收藏一般文章
         /// </summary>
-        /// <param name="artid">文章ID</param>
+        /// <param name="artId">文章ID</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult Collectarticle(int artid)
+        public IHttpActionResult Collectarticle(int artId)
         {
             var memberid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
-            var datArticle = db.ArticleNormals.FirstOrDefault(x => x.ID == artid);
+            var datArticle = db.ArticleNormals.FirstOrDefault(x => x.ID == artId);
 
             if (datArticle == null)
             {
@@ -578,14 +611,15 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取消收藏
         /// </summary>
-        /// <param name="articleid">文章ID</param>
+        /// <param name="artId">文章ID</param>
         /// <returns></returns>
+        [Route("api/ArticleNormal/Deletecollect")]
         [HttpDelete]
         [JwtAuthFilter]
-        public IHttpActionResult Deletecollect(int articleid)
+        public IHttpActionResult Deletecollect(int artId)
         {
             var userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
-            var data = db.ArticleNormals.FirstOrDefault(x => x.ID == articleid);
+            var data = db.ArticleNormals.FirstOrDefault(x => x.ID == artId);
             if (data == null)
             {
                 return Ok(new
@@ -659,6 +693,47 @@ namespace testdatamodel.Controllers
                 });
             }
 
+        }
+        /// <summary>
+        /// 依照類別取得相關一般文章(前四筆)
+        /// </summary>
+        /// <param name="articlecategoryId">文章類別ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        public IHttpActionResult GetArtlogNormalArticle(int articlecategoryId)
+        {
+            var data = db.ArticleNormals.Where(x => x.ArticlecategoryId == articlecategoryId).Where(x=>x.IsPush==true)
+                .OrderByDescending(x => x.InitDate).Take(4).ToList();
+            if (data == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有相關文章"
+                });
+            }
+            List<NormalArticles> arrayList = new List<NormalArticles>();
+
+            foreach (var content in data)
+            {
+
+                NormalArticles newartary = new NormalArticles();
+                newartary.ArticleID = content.ID;
+                newartary.UserName = content.UserName;
+                newartary.Title = content.Title;
+                newartary.Articlecategory = content.Articlecategory.Name;
+                newartary.Isfree = content.IsFree;
+                newartary.Lovecount = content.Lovecount;
+                newartary.InitDateTime = content.InitDate;
+
+                arrayList.Add(newartary);
+
+            }
+            return Ok(new
+            {
+                success = true,
+                data = arrayList
+            });
         }
     }
 }

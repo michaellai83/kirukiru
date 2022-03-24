@@ -1106,7 +1106,7 @@
             訪客留言
             </summary>
             <param name="Main">留言內容</param>
-            <param name="ArtID">文章ID</param>
+            <param name="artId">文章ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleController.GetAllMessage(System.Int32)">
@@ -1127,7 +1127,7 @@
             <summary>
             回覆留言
             </summary>
-            <param name="MessageId">留言的ID</param>
+            <param name="messageId">留言的ID</param>
             <param name="main">留言內容</param>
             <returns></returns>
         </member>
@@ -1135,7 +1135,7 @@
             <summary>
             取得留言回覆的內容
             </summary>
-            <param name="reMsgId">留言的ID</param>
+            <param name="messageId">留言的ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleController.GetArctile(System.Int32)">
@@ -1158,11 +1158,11 @@
             <param name="artId">文章ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.DeleteActile(System.String)">
+        <member name="M:testdatamodel.Controllers.ArticleController.DeleteActile(System.Int32)">
             <summary>
             刪除文章
             </summary>
-            <param name="artid">文章ID</param>
+            <param name="artId">文章ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleController.GetUserArticle(System.Boolean,System.Int32,System.Int32)">
@@ -1178,7 +1178,7 @@
             <summary>
             按愛心
             </summary>
-            <param name="artid">文章ID</param>
+            <param name="artId">文章ID</param>
             <param name="putlove">是否按愛心</param>
             <returns></returns>
         </member>
@@ -1186,14 +1186,14 @@
             <summary>
             收藏切切文章
             </summary>
-            <param name="artid">文章ID</param>
+            <param name="artId">文章ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleController.Deletecollect(System.Int32)">
             <summary>
             取消收藏文章
             </summary>
-            <param name="articleid">收藏文章的ID</param>
+            <param name="artId">收藏文章的ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleController.GetAllcollectart(System.Int32,System.Int32)">
@@ -1202,6 +1202,13 @@
             </summary>
             <param name="Nowpage">現在頁數(預設為1)</param>
             <param name="showcount">一頁顯示幾筆</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.GetArtlogArticle(System.Int32)">
+            <summary>
+            依類別取得四筆切切文章
+            </summary>
+            <param name="articlecategoryId"></param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.ArticleNormalController">
@@ -1220,7 +1227,7 @@
             <summary>
             找到作者自己的所有一般文章
             </summary>
-            <param name="ispush">是否發布(判斷是否在草稿)</param>
+            <param name="isPush">是否發布(判斷是否在草稿)</param>
             <param name="nowPage">現在頁數(預設1)</param>
             <param name="showNum">一頁顯示幾筆資料</param>
             <returns></returns>
@@ -1229,14 +1236,14 @@
             <summary>
             刪除作者的文章
             </summary>
-            <param name="artID">要刪除的文章ID</param>
+            <param name="artId">要刪除的文章ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.EditArticleNormal(System.Int32,testdatamodel.PutData.DataArticleNormal)">
             <summary>
             更改一般文章
             </summary>
-            <param name="artID">文章的ID</param>
+            <param name="artId">文章的ID</param>
             <param name="data">更改過後的資料</param>
             <returns></returns>
         </member>
@@ -1244,7 +1251,7 @@
             <summary>
             一般文章按愛心
             </summary>
-            <param name="artid">文章id</param>
+            <param name="artId">文章id</param>
             <param name="putlove">是否按愛心</param>
             <returns></returns>
         </member>
@@ -1252,7 +1259,7 @@
             <summary>
             取得一般文章頁面所需資訊
             </summary>
-            <param name="artid">文章ID</param>
+            <param name="artId">文章ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.GetNormalArticleForEdit(System.Nullable{System.Int32})">
@@ -1266,7 +1273,7 @@
             <summary>
             一般文章的留言
             </summary>
-            <param name="artid">文章ID</param>
+            <param name="artId">文章ID</param>
             <param name="messagemain">留言內容</param>
             <returns></returns>
         </member>
@@ -1274,7 +1281,7 @@
             <summary>
             回覆一般文章留言
             </summary>
-            <param name="messageid">留言ID</param>
+            <param name="messageId">留言ID</param>
             <param name="messagemain">回覆留言的內容</param>
             <returns></returns>
         </member>
@@ -1282,7 +1289,7 @@
             <summary>
             找到一般文章所有的留言
             </summary>
-            <param name="artid">文章ID</param>
+            <param name="artId">文章ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.GetOneMessage(System.Int32)">
@@ -1296,28 +1303,28 @@
             <summary>
             作者刪除留言
             </summary>
-            <param name="messageID">留言ID</param>
+            <param name="messageId">留言ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.Getrmessage(System.Int32)">
             <summary>
             取得此留言回覆
             </summary>
-            <param name="messageid">留言id</param>
+            <param name="messageId">留言id</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.Collectarticle(System.Int32)">
             <summary>
             收藏一般文章
             </summary>
-            <param name="artid">文章ID</param>
+            <param name="artId">文章ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.Deletecollect(System.Int32)">
             <summary>
             取消收藏
             </summary>
-            <param name="articleid">文章ID</param>
+            <param name="artId">文章ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.GetAllcollectart(System.Int32,System.Int32)">
@@ -1326,6 +1333,13 @@
             </summary>
             <param name="Nowpage">現在頁數(預設為1)</param>
             <param name="showcount">一頁顯示幾筆</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetArtlogNormalArticle(System.Int32)">
+            <summary>
+            依照類別取得相關一般文章(前四筆)
+            </summary>
+            <param name="articlecategoryId">文章類別ID</param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.BackmemberController">
@@ -1397,11 +1411,10 @@
             金流基本資料(可再移到Web.config或資料庫設定)
             </summary>
         </member>
-        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPayBill(System.Int32,System.String,System.Int32,System.String)">
+        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPayBill(System.String,System.Int32,System.String)">
             <summary>
             [智付通支付]金流介接
             </summary>
-             <param name="userid">會員ID</param>
             <param name="main">訂單內容</param>
             <param name="amount">訂單金額</param>
             <param name="payType">請款類型(CREDIT=信用卡付款\WEBATM=網路銀行轉帳付款)</param>
@@ -1412,31 +1425,28 @@
             [智付通]金流介接(結果: 支付完成 返回商店網址)這是藍星傳給後端的資料讓後端去知道是否成功交易去更改訂單的狀態
             </summary>
         </member>
-        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPeriodic(System.Int32,System.String,System.Int32,System.String)">
+        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPeriodic(System.String,System.Int32,System.String)">
             <summary>
             定期定額
             </summary>
-            <param name="userid">會員ID</param>
             <param name="main">訂單內容</param>
             <param name="amount">訂單金額</param>
             <param name="peroidtype">訂閱(年/月)</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.BankController.Ecpay(System.Int32,System.String,System.Int32,System.String)">
+        <member name="M:testdatamodel.Controllers.BankController.Ecpay(System.String,System.Int32,System.String)">
             <summary>
             綠界金流單筆
             </summary>
-            <param name="userid">會員ID</param>
             <param name="main">內容(訂閱的帳號)</param>
             <param name="amount">價錢</param>
             <param name="Payment">預設(ALL)</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.BankController.Ecpayperiod(System.Int32,System.String,System.Int32,System.String)">
+        <member name="M:testdatamodel.Controllers.BankController.Ecpayperiod(System.String,System.Int32,System.String)">
             <summary>
             綠界金流 定期
             </summary>
-            <param name="userid">會員ID</param>
             <param name="main">內容(訂閱帳號)</param>
             <param name="PeriodAmount">訂閱金額</param>
             <param name="PeriodType">月費還是年費(M/Y)</param>
@@ -1663,7 +1673,52 @@
             <summary>
             更改會員大頭貼
             </summary>
-            <param name="photoName">圖片名稱</param>
+            <param name="Userpic">圖片名稱</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.Getordernumber">
+            <summary>
+            取得會員訂閱數量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.GetBeordernumber">
+            <summary>
+            取得會員被多少人訂閱的數量
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.GetName(System.String)">
+            <summary>
+            回傳作者個人資料
+            </summary>
+            <param name="author">會員帳號</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.AddNewSubscriptionplans">
+            <summary>
+            開通會員訂閱方案
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.GetMySubscriptionplans">
+            <summary>
+            取得我的方案
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.EditSubserciptionplans(System.String)">
+            <summary>
+            修改訂閱金額
+            </summary>
+            <param name="Amount">訂閱金額</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.GetAuthorSubscriptionplans(System.String)">
+            <summary>
+            取得作者方案
+            </summary>
+            <param name="author">作者帳號</param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.TestController">
@@ -2524,6 +2579,71 @@
             隨機
             </summary>
         </member>
+        <member name="T:testdatamodel.Swagger.KiruArtLogFourOutPut">
+            <summary>
+            依照類別取得前四筆切切文章(用時間)
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruArtLogFourOutPut.success">
+            <summary>
+            是否成功
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruArtLogFourOutPut.data">
+            <summary>
+            回傳資料內容
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.KiruArtLogFourOutPut.Data">
+            <summary>
+            回傳資料
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruArtLogFourOutPut.Data.ArticleID">
+            <summary>
+            切切文章ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruArtLogFourOutPut.Data.UserName">
+            <summary>
+            切切文章作者帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruArtLogFourOutPut.Data.Title">
+            <summary>
+            切切標題
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruArtLogFourOutPut.Data.ArtInfo">
+            <summary>
+            切切簡介
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruArtLogFourOutPut.Data.Articlecategory">
+            <summary>
+            切切文章類別名稱
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruArtLogFourOutPut.Data.ArtPic">
+            <summary>
+            切切封面照片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruArtLogFourOutPut.Data.Isfree">
+            <summary>
+            切切是否付費
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruArtLogFourOutPut.Data.Lovecount">
+            <summary>
+            切切愛心數量
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.KiruArtLogFourOutPut.Data.InitDateTime">
+            <summary>
+            切切建立時間
+            </summary>
+        </member>
         <member name="T:testdatamodel.Swagger.Kirukiruoutput">
             <summary>
             切切回傳格式
@@ -2602,6 +2722,11 @@
         <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.final">
             <summary>
             備註
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.lovecount">
+            <summary>
+            愛心數量
             </summary>
         </member>
         <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.messageArrayList">

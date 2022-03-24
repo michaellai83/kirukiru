@@ -568,6 +568,7 @@
     <Compile Include="Secret\PasswordWithSaltHasher.cs" />
     <Compile Include="Secret\Rng.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Swagger\KiruArtLogFourOutPut.cs" />
     <Compile Include="Swagger\Kirukiruoutput.cs" />
     <Compile Include="Swagger\KiruOutPutForEdit.cs" />
     <Compile Include="Swagger\NormalArticleOutPutForEdit.cs" />

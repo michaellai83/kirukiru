@@ -249,7 +249,7 @@ namespace testdatamodel.Controllers
         /// 最熱門的一般文章(前四筆)
         /// </summary>
         /// <returns></returns>
-        [Route("lovenormalarticle")]
+        [Route("api/Homepagenormal/lovenormalarticle")]
         [HttpGet]
         public IHttpActionResult Lovearticle()
         {

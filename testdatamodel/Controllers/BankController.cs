@@ -46,15 +46,15 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// [智付通支付]金流介接
         /// </summary>
-        ///  <param name="userid">會員ID</param>
         /// <param name="main">訂單內容</param>
         /// <param name="amount">訂單金額</param>
         /// <param name="payType">請款類型(CREDIT=信用卡付款\WEBATM=網路銀行轉帳付款)</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult SpgatewayPayBill(int userid, string main, int amount, string payType)
+        public IHttpActionResult SpgatewayPayBill( string main, int amount, string payType)
         {
+            var userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var memberdata = db.Members.FirstOrDefault(x => x.ID == userid);
             string username = memberdata.UserName;
             if (memberdata == null)
@@ -243,14 +243,15 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 定期定額
         /// </summary>
-        /// <param name="userid">會員ID</param>
         /// <param name="main">訂單內容</param>
         /// <param name="amount">訂單金額</param>
         /// <param name="peroidtype">訂閱(年/月)</param>
         /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult SpgatewayPeriodic(int userid, string main, int amount, string peroidtype)
+        [JwtAuthFilter]
+        public IHttpActionResult SpgatewayPeriodic(string main, int amount, string peroidtype)
         {
+            var userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var memberdata = db.Members.FirstOrDefault(x => x.ID == userid);
             string username = memberdata.UserName;
             string email = memberdata.Email;
@@ -402,17 +403,19 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 綠界金流單筆
         /// </summary>
-        /// <param name="userid">會員ID</param>
         /// <param name="main">內容(訂閱的帳號)</param>
         /// <param name="amount">價錢</param>
         /// <param name="Payment">預設(ALL)</param>
         /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult Ecpay(int userid, string main, int amount, string Payment)
+        [JwtAuthFilter]
+        public IHttpActionResult Ecpay( string main, int amount, string Payment)
         {
+            var userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var memberdata = db.Members.FirstOrDefault(x => x.ID == userid);
             string username = memberdata.UserName;
             string email = memberdata.Email;
+            string returnurl = "https://kirukiru.rocket-coding.com/api/Bank/ecreturn";
             if (memberdata == null)
             {
                 return Ok(new { status = "請登入帳號密碼" });
@@ -439,7 +442,7 @@ namespace testdatamodel.Controllers
                     new KeyValuePair<string, string>("MerchantTradeDate", time),
                     new KeyValuePair<string, string>("MerchantTradeNo", orderno.ToString()),
                     new KeyValuePair<string, string>("PaymentType", "aio"),
-                    new KeyValuePair<string, string>("ReturnURL", _bankInfoModel.ReturnURL),
+                    new KeyValuePair<string, string>("ReturnURL", returnurl),
                     new KeyValuePair<string, string>("TotalAmount", amount.ToString()),
                     new KeyValuePair<string, string>("TradeDesc", "註記")
                 };
@@ -478,14 +481,15 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 綠界金流 定期
         /// </summary>
-        /// <param name="userid">會員ID</param>
         /// <param name="main">內容(訂閱帳號)</param>
         /// <param name="PeriodAmount">訂閱金額</param>
         /// <param name="PeriodType">月費還是年費(M/Y)</param>
         /// <returns></returns>
         [HttpPost]
-        public IHttpActionResult Ecpayperiod(int userid, string main, int PeriodAmount, string PeriodType)
+        [JwtAuthFilter]
+        public IHttpActionResult Ecpayperiod(string main, int PeriodAmount, string PeriodType)
         {
+            var userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var memberdata = db.Members.FirstOrDefault(x => x.ID == userid);
             string username = memberdata.UserName;
             string email = memberdata.Email;
@@ -504,7 +508,7 @@ namespace testdatamodel.Controllers
                 //訂單編號先處理好 存進去資料庫 先用狀態 是否成功去判斷回傳回來有沒有成功
                 string orderno = $"T{DateTime.Now.ToString("yyyyMMddHHmm")}";
                 var time = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss");
-                string returnurl = "https://kirukiru.rocket-coding.com/api/ecreturn";
+                string returnurl = "https://kirukiru.rocket-coding.com/api/Bank/ecreturn";
                 Orderlist orderlist = new Orderlist();
                 orderlist.Ordernumber = orderno;
                 orderlist.MemberID = userid;
@@ -584,7 +588,7 @@ namespace testdatamodel.Controllers
         /// </summary>
         /// <param name="returndata"></param>
         /// <returns></returns>
-        [Route("api/ecreturn")]
+        [Route("api/Bank/ecreturn")]
         [HttpPost]
         public HttpResponseMessage EcReturn([FromBody] Ecreturndata returndata)
         {
