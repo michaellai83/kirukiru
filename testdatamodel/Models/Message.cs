@@ -21,6 +21,14 @@ namespace testdatamodel.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]//自動生成編號
         public int Id { get; set; }
         /// <summary>
+        /// 留言者ID
+        /// </summary>
+        [Display(Name = "會員ID")]
+        public int MemberID { get; set; }
+
+        [ForeignKey("MemberID")]
+        public virtual Member Members{ get; set; }
+        /// <summary>
         /// 會員的帳號
         /// </summary>
         [Display(Name = "會員帳號")]

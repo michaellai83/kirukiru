@@ -453,6 +453,7 @@ namespace testdatamodel.Controllers
         {
             var UserName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
         
+            var UserID = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var data = db.Articles.FirstOrDefault(x => x.ID == artId);
             if (data == null)
             {
@@ -465,6 +466,7 @@ namespace testdatamodel.Controllers
             else
             {
                 Message message = new Message();
+                message.MemberID = UserID;
                 message.UserName = UserName;
                 message.ArticleId = artId;
                 message.Main = Main;
@@ -484,31 +486,67 @@ namespace testdatamodel.Controllers
         /// 取得此篇文章所有留言資料
         /// </summary>
         /// <param name="artId">文章Id</param>
+        /// <param name="nowpage">現在頁數(預設1)</param>
+        /// <param name="showcount">一頁顯示幾筆</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult GetAllMessage(int artId)
+        public IHttpActionResult GetAllMessage(int artId ,int nowpage,int showcount)
         {
             var data = db.Messages.Where(m => m.ArticleId == artId).ToList();
             if (data.Count > 0)
             {
-                ArrayList array = new ArrayList();
+
+                List<MessageList> arrayList = new List<MessageList>();
+               
                 foreach (var str in data)
                 {
-                    var result = new
+                    List<MessageList.RMG> reList = new List<MessageList.RMG>();
+                    var picName = str.Members.PicName + "." + str.Members.FileName;
+                    var remessageDate = str.R_Messages.ToList();
+                    foreach (var rstr in remessageDate)
                     {
-                        messageId = str.Id,
-                        messageMember = str.UserName,
-                        messageMain = str.Main,
-                        messageInitDate = str.InitDate
-                    };
-                    array.Add(result);
+                        MessageList.RMG remessage = new MessageList.RMG();
+                        remessage.reMessageId = rstr.Id;
+                        remessage.reMessageMain = rstr.Main;
+                        remessage.reMessageInitDate = rstr.InitDate;
+                        reList.Add(remessage);
+                    }
+
+                    MessageList array = new MessageList();
+                    array.messageId = str.Id;
+                    array.messageMember = str.UserName;
+                    array.messageMemberPic = picName;
+                    array.messageMain = str.Main;
+                    array.messageInitDate = str.InitDate;
+                    array.reMessageData = reList;
+                    arrayList.Add(array);
+
                 }
 
-                return Ok(new
+                var total = arrayList.Count;
+                if (nowpage == 1)
                 {
-                    success = true,
-                    data =array
-                });
+                    var result = arrayList.OrderByDescending(x => x.messageInitDate).Take(showcount);
+                    return Ok(new
+                    {
+                        success = true,
+                        total = total,
+                        data = result
+                    });
+                }
+                else
+                {
+                    var page = (nowpage - 1) * showcount;
+                    var result = arrayList.OrderByDescending(x => x.messageInitDate).Skip(page).Take(showcount);
+                    return Ok(new
+                    {
+                        success = true,
+                        total = total,
+                        data = result
+                    });
+                }
+                
+               
             }
             else
             {
@@ -522,11 +560,12 @@ namespace testdatamodel.Controllers
 
         }
         /// <summary>
-        /// 取得留言資料(單筆)
+        /// 取得留言資料(單筆)(含大頭貼)
         /// </summary>
         /// <param name="messageId">留言的ID</param>
         /// <returns></returns>
         [HttpGet]
+        [ResponseType(typeof(OutPutMessage))]
         public IHttpActionResult Getmessage(int messageId)
         {
             var data = db.Messages.FirstOrDefault(x => x.Id == messageId);
@@ -539,9 +578,13 @@ namespace testdatamodel.Controllers
                 });
             }
 
+            var userName = data.UserName;
+
+            var userPic = data.Members.PicName + "." + data.Members.FileName;
             var result = new
             {
                 messageMember=data.UserName,
+                messageMemberPic = userPic,
                 messageMain = data.Main,
                 messageInitDate = data.InitDate
             };
@@ -607,6 +650,7 @@ namespace testdatamodel.Controllers
         /// <param name="messageId">留言的ID</param>
         /// <returns></returns>
         [Route("api/Article/GetReMessage")]
+        [ResponseType(typeof(OutPutReMessage))]
         [HttpGet]
         public IHttpActionResult GetReMessage(int messageId)
         {
@@ -727,10 +771,13 @@ namespace testdatamodel.Controllers
                     };
                     remessageArrayList.Add(rdata);
                 }
+
+                var pic = str.Members.PicName + "." + str.Members.FileName;
                 var mdata = new
                 {
                     messageId = str.Id,
                     messageMember = str.UserName,
+                    messageMemberPic = pic,
                     messageMain = str.Main,
                     messageInitDate =str.InitDate,
                     reMessageData= remessageArrayList

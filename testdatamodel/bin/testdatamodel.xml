@@ -1109,16 +1109,18 @@
             <param name="artId">文章ID</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.GetAllMessage(System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleController.GetAllMessage(System.Int32,System.Int32,System.Int32)">
             <summary>
             取得此篇文章所有留言資料
             </summary>
             <param name="artId">文章Id</param>
+            <param name="nowpage">現在頁數(預設1)</param>
+            <param name="showcount">一頁顯示幾筆</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleController.Getmessage(System.Int32)">
             <summary>
-            取得留言資料(單筆)
+            取得留言資料(單筆)(含大頭貼)
             </summary>
             <param name="messageId">留言的ID</param>
             <returns></returns>
@@ -1285,16 +1287,18 @@
             <param name="messagemain">回覆留言的內容</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleNormalController.Getmessage(System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.Getmessage(System.Int32,System.Int32,System.Int32)">
             <summary>
             找到一般文章所有的留言
             </summary>
             <param name="artId">文章ID</param>
+            <param name="nowpage">現在頁數(預設1)</param>
+            <param name="showcount">一頁顯示幾筆資料</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.GetOneMessage(System.Int32)">
             <summary>
-            取得一般文章一筆留言
+            取得一般文章一筆留言(含大頭貼))
             </summary>
             <param name="messageId">留言ID</param>
             <returns></returns>
@@ -1859,6 +1863,56 @@
             <param name="Token">Token</param>
             <returns></returns>
         </member>
+        <member name="T:testdatamodel.listclass.MessageList">
+            <summary>
+            留言格式
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.messageId">
+            <summary>
+            留言ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.messageMember">
+            <summary>
+            留言帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.messageMemberPic">
+            <summary>
+            留言者圖片
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.messageMain">
+            <summary>
+            留言內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.messageInitDate">
+            <summary>
+            留言時間
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.reMessageData">
+            <summary>
+            回覆留言
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.RMG.reMessageId">
+            <summary>
+            回覆留言ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.RMG.reMessageMain">
+            <summary>
+            回覆留言內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.RMG.reMessageInitDate">
+            <summary>
+            回覆留言時間
+            </summary>
+        </member>
         <member name="T:testdatamodel.listclass.NewArticle">
             <summary>
             最新文章列表
@@ -1867,6 +1921,11 @@
         <member name="T:testdatamodel.listclass.NormalArticles">
             <summary>
             正常文章列表
+            </summary>
+        </member>
+        <member name="T:testdatamodel.listclass.RemessageList">
+            <summary>
+            回覆留言
             </summary>
         </member>
         <member name="T:testdatamodel.Models.Article">
@@ -2114,6 +2173,11 @@
             留言的ID
             </summary>
         </member>
+        <member name="P:testdatamodel.Models.Message.MemberID">
+            <summary>
+            留言者ID
+            </summary>
+        </member>
         <member name="P:testdatamodel.Models.Message.UserName">
             <summary>
             會員的帳號
@@ -2142,6 +2206,11 @@
         <member name="P:testdatamodel.Models.MessageNormal.Id">
             <summary>
             留言的ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.MessageNormal.MemberID">
+            <summary>
+            留言者ID
             </summary>
         </member>
         <member name="P:testdatamodel.Models.MessageNormal.UserName">
@@ -2809,6 +2878,11 @@
             留言人的帳號
             </summary>
         </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Message.messageMemberPic">
+            <summary>
+            留言者大頭貼
+            </summary>
+        </member>
         <member name="P:testdatamodel.Swagger.Kirukiruoutput.Message.messageMain">
             <summary>
             留言內容
@@ -2987,6 +3061,56 @@
         <member name="T:testdatamodel.Swagger.NormalArticleOutPutForEdit">
             <summary>
             一般文章的編輯資訊
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.OutPutMessage">
+            <summary>
+            留言回傳格式
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.OutPutMessage.messageId">
+            <summary>
+            留言ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.OutPutMessage.messageMemberPic">
+            <summary>
+            留言者大頭貼
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.OutPutMessage.messageMember">
+            <summary>
+            留言帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.OutPutMessage.messageMain">
+            <summary>
+            留言內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.OutPutMessage.messageInitDate">
+            <summary>
+            留言時間
+            </summary>
+        </member>
+        <member name="T:testdatamodel.Swagger.OutPutReMessage">
+            <summary>
+            回覆留言格式
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.OutPutReMessage.reMessageId">
+            <summary>
+            回覆留言本身ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.OutPutReMessage.reMessageMain">
+            <summary>
+            回覆留言內容
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.OutPutReMessage.reMessageInitDate">
+            <summary>
+            回覆留言時間
             </summary>
         </member>
     </members>

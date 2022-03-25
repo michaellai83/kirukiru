@@ -294,10 +294,13 @@ namespace testdatamodel.Controllers
                     };
                     remessageArrayList.Add(rdata);
                 }
+
+                var picname = str.Members.PicName + "." + str.Members.FileName;
                 var mdata = new
                 {
                     messageId = str.Id,
                     messageMember = str.UserName,
+                    messageMemberPic = picname,
                     messageMain = str.Main,
                     messageInitDate = str.InitDate,
                     reMessageArrayList = remessageArrayList
@@ -375,6 +378,7 @@ namespace testdatamodel.Controllers
         public IHttpActionResult AddmessageArticleNrmal(int artId, string messagemain)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var data = db.ArticleNormals.FirstOrDefault(m => m.ID == artId);
             if (data == null)
             {
@@ -385,6 +389,7 @@ namespace testdatamodel.Controllers
                 });
             }
             MessageNormal message = new MessageNormal();
+            message.MemberID = userId;
             message.ArticleNorId = artId;
             message.UserName = username;
             message.Main = messagemain;
@@ -444,12 +449,14 @@ namespace testdatamodel.Controllers
         /// 找到一般文章所有的留言
         /// </summary>
         /// <param name="artId">文章ID</param>
+        /// <param name="nowpage">現在頁數(預設1)</param>
+        /// <param name="showcount">一頁顯示幾筆資料</param>
         /// <returns></returns>
         [Route("api/ArticleNormal/GetAllmessage")]
         [HttpGet]
-        public IHttpActionResult Getmessage(int artId )
+        public IHttpActionResult Getmessage(int artId ,int nowpage,int showcount)
         {
-            var data = db.ArticleNormals.FirstOrDefault(x => x.ID == artId);
+            var data = db.MessageNormals.Where(x => x.ArticleNorId == artId).ToList();
             if (data == null)
             {
                 return Ok(new
@@ -459,33 +466,64 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var message = data.MessageNormals.ToList();
-            ArrayList resultList = new ArrayList();
-            foreach (var str in message)
+            List<MessageList> arrayList = new List<MessageList>();
+
+            foreach (var str in data)
             {
-                var result = new
+                List<MessageList.RMG> reList = new List<MessageList.RMG>();
+                var picName = str.Members.PicName + "." + str.Members.FileName;
+                var remessageDate = str.R_MessageNormals.ToList();
+                foreach (var rstr in remessageDate)
                 {
-                    messageId=str.Id,
-                    messageMember = str.UserName,
-                    messageMain = str.Main,
-                    messageInitDate = str.InitDate
-                };
-                resultList.Add(result);
+                    MessageList.RMG remessage = new MessageList.RMG();
+                    remessage.reMessageId = rstr.Id;
+                    remessage.reMessageMain = rstr.Main;
+                    remessage.reMessageInitDate = rstr.InitDate;
+                    reList.Add(remessage);
+                }
+
+                MessageList array = new MessageList();
+                array.messageId = str.Id;
+                array.messageMember = str.UserName;
+                array.messageMemberPic = picName;
+                array.messageMain = str.Main;
+                array.messageInitDate = str.InitDate;
+                array.reMessageData = reList;
+                arrayList.Add(array);
+
             }
 
-            return Ok(new
+            var total = arrayList.Count;
+            if (nowpage == 1)
             {
-                success=true,
-                data=resultList
-            });
+                var result = arrayList.OrderByDescending(x => x.messageInitDate).Take(showcount);
+                return Ok(new
+                {
+                    success = true,
+                    total = total,
+                    data = result
+                });
+            }
+            else
+            {
+                var page = (nowpage - 1) * showcount;
+                var result = arrayList.OrderByDescending(x => x.messageInitDate).Skip(page).Take(showcount);
+                return Ok(new
+                {
+                    success = true,
+                    total = total,
+                    data = result
+                });
+            }
         }
         /// <summary>
-        /// 取得一般文章一筆留言
+        /// 取得一般文章一筆留言(含大頭貼))
         /// </summary>
         /// <param name="messageId">留言ID</param>
         /// <returns></returns>
         [Route("api/ArticleNormal/Getmessage")]
         [HttpGet]
+        [ResponseType(typeof(OutPutMessage))]
         public IHttpActionResult GetOneMessage(int messageId)
         {
             var data = db.MessageNormals.FirstOrDefault(x => x.Id == messageId);
@@ -497,14 +535,16 @@ namespace testdatamodel.Controllers
                     message = "沒有此留言"
                 });
             }
-
             var userName = data.UserName;
+          
+            var userPic = data.Members.PicName + "." + data.Members.FileName;
             var main = data.Main;
             var initDate = data.InitDate;
             return Ok(new
             {
                 success = true,
                 messageMember = userName,
+                messageMemberPic = userPic,
                 messaageMain = main,
                 messaageIniteDate = initDate
             });
@@ -546,6 +586,7 @@ namespace testdatamodel.Controllers
         /// <param name="messageId">留言id</param>
         /// <returns></returns>
         [HttpGet]
+        [ResponseType(typeof(OutPutReMessage))]
         public IHttpActionResult Getrmessage(int messageId)
         {
             var data = db.MessageNormals.FirstOrDefault(x => x.Id == messageId);

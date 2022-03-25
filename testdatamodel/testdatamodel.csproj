@@ -447,8 +447,10 @@
     </Compile>
     <Compile Include="JWT\JwtAuthFilter .cs" />
     <Compile Include="JWT\JwtAuthUtil.cs" />
+    <Compile Include="listclass\MessageList.cs" />
     <Compile Include="listclass\NewArticle.cs" />
     <Compile Include="listclass\NormalArticles.cs" />
+    <Compile Include="listclass\RemessageList.cs" />
     <Compile Include="Migrations\202203070846064_Addtable.cs" />
     <Compile Include="Migrations\202203070846064_Addtable.Designer.cs">
       <DependentUpon>202203070846064_Addtable.cs</DependentUpon>
@@ -533,6 +535,14 @@
     <Compile Include="Migrations\202203220223125_EditArticleNormalAddCheckArticle.Designer.cs">
       <DependentUpon>202203220223125_EditArticleNormalAddCheckArticle.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203240839395_AddMessageAndMemberFK.cs" />
+    <Compile Include="Migrations\202203240839395_AddMessageAndMemberFK.Designer.cs">
+      <DependentUpon>202203240839395_AddMessageAndMemberFK.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203240842243_AddMessageNorAndMemberFK.cs" />
+    <Compile Include="Migrations\202203240842243_AddMessageNorAndMemberFK.Designer.cs">
+      <DependentUpon>202203240842243_AddMessageNorAndMemberFK.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Articlecategory.cs" />
@@ -572,6 +582,8 @@
     <Compile Include="Swagger\Kirukiruoutput.cs" />
     <Compile Include="Swagger\KiruOutPutForEdit.cs" />
     <Compile Include="Swagger\NormalArticleOutPutForEdit.cs" />
+    <Compile Include="Swagger\OutPutMessage.cs" />
+    <Compile Include="Swagger\OutPutReMessage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -720,6 +732,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203220223125_EditArticleNormalAddCheckArticle.resx">
       <DependentUpon>202203220223125_EditArticleNormalAddCheckArticle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203240839395_AddMessageAndMemberFK.resx">
+      <DependentUpon>202203240839395_AddMessageAndMemberFK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203240842243_AddMessageNorAndMemberFK.resx">
+      <DependentUpon>202203240842243_AddMessageNorAndMemberFK.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

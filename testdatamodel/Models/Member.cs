@@ -52,6 +52,7 @@ namespace testdatamodel.Models
        public virtual ICollection<ArticleNormal> ArticleNormals { get; set; }
        public virtual ICollection<Orderlist> Orderlists { get; set; }
        public virtual ICollection<Subscriptionplan> Subscriptionplans { get; set; }
-
+       public virtual ICollection<Message> Messages { get; set; }
+       public virtual ICollection<MessageNormal> MessageNormals { get; set; }
     }
 }

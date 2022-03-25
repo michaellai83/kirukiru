@@ -195,6 +195,7 @@ namespace testdatamodel.Controllers
         /// 最新的一般文章(前三筆)
         /// </summary>
         /// <returns></returns>
+        [HttpGet]
         public IHttpActionResult NewArticle()
         {
 

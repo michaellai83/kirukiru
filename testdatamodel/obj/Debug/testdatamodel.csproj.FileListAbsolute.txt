@@ -195,3 +195,5 @@ C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\MimeK
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.AddFinalMission.resources
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.AddSubscriptionplan.resources
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.EditArticleNormalAddCheckArticle.resources
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.AddMessageAndMemberFK.resources
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.AddMessageNorAndMemberFK.resources

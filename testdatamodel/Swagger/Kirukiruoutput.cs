@@ -152,6 +152,10 @@ namespace testdatamodel.Swagger
             /// </summary>
             public string messageMember { get; set; }
             /// <summary>
+            /// 留言者大頭貼
+            /// </summary>
+            public string messageMemberPic { get; set; }
+            /// <summary>
             /// 留言內容
             /// </summary>
             public string messageMain { get; set; }
