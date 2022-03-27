@@ -1903,6 +1903,16 @@
             回覆留言ID
             </summary>
         </member>
+        <member name="P:testdatamodel.listclass.MessageList.RMG.author">
+            <summary>
+            作者名字
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.RMG.authorPic">
+            <summary>
+            作者圖片
+            </summary>
+        </member>
         <member name="P:testdatamodel.listclass.MessageList.RMG.reMessageMain">
             <summary>
             回覆留言內容
@@ -2041,6 +2051,11 @@
         <member name="P:testdatamodel.Models.ArticleNormal.Title">
             <summary>
             文章標題
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.ArticleNormal.Introduction">
+            <summary>
+            文章簡介
             </summary>
         </member>
         <member name="P:testdatamodel.Models.ArticleNormal.Main">
@@ -2736,6 +2751,21 @@
         <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.artId">
             <summary>
             文章ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.username">
+            <summary>
+            文章作者帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.authorPic">
+            <summary>
+            文章作者頭貼
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.author">
+            <summary>
+            文章作者名字
             </summary>
         </member>
         <member name="P:testdatamodel.Swagger.Kirukiruoutput.Data.title">

@@ -31,6 +31,11 @@ namespace testdatamodel.Models
         [Display(Name = "文章標題")]
         public string Title { get; set; }
         /// <summary>
+        /// 文章簡介
+        /// </summary>
+        [Display(Name = "文章簡介")]
+        public string Introduction { get; set; }
+        /// <summary>
         /// 文章內容
         /// </summary>
         [Display(Name = "內容")]

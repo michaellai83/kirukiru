@@ -42,6 +42,7 @@ namespace testdatamodel.Controllers
                     NormalArticles newartary = new NormalArticles();
                     newartary.ArticleID = content.ID;
                     newartary.UserName = content.UserName;
+                    newartary.Introduction = content.Introduction;
                     newartary.Title = content.Title;
                     newartary.Articlecategory = content.Articlecategory.Name;
                     newartary.Isfree = content.IsFree;
@@ -115,26 +116,28 @@ namespace testdatamodel.Controllers
             if (dataNormal != null)
             {
                 List<NormalArticles> arrayList = new List<NormalArticles>();
+                foreach (var content in dataNormal.ToList())
+                {
+
+                    NormalArticles newartary = new NormalArticles();
+                    newartary.ArticleID = content.ID;
+                    newartary.UserName = content.UserName;
+                    newartary.Introduction = content.Introduction;
+                    newartary.Title = content.Title;
+                    newartary.Articlecategory = content.Articlecategory.Name;
+                    newartary.Isfree = content.IsFree;
+                    newartary.Lovecount = content.Lovecount;
+                    newartary.InitDateTime = content.InitDate;
+
+                    arrayList.Add(newartary);
+
+
+                }
 
                 if (nowpage == 1)
                 {
 
-                    foreach (var content in dataNormal.ToList())
-                    {
-
-                        NormalArticles newartary = new NormalArticles();
-                        newartary.ArticleID = content.ID;
-                        newartary.UserName = content.UserName;
-                        newartary.Title = content.Title;
-                        newartary.Articlecategory = content.Articlecategory.Name;
-                        newartary.Isfree = content.IsFree;
-                        newartary.Lovecount = content.Lovecount;
-                        newartary.InitDateTime = content.InitDate;
-
-                        arrayList.Add(newartary);
-
-
-                    }
+                    
                     //排序依照日期
                     var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
                     //var resultArticles = from e in arrayList
@@ -151,23 +154,6 @@ namespace testdatamodel.Controllers
                 }
                 else
                 {
-
-                    foreach (var content in dataNormal.ToList())
-                    {
-
-                        NormalArticles newartary = new NormalArticles();
-                        newartary.ArticleID = content.ID;
-                        newartary.UserName = content.UserName;
-                        newartary.Title = content.Title;
-                        newartary.Articlecategory = content.Articlecategory.Name;
-                        newartary.Isfree = content.IsFree;
-                        newartary.Lovecount = content.Lovecount;
-                        newartary.InitDateTime = content.InitDate;
-
-                        arrayList.Add(newartary);
-
-
-                    }
 
                     int page = (nowpage - 1) * showcount;
                     //排序依照日期
@@ -215,6 +201,7 @@ namespace testdatamodel.Controllers
                     newartary.ArticleID = content.ID;
                     newartary.UserName = content.UserName;
                     newartary.Title = content.Title;
+                    newartary.Introduction = content.Introduction;
                     newartary.Articlecategory = content.Articlecategory.Name;
                     newartary.Isfree = content.IsFree;
                     newartary.Lovecount = content.Lovecount;
@@ -269,6 +256,7 @@ namespace testdatamodel.Controllers
                     newartary.ArticleID = content.ID;
                     newartary.UserName = content.UserName;
                     newartary.Title = content.Title;
+                    newartary.Introduction = content.Introduction;
                     newartary.Articlecategory = content.Articlecategory.Name;
                     newartary.Isfree = content.IsFree;
                     newartary.Lovecount = content.Lovecount;
@@ -341,6 +329,7 @@ namespace testdatamodel.Controllers
                 newartary.ArticleID = content.ID;
                 newartary.UserName = content.UserName;
                 newartary.Title = content.Title;
+                newartary.Introduction = content.Introduction;
                 newartary.Articlecategory = content.Articlecategory.Name;
                 newartary.Isfree = content.IsFree;
                 newartary.Lovecount = content.Lovecount;

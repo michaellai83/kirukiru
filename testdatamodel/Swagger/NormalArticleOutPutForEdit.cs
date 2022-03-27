@@ -16,6 +16,7 @@ namespace testdatamodel.Swagger
         {
             public int artId { get; set; }
             public string title { get; set; }
+            public string introduction { get; set; }
             public string main { get; set; }
             public int articlecategoryId { get; set; }
             public DateTime artInitDate { get; set; }

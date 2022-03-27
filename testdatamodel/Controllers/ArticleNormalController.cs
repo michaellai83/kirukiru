@@ -45,6 +45,7 @@ namespace testdatamodel.Controllers
             var checkArt = username +DateTime.Now.ToFileTime();
             ArticleNormal article = new ArticleNormal();
             article.UserName = data.userName;
+            article.Introduction = data.introduction;
             article.Title = data.title;
             article.Main = data.main;
             article.ArticlecategoryId = data.articlecategoryId;
@@ -92,6 +93,7 @@ namespace testdatamodel.Controllers
                 NormalArticles newartary = new NormalArticles();
                 newartary.ArticleID = str.ID;
                 newartary.UserName = str.UserName;
+                newartary.Introduction = str.Introduction;
                 newartary.Title = str.Title;
                 newartary.Articlecategory = str.Articlecategory.Name;
                 newartary.Isfree = str.IsFree;
@@ -184,12 +186,23 @@ namespace testdatamodel.Controllers
                 });
             }
 
+            var checkuserName = havedata.UserName;
+            var jwtUserName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            if (checkuserName != jwtUserName)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "你沒有權限"
+                });
+            }
             var editdata = from q in db.ArticleNormals
                 where (q.ID == artId)
                 select q;
             foreach (var q in editdata)
             {
                 q.Title = data.title;
+                q.Introduction = data.introduction;
                 q.Main = data.main;
                 q.ArticlecategoryId = data.articlecategoryId;
                 q.IsFree = data.isFree;
@@ -270,57 +283,69 @@ namespace testdatamodel.Controllers
             }
 
             var Art_title = data.Title;
+            var Art_Info = data.Introduction;
             var Art_main = data.Main;
             var Art_message = data.MessageNormals.ToList();
             var Art_initdate = data.InitDate;
             var Art_ispush = data.IsPush;
             var Art_isfree = data.IsFree;
             var lovenum = data.Lovecount;
+            var username = data.UserName;
+            var userData = db.Members.FirstOrDefault(x => x.UserName == username);
+            var authorPic = userData.PicName + "." + userData.FileName;
+            var author = userData.Name;
 
             var artlogid = data.ArticlecategoryId;
             
-            ArrayList messageArrayList = new ArrayList();
-            ArrayList remessageArrayList = new ArrayList();
-            foreach (var str in Art_message)
-            {
-                var rmessagedata = str.R_MessageNormals.ToList();
-                foreach (var rstr in rmessagedata)
-                {
-                    var rdata = new
-                    {
-                        reMessageId = rstr.Id,
-                        reMessageMain = rstr.Main,
-                        reMessageInitDate = rstr.InitDate,
-                    };
-                    remessageArrayList.Add(rdata);
-                }
+            //ArrayList messageArrayList = new ArrayList();
+           
+            //foreach (var str in Art_message)
+            //{
+            //    ArrayList remessageArrayList = new ArrayList();
+            //    var rmessagedata = str.R_MessageNormals.ToList();
+            //    foreach (var rstr in rmessagedata)
+            //    {
+            //        var rdata = new
+            //        {
+            //            reMessageId = rstr.Id,
+            //            author = author,
+            //            authorPic = authorPic,
+            //            reMessageMain = rstr.Main,
+            //            reMessageInitDate = rstr.InitDate,
+            //        };
+            //        remessageArrayList.Add(rdata);
+            //    }
 
-                var picname = str.Members.PicName + "." + str.Members.FileName;
-                var mdata = new
-                {
-                    messageId = str.Id,
-                    messageMember = str.UserName,
-                    messageMemberPic = picname,
-                    messageMain = str.Main,
-                    messageInitDate = str.InitDate,
-                    reMessageArrayList = remessageArrayList
-                };
-                messageArrayList.Add(mdata);
+            //    var picname = str.Members.PicName + "." + str.Members.FileName;
+            //    var mdata = new
+            //    {
+            //        messageId = str.Id,
+            //        messageMember = str.Members.Name,
+            //        messageMemberPic = picname,
+            //        messageMain = str.Main,
+            //        messageInitDate = str.InitDate,
+            //        reMessageArrayList = remessageArrayList
+            //    };
+            //    messageArrayList.Add(mdata);
                 
                 
-            }
+            //}
             return Ok(new
             {
                 success = true,
                 data =new{
+                    username=username,
+                    author= author,
+                    authorPic = authorPic,
                     title = Art_title,
                     main = Art_main,
+                    introduction=Art_Info,
                     articlecategoryId=artlogid,
                     artInitDate =Art_initdate,
                     isFree = Art_ispush,
                     isPush = Art_isfree,
                     lovecount= lovenum,
-                    messageArrayList}
+                    /*messageArrayList*/}
         });
         }
         /// <summary>
@@ -344,7 +369,18 @@ namespace testdatamodel.Controllers
                 });
             }
 
+            var checkusername = data.UserName;
+            var jwtUsrname = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            if (checkusername != jwtUsrname)
+            {
+                return Ok(new
+                {
+                    suceess = false,
+                    message = "你沒有權限"
+                });
+            }
             var Art_title = data.Title;
+            var Art_info = data.Introduction;
             var Art_main = data.Main;
             var Art_message = data.MessageNormals.ToList();
             var Art_initdate = data.InitDate;
@@ -359,6 +395,7 @@ namespace testdatamodel.Controllers
                 data = new
                 {
                     title = Art_title,
+                    introdeuction = Art_info,
                     main = Art_main,
                     articlecategoryId = artlogid,
                     artInitDate = Art_initdate,
@@ -466,6 +503,10 @@ namespace testdatamodel.Controllers
                 });
             }
 
+            var userName = db.ArticleNormals.FirstOrDefault(x => x.ID == artId).UserName;
+            var userData = db.Members.FirstOrDefault(x => x.UserName == userName);
+            var author = userData.Name;
+            var authorPic = userData.PicName + "." + userData.FileName;
             List<MessageList> arrayList = new List<MessageList>();
 
             foreach (var str in data)
@@ -477,6 +518,8 @@ namespace testdatamodel.Controllers
                 {
                     MessageList.RMG remessage = new MessageList.RMG();
                     remessage.reMessageId = rstr.Id;
+                    remessage.author = author;
+                    remessage.authorPic = authorPic;
                     remessage.reMessageMain = rstr.Main;
                     remessage.reMessageInitDate = rstr.InitDate;
                     reList.Add(remessage);
@@ -484,7 +527,7 @@ namespace testdatamodel.Controllers
 
                 MessageList array = new MessageList();
                 array.messageId = str.Id;
-                array.messageMember = str.UserName;
+                array.messageMember = str.Members.Name;
                 array.messageMemberPic = picName;
                 array.messageMain = str.Main;
                 array.messageInitDate = str.InitDate;
@@ -761,6 +804,7 @@ namespace testdatamodel.Controllers
                 NormalArticles newartary = new NormalArticles();
                 newartary.ArticleID = content.ID;
                 newartary.UserName = content.UserName;
+                newartary.Introduction = content.Introduction;
                 newartary.Title = content.Title;
                 newartary.Articlecategory = content.Articlecategory.Name;
                 newartary.Isfree = content.IsFree;

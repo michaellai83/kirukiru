@@ -8,6 +8,7 @@ namespace testdatamodel.PutData
     public class DataArticleNormal
     {
         public string userName { get; set; }
+        public string introduction { get; set; }
         public string title { get; set; }
         public string main { get; set; }
         public int articlecategoryId { get; set; }

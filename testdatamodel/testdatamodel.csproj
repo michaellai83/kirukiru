@@ -543,6 +543,10 @@
     <Compile Include="Migrations\202203240842243_AddMessageNorAndMemberFK.Designer.cs">
       <DependentUpon>202203240842243_AddMessageNorAndMemberFK.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202203271016359_AddArticleNormalInfo.cs" />
+    <Compile Include="Migrations\202203271016359_AddArticleNormalInfo.Designer.cs">
+      <DependentUpon>202203271016359_AddArticleNormalInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Articlecategory.cs" />
@@ -738,6 +742,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203240842243_AddMessageNorAndMemberFK.resx">
       <DependentUpon>202203240842243_AddMessageNorAndMemberFK.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203271016359_AddArticleNormalInfo.resx">
+      <DependentUpon>202203271016359_AddArticleNormalInfo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

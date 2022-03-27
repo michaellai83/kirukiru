@@ -42,6 +42,15 @@ namespace testdatamodel.listclass
             /// </summary>
             public int reMessageId { get; set; }
             /// <summary>
+            /// 作者名字
+            /// </summary>
+            public string author { get; set; }
+            /// <summary>
+            /// 作者圖片
+            /// </summary>
+            
+            public string authorPic { get; set; }
+            /// <summary>
             /// 回覆留言內容
             /// </summary>
             public string reMessageMain { get; set; }

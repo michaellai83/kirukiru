@@ -28,6 +28,18 @@ namespace testdatamodel.Swagger
             /// </summary>
             public int artId { get; set; }
             /// <summary>
+            /// 文章作者帳號
+            /// </summary>
+            public string username { get; set; }
+            /// <summary>
+            /// 文章作者頭貼
+            /// </summary>
+            public string authorPic { get; set; }
+            /// <summary>
+            /// 文章作者名字
+            /// </summary>
+            public string author { get; set; }
+            /// <summary>
             /// 文章標題
             /// </summary>
             public string title { get; set; }

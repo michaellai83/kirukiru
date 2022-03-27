@@ -495,7 +495,10 @@ namespace testdatamodel.Controllers
             var data = db.Messages.Where(m => m.ArticleId == artId).ToList();
             if (data.Count > 0)
             {
-
+                var userName = db.Articles.FirstOrDefault(x => x.ID == artId).UserName;
+                var userData = db.Members.FirstOrDefault(x => x.UserName == userName);
+                var author = userData.Name;
+                var authorPic = userData.PicName + "." + userData.FileName;
                 List<MessageList> arrayList = new List<MessageList>();
                
                 foreach (var str in data)
@@ -507,6 +510,8 @@ namespace testdatamodel.Controllers
                     {
                         MessageList.RMG remessage = new MessageList.RMG();
                         remessage.reMessageId = rstr.Id;
+                        remessage.author = author;
+                        remessage.authorPic = authorPic;
                         remessage.reMessageMain = rstr.Main;
                         remessage.reMessageInitDate = rstr.InitDate;
                         reList.Add(remessage);
@@ -514,7 +519,7 @@ namespace testdatamodel.Controllers
 
                     MessageList array = new MessageList();
                     array.messageId = str.Id;
-                    array.messageMember = str.UserName;
+                    array.messageMember = str.Members.Name;
                     array.messageMemberPic = picName;
                     array.messageMain = str.Main;
                     array.messageInitDate = str.InitDate;
@@ -712,6 +717,10 @@ namespace testdatamodel.Controllers
             var artlogid = havdata.Articlecategory.Id;
             var lovecount = havdata.Lovecount;
             var Art_FirstMissionData = havdata.Firstmissions.ToList();
+            var userName = havdata.UserName;
+            var userdata = db.Members.FirstOrDefault(x => x.UserName == userName);
+            var userPic = userdata.PicName + "." + userdata.FileName;
+            var authorName = userdata.Name;
             ArrayList fArrayList = new ArrayList();
             foreach (var str in Art_FirstMissionData)
             {
@@ -756,35 +765,7 @@ namespace testdatamodel.Controllers
                 };
                 mArrayList.Add(Mdata);
             }
-            ArrayList messageArrayList = new ArrayList();
-            ArrayList remessageArrayList = new ArrayList();
-            foreach (var str in Art_message)
-            {
-                var rmessagedata = str.R_Messages.ToList();
-                foreach (var rstr in rmessagedata)
-                {
-                    var rdata = new
-                    {
-                        reMessageId = rstr.Id,
-                        reMessageMain = rstr.Main,
-                        reMessageInitDate = rstr.InitDate,
-                    };
-                    remessageArrayList.Add(rdata);
-                }
 
-                var pic = str.Members.PicName + "." + str.Members.FileName;
-                var mdata = new
-                {
-                    messageId = str.Id,
-                    messageMember = str.UserName,
-                    messageMemberPic = pic,
-                    messageMain = str.Main,
-                    messageInitDate =str.InitDate,
-                    reMessageData= remessageArrayList
-                };
-                messageArrayList.Add(mdata);
-                
-            }
 
             string artRemarkStr = "";
             foreach (var str in artRemark)
@@ -795,6 +776,9 @@ namespace testdatamodel.Controllers
             var result = new
             {
                 artId= artId,
+                username = userName,
+                authorPic= userPic,
+                author = authorName,
                 title = Art_Title,
                 firstPhoto = Art_TitlePic,
                 introduction = Art_Info,
@@ -807,7 +791,6 @@ namespace testdatamodel.Controllers
                 isPush = Art_IsPush,
                 lovecount,
                 ArtInitDate,
-                messageArrayList,
                 final= artRemarkStr
                 //reMessageArrayList=remessageArrayList,
 
@@ -1274,6 +1257,16 @@ namespace testdatamodel.Controllers
                 });
             }
 
+            var checkUserName = otpicdata.UserName;
+            var jwtusername = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            if (checkUserName != jwtusername)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "你沒有權限"
+                });
+            }
            
             string picpath = "~/Pic/";
             //刪除封面照片
@@ -1500,6 +1493,16 @@ namespace testdatamodel.Controllers
                 });
             }
 
+            var checkusername = havdata.UserName;
+            var jwtusername = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            if (checkusername != jwtusername)
+            {
+                return Ok(new
+                {
+                    suceess = false,
+                    message = "你沒有權限"
+                });
+            }
             var Art_Title = havdata.Title.ToString();
             var Art_TitlePic = havdata.FirstPicName.ToString() + "." +
                                havdata.FirstPicFileName.ToString();
