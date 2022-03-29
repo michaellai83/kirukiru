@@ -298,12 +298,11 @@ namespace testdatamodel.Controllers
         /// <param name="dataArticle ">切切前端傳進來資料</param>
         /// <returns></returns>
         [HttpPost]
-        //[JwtAuthFilter]
+        [JwtAuthFilter]
         public IHttpActionResult AddArticle([FromBody] DataArticle dataArticle)
         {
-            /// var jObject = JsonConvert.SerializeObject(dataArticleInput);
-            //var dataArticle = JsonConvert.DeserializeObject<DataArticle>(jObject);
-            var username = dataArticle.memberUserName;
+            var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            //var username = dataArticle.memberUserName;
             var arttitle = dataArticle.title;
             if (dataArticle.firstPhoto.Equals("") || dataArticle.title.Equals("") || dataArticle.articlecategoryId == 0)
             {
@@ -317,6 +316,9 @@ namespace testdatamodel.Controllers
             string titlePicName = artTitlePic[0];
             string titleFileName = artTitlePic[1];
             var artinfo = dataArticle.introduction;
+            var memberdata = db.Members.FirstOrDefault(x => x.UserName == username);
+            var author = memberdata.Name;
+            var authorPic = memberdata.PicName + "." + memberdata.FileName;
 
             var artlogid = dataArticle.articlecategoryId;
             var artisFree = dataArticle.isFree;
@@ -334,6 +336,8 @@ namespace testdatamodel.Controllers
             Article article = new Article();
             article.UserName = username;
             article.Title = arttitle;
+            article.AuthorName = author;
+            article.AuthorPic = authorPic;
             article.FirstPicName = titlePicName;
             article.FirstPicFileName = titleFileName;
             article.Introduction = artinfo;
@@ -733,8 +737,8 @@ namespace testdatamodel.Controllers
                 fArrayList.Add(Fdata);
             }
 
-            var Art_Isfree = havdata.IsFree.ToString();
-            var Art_IsPush = havdata.IsPush.ToString();
+            var Art_Isfree = havdata.IsFree;
+            var Art_IsPush = havdata.IsPush;
             var Art_MainData = havdata.ArticleMains.ToList();
             var Art_message = havdata.Messages.ToList();
             var ArtInitDate = havdata.InitDate.ToString();
@@ -1364,14 +1368,11 @@ namespace testdatamodel.Controllers
             var q = from p in db.Articles where p.ID == artId select p;
             foreach (var p in q)
             {
-                p.Title= arttitle;
-                p.UserName = username;
                 p.Title = arttitle;
                 p.FirstPicName = titlePicName;
                 p.FirstPicFileName = titleFileName;
                 p.Introduction = artinfo;
                 p.ArticlecategoryId = artlogid;
-                p.InitDate = DateTime.Now;
                 p.IsFree = artisFree;
                 p.IsPush = artisPush;
             }
@@ -1698,12 +1699,12 @@ namespace testdatamodel.Controllers
         /// 找到作者的所有切切
         /// </summary>
         /// <param name="ispush">是否發布(用來查詢是否在草稿</param>
-        /// <param name="nowPage">現在頁數(預設1)</param>
-        /// <param name="showCount">每頁顯示幾筆資料</param>
+        /// <param name="nowpage">現在頁數(預設1)</param>
+        /// <param name="showcount">每頁顯示幾筆資料</param>
         /// <returns></returns>
         [HttpGet]
         [JwtAuthFilter]
-        public IHttpActionResult GetUserArticle( bool ispush, int nowPage,int showCount)
+        public IHttpActionResult GetUserArticle( bool ispush, int nowpage,int showcount)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var havedata = db.Articles.FirstOrDefault(m => m.UserName == username);
@@ -1724,23 +1725,26 @@ namespace testdatamodel.Controllers
             foreach (var content in data.ToList())
             {
                 NewArticle newartary = new NewArticle();
-                newartary.ArticleID = content.ID;
-                newartary.UserName = content.UserName;
-                newartary.Title = content.Title;
-                newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                newartary.ArtInfo = content.Introduction;
-                newartary.Articlecategory = content.Articlecategory.Name;
-                newartary.Isfree = content.IsFree;
-                newartary.Lovecount = content.Lovecount;
-                newartary.InitDateTime = content.InitDate;
+                newartary.artId = content.ID;
+                newartary.author = content.AuthorName;
+                newartary.authorPic = content.AuthorPic;
+                newartary.username = content.UserName;
+                newartary.title = content.Title;
+                newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
+                newartary.introduction = content.Introduction;
+                newartary.artArtlog = content.Articlecategory.Name;
+                newartary.articlecategoryId = content.ArticlecategoryId;
+                newartary.isFree = content.IsFree;
+                newartary.lovecount = content.Lovecount;
+                newartary.ArtInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
             }
 
             int pagecount = arrayList.Count;
-            if (nowPage == 1)
+            if (nowpage == 1)
             {
-                var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(showCount);
+                var result = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
                
                 return Ok(new
                 {
@@ -1751,10 +1755,10 @@ namespace testdatamodel.Controllers
             }
             else
             {
-                int page = (nowPage - 1) * showCount;
+                int page = (nowpage - 1) * showcount;
                 //排序依照日期
 
-                var result = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showCount);
+                var result = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -1877,12 +1881,12 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取得會員收藏的切切文章
         /// </summary>
-        /// <param name="Nowpage">現在頁數(預設為1)</param>
+        /// <param name="nowpage">現在頁數(預設為1)</param>
         /// <param name="showcount">一頁顯示幾筆</param>
         /// <returns></returns>
         [HttpGet]
         [JwtAuthFilter]
-        public IHttpActionResult GetAllcollectart(int Nowpage, int showcount)
+        public IHttpActionResult GetAllcollectart(int nowpage, int showcount)
         {
             var memberid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var data = db.Members.FirstOrDefault(x => x.ID == memberid);
@@ -1904,12 +1908,18 @@ namespace testdatamodel.Controllers
             {
 
                 NewArticle newartary = new NewArticle();
-                newartary.ArticleID = content.ID;
-                newartary.UserName = content.UserName;
-                newartary.Title = content.Title;
-                newartary.Articlecategory = content.Articlecategory.Name;
-                newartary.Lovecount = content.Lovecount;
-                newartary.InitDateTime = content.InitDate;
+                newartary.artId = content.ID;
+                newartary.username = content.UserName;
+                newartary.author = content.AuthorName;
+                newartary.authorPic = content.AuthorPic;
+                newartary.artArtlog = content.Articlecategory.Name;
+                newartary.articlecategoryId = content.ArticlecategoryId;
+                newartary.title = content.Title;
+                newartary.isFree = content.IsFree;
+                newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
+                newartary.introduction = content.Introduction;
+                newartary.lovecount = content.Lovecount;
+                newartary.ArtInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
 
@@ -1917,53 +1927,26 @@ namespace testdatamodel.Controllers
             }
 
             int total = arrayList.Count;
-            if (Nowpage == 1)
+            if (nowpage == 1)
             {
-                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
-                ArrayList result = new ArrayList();
-                foreach (var str in newArticles)
-                {
-                    var resultdata = new
-                    {
-                        str.ArticleID,
-                        str.UserName,
-                        str.Title,
-                        str.Articlecategory,
-                        str.Lovecount,
-                        str.InitDateTime
-                    };
-                    result.Add(resultdata);
-                }
+                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+               
                 return Ok(new
                 {
                     success = true,
                     total = total,
-                    data = result
+                    data = newArticles
                 });
             }
             else
             {
-                var page = (Nowpage - 1) * showcount;
-                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
-                ArrayList result = new ArrayList();
-                foreach (var str in newArticles)
-                {
-                    var resultdata = new
-                    {
-                        str.ArticleID,
-                        str.UserName,
-                        str.Title,
-                        str.Articlecategory,
-                        str.Lovecount,
-                        str.InitDateTime
-                    };
-                    result.Add(resultdata);
-                }
+                var page = (nowpage - 1) * showcount;
+                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
                     total = total,
-                    data = result
+                    data = newArticles
                 });
             }
 
@@ -1971,15 +1954,20 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 依類別取得四筆切切文章
         /// </summary>
-        /// <param name="articlecategoryId"></param>
+        /// <param name="articlecategoryId">類別ID</param>
+        /// <param name="nowpage">現在頁數(預設1)</param>
+        /// <param name="showcount">一頁顯示幾筆</param>
         /// <returns></returns>
         [HttpGet]
         [ResponseType(typeof(KiruArtLogFourOutPut))]
-        public IHttpActionResult GetArtlogArticle(int articlecategoryId)
+        public IHttpActionResult GetArtlogArticle(int articlecategoryId,int nowpage, int showcount)
         {
-            var data = db.Articles.Where(x => x.ArticlecategoryId == articlecategoryId).Where(x=>x.IsPush == true)
-                .OrderByDescending(x => x.InitDate).Take(4);
-            var kiruData = data.ToList();
+            //var data = db.Articles.Where(x => x.ArticlecategoryId == articlecategoryId).Where(x=>x.IsPush == true)
+            //    .OrderByDescending(x => x.InitDate).Take(4);
+            var data = from q in db.Articles
+                where q.ArticlecategoryId == articlecategoryId && q.IsPush == true
+                select q;
+               var kiruData = data.ToList();
             if (kiruData == null )
             {
                 return Ok(new
@@ -1994,23 +1982,205 @@ namespace testdatamodel.Controllers
             foreach (var content in kiruData)
             {
                 NewArticle newartary = new NewArticle();
-                newartary.ArticleID = content.ID;
-                newartary.UserName = content.UserName;
-                newartary.Title = content.Title;
-                newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                newartary.ArtInfo = content.Introduction;
-                newartary.Articlecategory = content.Articlecategory.Name;
-                newartary.Isfree = content.IsFree;
-                newartary.Lovecount = content.Lovecount;
-                newartary.InitDateTime = content.InitDate;
+                newartary.artId = content.ID;
+                newartary.username = content.UserName;
+                newartary.author = content.AuthorName;
+                newartary.authorPic = content.AuthorPic;
+                newartary.title = content.Title;
+                newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
+                newartary.introduction = content.Introduction;
+                newartary.artArtlog = content.Articlecategory.Name;
+                newartary.articlecategoryId = content.ArticlecategoryId;
+                newartary.isFree = content.IsFree;
+                newartary.lovecount = content.Lovecount;
+                newartary.ArtInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
             }
+
+            int total = arrayList.Count;
+            if (nowpage == 1)
+            {
+                var dataOutput = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                return Ok(new
+                {
+                    success = true,
+                    total = total,
+                    data = dataOutput
+                });
+            }
+            else
+            {
+                int page = (nowpage - 1) * showcount;
+                var dataOutput = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                return Ok(new
+                {
+                    success = true,
+                    total = total,
+                    data = dataOutput
+                });
+            }
+           
+        }
+        /// <summary>
+        /// 修改留言
+        /// </summary>
+        /// <param name="messageId">留言ID</param>
+        /// <param name="main">修改後內容</param>
+        /// <returns></returns>
+        [Route("api/Article/EditMessage")]
+        [JwtAuthFilter]
+        [HttpPut]
+        public IHttpActionResult EditMessage(int messageId,string main)
+        {
+            var messageData = db.Messages.FirstOrDefault(x => x.Id == messageId);
+            if (messageData == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此留言"
+                });
+            }
+            var memberUserName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var checkUserName = messageData.UserName;
+            if (checkUserName != memberUserName)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "你沒有權限"
+                });
+            }
+
+            var q = from p in db.Messages
+                where p.Id == messageId
+                select p;
+            foreach (var p in q)
+            {
+                p.Main = main;
+            }
+
+            db.SaveChanges();
             return Ok(new
             {
                 success = true,
-                data = arrayList
+                message = "已修改留言"
             });
+        }
+        /// <summary>
+        /// 修改回覆
+        /// </summary>
+        /// <param name="reMessageId">回覆的ID</param>
+        /// <param name="main">修改的內容</param>
+        /// <returns></returns>
+        [Route("api/Article/EditReMessage")]
+        [JwtAuthFilter]
+        [HttpPut]
+        public IHttpActionResult EditReMessage(int reMessageId, string main)
+        {
+            var reData = db.R_Messages.FirstOrDefault(x => x.Id == reMessageId);
+            if (reData == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此回覆"
+                });
+            }
+
+            var checkMessageId = reData.MessageId;
+            var checkArticleId = db.Messages.FirstOrDefault(x => x.Id == checkMessageId).ArticleId;
+            var checkUserName = db.Articles.FirstOrDefault(x => x.ID == checkArticleId).UserName;
+            var memberUserName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            if (checkUserName != memberUserName)
+            {
+                return Ok(new
+                {
+                    suceess = false,
+                    message = "你沒有權限"
+                });
+            }
+
+            var q = from p in db.R_Messages
+                where p.Id == reMessageId
+                select p;
+            foreach (var p in q)
+            {
+                p.Main = main;
+            }
+
+            db.SaveChanges();
+            return Ok(new
+            {
+                success = true,
+                message = "已修改回覆"
+            });
+        }
+        /// <summary>
+        /// 作者刪除留言
+        /// </summary>
+        /// <param name="messageId">留言ID</param>
+        /// <returns></returns>
+        [Route("api/Article/DeleteMessage")]
+        [HttpDelete]
+        [JwtAuthFilter]
+        public IHttpActionResult DeleteMessage(int messageId)
+        {
+            var user = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var data = db.Messages.FirstOrDefault(x => x.Id == messageId);
+            var dataId = data.ArticleId;
+            var artmember = db.Articles.FirstOrDefault(x => x.ID == dataId).UserName;
+            if (user != artmember)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "你沒有權限刪除留言"
+                });
+            }
+
+            db.Messages.Remove(data);
+            db.SaveChanges();
+            return Ok(new
+            {
+                success = true,
+                message = "刪除留言"
+            });
+
+        }
+        /// <summary>
+        /// 刪除切切作者回覆
+        /// </summary>
+        /// <param name="reMessageId">回覆ID</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("api/Article/DeleteReMessage")]
+        [JwtAuthFilter]
+        public IHttpActionResult DeleteReMessage(int reMessageId)
+        {
+            var user = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var data = db.R_Messages.FirstOrDefault(x => x.Id == reMessageId);
+            var messaageId = data.MessageId;
+            var dataId = db.Messages.FirstOrDefault(x => x.Id == messaageId).ArticleId;
+            var artmember = db.Articles.FirstOrDefault(x => x.ID == dataId).UserName;
+            if (user != artmember)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "你沒有權限"
+                });
+            }
+
+            db.R_Messages.Remove(data);
+            db.SaveChanges();
+            return Ok(new
+            {
+                success = true,
+                message = "刪除留言"
+            });
+
         }
     }
 }

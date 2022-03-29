@@ -5,23 +5,18 @@ using System.Web;
 
 namespace testdatamodel.listclass
 {
-    /// <summary>
-    /// 最新文章列表
-    /// </summary>
-    public class NewArticle
+    public class NewNormalArticle
     {
         public int artId { get; set; }
-        
+        public string username { get; set; }
         public string author { get; set; }
         public string authorPic { get; set; }
-        public string username { get; set; }
-        public string title { get; set; }
         public string introduction { get; set; }
+        public string title { get; set; }
         public int articlecategoryId { get; set; }
         public string artArtlog { get; set; }
-        public string firstPhoto { get; set; }
         public bool isFree { get; set; }
         public int lovecount { get; set; }
-        public DateTime ArtInitDate { get; set; }
+        public DateTime artInitDate { get; set; }
     }
 }

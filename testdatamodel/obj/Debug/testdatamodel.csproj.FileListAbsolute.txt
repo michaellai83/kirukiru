@@ -198,3 +198,6 @@ C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.AddMessageAndMemberFK.resources
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.AddMessageNorAndMemberFK.resources
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.AddArticleNormalInfo.resources
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.EditOrderListAddAmount.resources
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.EditOrderListEditAmountToInt.resources
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.AddArticleAndArticleNormalAddAuthorNameAndAuthorPic.resources

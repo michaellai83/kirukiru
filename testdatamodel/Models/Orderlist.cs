@@ -37,6 +37,11 @@ namespace testdatamodel.Models
         [Display(Name = "被訂閱者的帳號")]
         public string AuthorName { get; set; }
         /// <summary>
+        /// 訂閱金額
+        /// </summary>
+        [Display(Name = "訂閱金額")]
+        public int Amount { get; set; }
+        /// <summary>
         /// 是否交易成功
         /// </summary>
         [Display(Name = "是否交易成功")]

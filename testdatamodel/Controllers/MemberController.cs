@@ -675,12 +675,11 @@ namespace testdatamodel.Controllers
         /// 查詢作者蒐藏的切切文章
         /// </summary>
         /// <param name="authorusername">作者帳號名稱</param>
-        /// <param name="pageNow">現在頁面(預設為1)</param>
-        /// <param name="totalpagecount">全部筆數(預設為0)</param>
+        /// <param name="nowpage">現在頁面(預設為1)</param>
         /// <param name="showcount">一頁顯示幾筆資料</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult Collectauthorarticle(string authorusername, int pageNow, int totalpagecount, int showcount)
+        public IHttpActionResult Collectauthorarticle(string authorusername, int nowpage ,int showcount)
         {
             var memberdata = from q in db.Members
                              where (q.UserName == authorusername & q.Opencollectarticles == true)
@@ -712,57 +711,45 @@ namespace testdatamodel.Controllers
 
             foreach (var content in artdata)
             {
+
                 NewArticle newartary = new NewArticle();
-                newartary.ArticleID = content.ID;
-                newartary.UserName = content.UserName;
-                newartary.Title = content.Title;
-                newartary.Articlecategory = content.Articlecategory.Name;
-                newartary.Lovecount = content.Lovecount;
-                newartary.InitDateTime = content.InitDate;
+                newartary.artId = content.ID;
+                newartary.username = content.UserName;
+                newartary.title = content.Title;
+                newartary.artArtlog = content.Articlecategory.Name;
+                newartary.articlecategoryId = content.ArticlecategoryId;
+                newartary.lovecount = content.Lovecount;
+                newartary.ArtInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
+
+
             }
+            var totalpagecount = arrayList.Count();
 
-
-            if (totalpagecount == 0)
+            if (nowpage == 1)
             {
-                totalpagecount = arrayList.Count();
-                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
-                ArrayList result = new ArrayList();
-                foreach (var str in newArticles)
+                
+                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                
+                return Ok(new
                 {
-                    var resultdata = new
-                    {
-                        str.ArticleID,
-                        str.UserName,
-                        str.Title,
-                        str.Articlecategory,
-                        str.Lovecount,
-                        str.InitDateTime
-                    };
-                    result.Add(resultdata);
-                }
-                return Ok(new { total = totalpagecount, result });
+                    success=true,
+                    total = totalpagecount, 
+                    data = newArticles
+                });
             }
             else
             {
-                var page = (pageNow - 1) * showcount;
-                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
-                ArrayList result = new ArrayList();
-                foreach (var str in newArticles)
+                var page = (nowpage - 1) * showcount;
+                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                
+                return Ok(new
                 {
-                    var resultdata = new
-                    {
-                        str.ArticleID,
-                        str.UserName,
-                        str.Title,
-                        str.Articlecategory,
-                        str.Lovecount,
-                        str.InitDateTime
-                    };
-                    result.Add(resultdata);
-                }
-                return Ok(result);
+                    success=true,
+                    total = totalpagecount,
+                    data = newArticles
+                });
             }
 
         }
@@ -770,13 +757,12 @@ namespace testdatamodel.Controllers
         /// 查詢作者的蒐藏的一般文章
         /// </summary>
         /// <param name="authorusername">作者帳號名稱</param>
-        /// <param name="pageNow">現在頁面(預設為1)</param>
-        /// <param name="totalpagecount">全部筆數(預設為0</param>
+        /// <param name="nowpage">現在頁面(預設為1)</param>
         /// <param name="showcount">一頁顯示幾筆資料</param>
         /// <returns></returns>
         [Route("api/Member/collectnormalarticle")]
         [HttpGet]
-        public IHttpActionResult CollectauthorNormalarticle(string authorusername, int pageNow, int totalpagecount, int showcount)
+        public IHttpActionResult CollectauthorNormalarticle(string authorusername, int nowpage, int showcount)
         {
             var memberdata = from q in db.Members
                              where (q.UserName == authorusername & q.Opencollectarticles == true)
@@ -811,73 +797,56 @@ namespace testdatamodel.Controllers
             {
 
                 NewArticle newartary = new NewArticle();
-                newartary.ArticleID = content.ID;
-                newartary.UserName = content.UserName;
-                newartary.Title = content.Title;
-                newartary.Articlecategory = content.Articlecategory.Name;
-                newartary.Lovecount = content.Lovecount;
-                newartary.InitDateTime = content.InitDate;
+                newartary.artId = content.ID;
+                newartary.username = content.UserName;
+                newartary.title = content.Title;
+                newartary.artArtlog = content.Articlecategory.Name;
+                newartary.articlecategoryId = content.ArticlecategoryId;
+                newartary.lovecount = content.Lovecount;
+                newartary.ArtInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
 
 
             }
-
-            if (totalpagecount == 0)
+            int totalpagecount = arrayList.Count();
+            if (nowpage == 0)
             {
-                totalpagecount = arrayList.Count();
-                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
-                ArrayList result = new ArrayList();
-                foreach (var str in newArticles)
+                
+                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                
+                return Ok(new
                 {
-                    var resultdata = new
-                    {
-                        str.ArticleID,
-                        str.UserName,
-                        str.Title,
-                        str.Articlecategory,
-                        str.Lovecount,
-                        str.InitDateTime
-                    };
-                    result.Add(resultdata);
-                }
-                return Ok(new { total = totalpagecount, result });
+                    success= true,
+                    total = totalpagecount,
+                    data=newArticles
+                });
             }
             else
             {
-                var page = (pageNow - 1) * showcount;
-                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
-                ArrayList result = new ArrayList();
-                foreach (var str in newArticles)
+                var page = (nowpage - 1) * showcount;
+                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+               
+                return Ok(new
                 {
-                    var resultdata = new
-                    {
-                        str.ArticleID,
-                        str.UserName,
-                        str.Title,
-                        str.Articlecategory,
-                        str.Lovecount,
-                        str.InitDateTime
-                    };
-                    result.Add(resultdata);
-                }
-                return Ok(result);
+                    suceess=true,
+                    total = totalpagecount,
+                    data = newArticles
+                });
             }
 
         }
         /// <summary>
         /// 作者所有切切文章
         /// </summary>
-        /// <param name="pageNow">現在頁面(預設為1)</param>
-        /// <param name="totalpagecount">全部筆數(預設為0)</param>
+        /// <param name="username">作者帳號</param>
+        /// <param name="nowpage">現在頁面(預設為1)</param>
         /// <param name="showcount">一頁顯示幾筆資料</param>
         /// <returns></returns>
         [HttpGet]
-        [JwtAuthFilter]
-        public IHttpActionResult GetMyArticles( int pageNow, int totalpagecount, int showcount)
+        public IHttpActionResult GetMyArticles( string username, int nowpage, int showcount)
         {
-            int userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
-            var data = db.Members.FirstOrDefault(x => x.ID == userid);
+            var data = db.Members.FirstOrDefault(x => x.UserName == username);
             if (data == null)
             {
                 return Ok(new
@@ -887,21 +856,24 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var username = data.UserName.ToString();
+            var author = data.Name;
+            var authorPic = data.PicName + "." + data.FileName;
             var artdata = db.Articles.Where(x => x.UserName == username).ToList();
-            List<NewArticle> arrayList = new List<NewArticle>();
+            List<ArticleListOutPut> arrayList = new List<ArticleListOutPut>();
             foreach (var content in artdata)
             {
-                NewArticle newartary = new NewArticle();
-                newartary.ArticleID = content.ID;
-                newartary.UserName = content.UserName;
-                newartary.Title = content.Title;
-                newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                newartary.ArtInfo = content.Introduction;
-                newartary.Articlecategory = content.Articlecategory.Name;
-                newartary.Isfree = content.IsFree;
-                newartary.Lovecount = content.Lovecount;
-                newartary.InitDateTime = content.InitDate;
+                ArticleListOutPut newartary = new ArticleListOutPut();
+                newartary.artId = content.ID;
+                newartary.username = content.UserName;
+                newartary.author = author;
+                newartary.authorPic = authorPic;
+                newartary.title = content.Title;
+                newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
+                newartary.introduction = content.Introduction;
+                newartary.artArtlog = content.Articlecategory.Name;
+                newartary.isFree = content.IsFree;
+                newartary.lovecount = content.Lovecount;
+                newartary.ArtInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
             }
@@ -918,12 +890,11 @@ namespace testdatamodel.Controllers
 
             //    arrayList.Add(newartary);
             //}
-
-            if (pageNow == 1)
+            int totalpagecount = arrayList.Count;
+            if (nowpage == 1)
             {
-                totalpagecount = arrayList.Count();
 
-                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
+                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
 
                 return Ok(new
                 {
@@ -934,8 +905,8 @@ namespace testdatamodel.Controllers
             }
             else
             {
-                var page = (pageNow - 1) * showcount;
-                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
+                var page = (nowpage - 1) * showcount;
+                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -948,17 +919,16 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 作者所有一般文章
         /// </summary>
-        /// <param name="pageNow">現在頁面(預設為1)</param>
-        /// <param name="totalpagecount">全部筆數(預設為0)</param>
+        /// <param name="username">作者帳號</param>
+        /// <param name="nowpage">現在頁面(預設為1)</param>
         /// <param name="showcount">一頁顯示幾筆資料</param>
         /// <returns></returns>
         [Route("api/Member/getnormalarticles")]
         [HttpGet]
-        [JwtAuthFilter]
-        public IHttpActionResult GetMyNormalArticles( int pageNow, int totalpagecount, int showcount)
+        public IHttpActionResult GetMyNormalArticles( string username, int nowpage, int showcount)
         {
-            int userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
-            var data = db.Members.FirstOrDefault(x => x.ID == userid);
+           
+            var data = db.Members.FirstOrDefault(x => x.UserName == username);
             if (data == null)
             {
                 return Ok(new
@@ -968,7 +938,6 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var username = data.UserName.ToString();
             var noratrdata = db.ArticleNormals.Where(x => x.UserName == username).ToList();
             List<NewArticle> arrayList = new List<NewArticle>();
 
@@ -977,58 +946,43 @@ namespace testdatamodel.Controllers
             {
 
                 NewArticle newartary = new NewArticle();
-                newartary.ArticleID = content.ID;
-                newartary.UserName = content.UserName;
-                newartary.Title = content.Title;
-                newartary.Articlecategory = content.Articlecategory.Name;
-                newartary.Lovecount = content.Lovecount;
-                newartary.InitDateTime = content.InitDate;
+                newartary.artId = content.ID;
+                newartary.username = content.UserName;
+                newartary.title = content.Title;
+                newartary.artArtlog = content.Articlecategory.Name;
+                newartary.articlecategoryId = content.ArticlecategoryId;
+                newartary.lovecount = content.Lovecount;
+                newartary.ArtInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
 
 
             }
 
-            if (pageNow == 1)
+            int totalpagecount = arrayList.Count;
+            if (nowpage == 1)
             {
-                totalpagecount = arrayList.Count();
 
-                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
-                ArrayList result = new ArrayList();
-                foreach (var str in newArticles)
+                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+               
+                return Ok(new
                 {
-                    var resultdata = new
-                    {
-                        str.ArticleID,
-                        str.UserName,
-                        str.Title,
-                        str.Articlecategory,
-                        str.Lovecount,
-                        str.InitDateTime
-                    };
-                    result.Add(resultdata);
-                }
-                return Ok(new { total = totalpagecount, result });
+                    success=true,
+                    total = totalpagecount, 
+                    data = newArticles
+                });
             }
             else
             {
-                var page = (pageNow - 1) * showcount;
-                var newArticles = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
-                ArrayList result = new ArrayList();
-                foreach (var str in newArticles)
+                var page = (nowpage - 1) * showcount;
+                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+               
+                return Ok(new
                 {
-                    var resultdata = new
-                    {
-                        str.ArticleID,
-                        str.UserName,
-                        str.Title,
-                        str.Articlecategory,
-                        str.Lovecount,
-                        str.InitDateTime
-                    };
-                    result.Add(resultdata);
-                }
-                return Ok(result);
+                    success=true,
+                    total = totalpagecount,
+                    data = newArticles
+                });
             }
 
         }
@@ -1274,9 +1228,15 @@ namespace testdatamodel.Controllers
                     message = "此作者沒有開通訂閱"
                 });
             }
+
+            var authorName = memberdata.Name;
+            var authorPic = memberdata.PicName + "." + memberdata.FileName;
+            
             var result = new
             {
                 authorId = memberId,
+                author = authorName,
+                authorPic = authorPic,
                 subId = subData.ID,
                 authorUserName = author,
                 subData.Amount
@@ -1286,6 +1246,57 @@ namespace testdatamodel.Controllers
                 success = true,
                 data = result
             });
+        }
+        /// <summary>
+        /// 我的訂閱清單
+        /// </summary>
+        /// <param name="nowpage">現在頁數(預設1)</param>
+        /// <param name="showcount">一頁顯示幾筆</param>
+        /// <returns></returns>
+        [Route("api/Member/GetMyOrder")]
+        [JwtAuthFilter]
+        [HttpGet]
+        public IHttpActionResult GetMyOrder(int nowpage, int showcount)
+        {
+            var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
+            var orderList = db.Orderlists.Where(x => x.MemberID == userId).OrderByDescending(x=>x.InitDateTime).ToList();
+            List<OrderMyList> orderOutPut = new List<OrderMyList>();
+            int HowPay = 0;
+            foreach (var order in orderList)
+            {
+                OrderMyList orderMyList = new OrderMyList();
+                orderMyList.ID = order.ID;
+                orderMyList.Author = order.AuthorName;
+                orderMyList.Amount = order.Amount;
+                orderMyList.InitDate = order.InitDateTime;
+                orderOutPut.Add(orderMyList);
+                HowPay += order.Amount;
+            }
+
+            int total = orderOutPut.Count;
+            if (nowpage == 1)
+            {
+                var outPut =orderOutPut.Take(showcount);
+                return Ok(new
+                {
+                    success = true,
+                    total = total,
+                    pay=HowPay,
+                    data = outPut
+                });
+            }
+            else
+            {
+                var page = (nowpage - 1) * showcount;
+                var outPut = orderOutPut.Skip(page).Take(showcount);
+                return Ok(new
+                {
+                    success = true,
+                    total = total,
+                    pay = HowPay,
+                    data = outPut
+                });
+            }
         }
     }
 }

@@ -10,13 +10,17 @@ namespace testdatamodel.listclass
     /// </summary>
     public class NormalArticles
     {
-        public int ArticleID { get; set; }
-        public string UserName { get; set; }
-        public string Introduction { get; set; }
-        public string Title { get; set; }
-        public string Articlecategory { get; set; }
-        public bool Isfree { get; set; }
-        public int Lovecount { get; set; }
-        public DateTime InitDateTime { get; set; }
+        public int artId { get; set; }
+        public string username { get; set; }
+        public string author { get; set; }
+        public string authorPic { get; set; }
+        public string introduction { get; set; }
+        public string title { get; set; }
+        public int articlecategoryId { get; set; }
+        public string artArtlog { get; set; }
+        public bool isFree { get; set; }
+        
+        public int lovecount { get; set; }
+        public DateTime artInitDate { get; set; }
     }
 }

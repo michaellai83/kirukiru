@@ -6,15 +6,14 @@ using System.Web;
 namespace testdatamodel.listclass
 {
     /// <summary>
-    /// 最新文章列表
+    /// 切切用List
     /// </summary>
-    public class NewArticle
+    public class ArticleListOutPut
     {
         public int artId { get; set; }
-        
+        public string username { get; set; }
         public string author { get; set; }
         public string authorPic { get; set; }
-        public string username { get; set; }
         public string title { get; set; }
         public string introduction { get; set; }
         public int articlecategoryId { get; set; }

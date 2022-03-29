@@ -1172,8 +1172,8 @@
             找到作者的所有切切
             </summary>
             <param name="ispush">是否發布(用來查詢是否在草稿</param>
-            <param name="nowPage">現在頁數(預設1)</param>
-            <param name="showCount">每頁顯示幾筆資料</param>
+            <param name="nowpage">現在頁數(預設1)</param>
+            <param name="showcount">每頁顯示幾筆資料</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleController.AddLoveArticle(System.Int32,System.Boolean)">
@@ -1202,15 +1202,47 @@
             <summary>
             取得會員收藏的切切文章
             </summary>
-            <param name="Nowpage">現在頁數(預設為1)</param>
+            <param name="nowpage">現在頁數(預設為1)</param>
             <param name="showcount">一頁顯示幾筆</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleController.GetArtlogArticle(System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleController.GetArtlogArticle(System.Int32,System.Int32,System.Int32)">
             <summary>
             依類別取得四筆切切文章
             </summary>
-            <param name="articlecategoryId"></param>
+            <param name="articlecategoryId">類別ID</param>
+            <param name="nowpage">現在頁數(預設1)</param>
+            <param name="showcount">一頁顯示幾筆</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.EditMessage(System.Int32,System.String)">
+            <summary>
+            修改留言
+            </summary>
+            <param name="messageId">留言ID</param>
+            <param name="main">修改後內容</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.EditReMessage(System.Int32,System.String)">
+            <summary>
+            修改回覆
+            </summary>
+            <param name="reMessageId">回覆的ID</param>
+            <param name="main">修改的內容</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.DeleteMessage(System.Int32)">
+            <summary>
+            作者刪除留言
+            </summary>
+            <param name="messageId">留言ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleController.DeleteReMessage(System.Int32)">
+            <summary>
+            刪除切切作者回覆
+            </summary>
+            <param name="reMessageId">回覆ID</param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.ArticleNormalController">
@@ -1230,8 +1262,8 @@
             找到作者自己的所有一般文章
             </summary>
             <param name="isPush">是否發布(判斷是否在草稿)</param>
-            <param name="nowPage">現在頁數(預設1)</param>
-            <param name="showNum">一頁顯示幾筆資料</param>
+            <param name="nowpage">現在頁數(預設1)</param>
+            <param name="showcount">一頁顯示幾筆資料</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.DeleteArticleNormal(System.Int32)">
@@ -1276,7 +1308,7 @@
             一般文章的留言
             </summary>
             <param name="artId">文章ID</param>
-            <param name="messagemain">留言內容</param>
+            <param name="main">留言內容</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.Addremessage(System.Int32,System.String)">
@@ -1284,7 +1316,7 @@
             回覆一般文章留言
             </summary>
             <param name="messageId">留言ID</param>
-            <param name="messagemain">回覆留言的內容</param>
+            <param name="main">回覆留言的內容</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.Getmessage(System.Int32,System.Int32,System.Int32)">
@@ -1308,6 +1340,13 @@
             作者刪除留言
             </summary>
             <param name="messageId">留言ID</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.DeleteReMessage(System.Int32)">
+            <summary>
+            作者刪除回覆
+            </summary>
+            <param name="reMessageId">回覆ID</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.Getrmessage(System.Int32)">
@@ -1335,15 +1374,33 @@
             <summary>
             取得會員收藏的一般文章
             </summary>
-            <param name="Nowpage">現在頁數(預設為1)</param>
+            <param name="nowpage">現在頁數(預設為1)</param>
             <param name="showcount">一頁顯示幾筆</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetArtlogNormalArticle(System.Int32)">
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.GetArtlogNormalArticle(System.Int32,System.Int32,System.Int32)">
             <summary>
             依照類別取得相關一般文章(前四筆)
             </summary>
             <param name="articlecategoryId">文章類別ID</param>
+            <param name="nowpage">現在頁數(預設為1)</param>
+            <param name="showcount">一頁顯示幾筆</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.EditMessage(System.Int32,System.String)">
+            <summary>
+            修改留言
+            </summary>
+            <param name="messageId">留言ID</param>
+            <param name="main">修改後內容</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.ArticleNormalController.EditReMessage(System.Int32,System.String)">
+            <summary>
+            修改回覆
+            </summary>
+            <param name="reMessageId">回覆的ID</param>
+            <param name="main">修改的內容</param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.BackmemberController">
@@ -1431,7 +1488,7 @@
         </member>
         <member name="M:testdatamodel.Controllers.BankController.SpgatewayPeriodic(System.String,System.Int32,System.String)">
             <summary>
-            定期定額
+            定期定額(藍新
             </summary>
             <param name="main">訂單內容</param>
             <param name="amount">訂單金額</param>
@@ -1480,7 +1537,7 @@
             <summary>
             依類別取切切文章(按照時間最新排列(有完成訂閱作者的話他的文章都會解鎖
             </summary>
-            <param name="artlog">類別的數字值</param>
+            <param name="articlecategoryId">類別的數字值</param>
             <param name="nowpage">現在的頁數(一開始請填1)</param>
             <param name="showcount">要顯示幾筆資料</param>
             <returns></returns>
@@ -1495,16 +1552,20 @@
             <param name="showcount">顯示幾筆資料</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.HomepageController.NewArticle">
+        <member name="M:testdatamodel.Controllers.HomepageController.NewArticle(System.Int32,System.Int32)">
             <summary>
-            最新的切切文章排列(前三筆
+            最新的切切文章排列
             </summary>
+            <param name="nowpage">現在頁數(預設1)</param>
+            <param name="showcount">一頁顯示幾筆</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.HomepageController.Lovearticle">
+        <member name="M:testdatamodel.Controllers.HomepageController.Lovearticle(System.Int32,System.Int32)">
             <summary>
-            最熱門的切切文章排列(前四筆
+            最熱門的切切文章排列
             </summary>
+            <param name="nowpage">現在頁數(預設1)</param>
+            <param name="showcount">一頁顯示幾筆</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.HomepageController.Seekstringarticle(System.String,System.Int32,System.Int32)">
@@ -1525,7 +1586,7 @@
             <summary>
             依類別搜尋一般文章(按照時間排列)
             </summary>
-            <param name="artlog">類別ID</param>
+            <param name="articlecategoryId">類別ID</param>
             <param name="nowpage">現在的頁數(一開始請填1)</param>
             <param name="showcount">要顯示幾筆資料</param>
             <returns></returns>
@@ -1540,16 +1601,20 @@
             <param name="showcount">顯示幾筆資料</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.HomepagenormalController.NewArticle">
+        <member name="M:testdatamodel.Controllers.HomepagenormalController.NewArticle(System.Int32,System.Int32)">
             <summary>
-            最新的一般文章(前三筆)
+            最新的一般文章
             </summary>
+            <param name="showcount">一頁顯示幾筆</param>
+            <param name="nowpage">現在頁數</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.HomepagenormalController.Lovearticle">
+        <member name="M:testdatamodel.Controllers.HomepagenormalController.Lovearticle(System.Int32,System.Int32)">
             <summary>
-            最熱門的一般文章(前四筆)
+            最熱門的一般文章
             </summary>
+            <param name="nowpage">現在頁數(預設1)</param>
+            <param name="showcount">一頁顯示幾筆</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.HomepagenormalController.Seekstringarticle(System.String,System.Int32,System.Int32)">
@@ -1635,41 +1700,39 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.Collectauthorarticle(System.String,System.Int32,System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.MemberController.Collectauthorarticle(System.String,System.Int32,System.Int32)">
             <summary>
             查詢作者蒐藏的切切文章
             </summary>
             <param name="authorusername">作者帳號名稱</param>
-            <param name="pageNow">現在頁面(預設為1)</param>
-            <param name="totalpagecount">全部筆數(預設為0)</param>
+            <param name="nowpage">現在頁面(預設為1)</param>
             <param name="showcount">一頁顯示幾筆資料</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.CollectauthorNormalarticle(System.String,System.Int32,System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.MemberController.CollectauthorNormalarticle(System.String,System.Int32,System.Int32)">
             <summary>
             查詢作者的蒐藏的一般文章
             </summary>
             <param name="authorusername">作者帳號名稱</param>
-            <param name="pageNow">現在頁面(預設為1)</param>
-            <param name="totalpagecount">全部筆數(預設為0</param>
+            <param name="nowpage">現在頁面(預設為1)</param>
             <param name="showcount">一頁顯示幾筆資料</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.GetMyArticles(System.Int32,System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.MemberController.GetMyArticles(System.String,System.Int32,System.Int32)">
             <summary>
             作者所有切切文章
             </summary>
-            <param name="pageNow">現在頁面(預設為1)</param>
-            <param name="totalpagecount">全部筆數(預設為0)</param>
+            <param name="username">作者帳號</param>
+            <param name="nowpage">現在頁面(預設為1)</param>
             <param name="showcount">一頁顯示幾筆資料</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.GetMyNormalArticles(System.Int32,System.Int32,System.Int32)">
+        <member name="M:testdatamodel.Controllers.MemberController.GetMyNormalArticles(System.String,System.Int32,System.Int32)">
             <summary>
             作者所有一般文章
             </summary>
-            <param name="pageNow">現在頁面(預設為1)</param>
-            <param name="totalpagecount">全部筆數(預設為0)</param>
+            <param name="username">作者帳號</param>
+            <param name="nowpage">現在頁面(預設為1)</param>
             <param name="showcount">一頁顯示幾筆資料</param>
             <returns></returns>
         </member>
@@ -1723,6 +1786,14 @@
             取得作者方案
             </summary>
             <param name="author">作者帳號</param>
+            <returns></returns>
+        </member>
+        <member name="M:testdatamodel.Controllers.MemberController.GetMyOrder(System.Int32,System.Int32)">
+            <summary>
+            我的訂閱清單
+            </summary>
+            <param name="nowpage">現在頁數(預設1)</param>
+            <param name="showcount">一頁顯示幾筆</param>
             <returns></returns>
         </member>
         <member name="T:testdatamodel.Controllers.TestController">
@@ -1863,6 +1934,11 @@
             <param name="Token">Token</param>
             <returns></returns>
         </member>
+        <member name="T:testdatamodel.listclass.ArticleListOutPut">
+            <summary>
+            切切用List
+            </summary>
+        </member>
         <member name="T:testdatamodel.listclass.MessageList">
             <summary>
             留言格式
@@ -1933,6 +2009,36 @@
             正常文章列表
             </summary>
         </member>
+        <member name="T:testdatamodel.listclass.OrderMyList">
+            <summary>
+            我的訂閱清單
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.OrderMyList.ID">
+            <summary>
+            清單ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.OrderMyList.Author">
+            <summary>
+            訂閱的作者
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.OrderMyList.Amount">
+            <summary>
+            訂閱金額
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.OrderMyList.IsSuceess">
+            <summary>
+            交易是否成功
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.OrderMyList.InitDate">
+            <summary>
+            訂閱日期
+            </summary>
+        </member>
         <member name="T:testdatamodel.listclass.RemessageList">
             <summary>
             回覆留言
@@ -1951,6 +2057,16 @@
         <member name="P:testdatamodel.Models.Article.UserName">
             <summary>
             使用者帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.Article.AuthorName">
+            <summary>
+            作者名字
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.Article.AuthorPic">
+            <summary>
+            作者頭像
             </summary>
         </member>
         <member name="P:testdatamodel.Models.Article.FirstPicName">
@@ -2046,6 +2162,16 @@
         <member name="P:testdatamodel.Models.ArticleNormal.UserName">
             <summary>
             使用者帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.ArticleNormal.AuthorName">
+            <summary>
+            作者名字
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.ArticleNormal.AuthorPic">
+            <summary>
+            作者頭像
             </summary>
         </member>
         <member name="P:testdatamodel.Models.ArticleNormal.Title">
@@ -2271,6 +2397,11 @@
         <member name="P:testdatamodel.Models.Orderlist.AuthorName">
             <summary>
             被訂閱者的帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.Models.Orderlist.Amount">
+            <summary>
+            訂閱金額
             </summary>
         </member>
         <member name="P:testdatamodel.Models.Orderlist.Issuccess">

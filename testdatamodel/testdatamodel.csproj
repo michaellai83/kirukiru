@@ -447,9 +447,12 @@
     </Compile>
     <Compile Include="JWT\JwtAuthFilter .cs" />
     <Compile Include="JWT\JwtAuthUtil.cs" />
+    <Compile Include="listclass\ArticleListOutPut.cs" />
     <Compile Include="listclass\MessageList.cs" />
     <Compile Include="listclass\NewArticle.cs" />
+    <Compile Include="listclass\NewNormalArticle.cs" />
     <Compile Include="listclass\NormalArticles.cs" />
+    <Compile Include="listclass\OrderMyList.cs" />
     <Compile Include="listclass\RemessageList.cs" />
     <Compile Include="Migrations\202203070846064_Addtable.cs" />
     <Compile Include="Migrations\202203070846064_Addtable.Designer.cs">
@@ -546,6 +549,18 @@
     <Compile Include="Migrations\202203271016359_AddArticleNormalInfo.cs" />
     <Compile Include="Migrations\202203271016359_AddArticleNormalInfo.Designer.cs">
       <DependentUpon>202203271016359_AddArticleNormalInfo.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203280454592_EditOrderListAddAmount.cs" />
+    <Compile Include="Migrations\202203280454592_EditOrderListAddAmount.Designer.cs">
+      <DependentUpon>202203280454592_EditOrderListAddAmount.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203280458325_EditOrderListEditAmountToInt.cs" />
+    <Compile Include="Migrations\202203280458325_EditOrderListEditAmountToInt.Designer.cs">
+      <DependentUpon>202203280458325_EditOrderListEditAmountToInt.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202203290157040_AddArticleAndArticleNormalAddAuthorNameAndAuthorPic.cs" />
+    <Compile Include="Migrations\202203290157040_AddArticleAndArticleNormalAddAuthorNameAndAuthorPic.Designer.cs">
+      <DependentUpon>202203290157040_AddArticleAndArticleNormalAddAuthorNameAndAuthorPic.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Article.cs" />
@@ -745,6 +760,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203271016359_AddArticleNormalInfo.resx">
       <DependentUpon>202203271016359_AddArticleNormalInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203280454592_EditOrderListAddAmount.resx">
+      <DependentUpon>202203280454592_EditOrderListAddAmount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203280458325_EditOrderListEditAmountToInt.resx">
+      <DependentUpon>202203280458325_EditOrderListEditAmountToInt.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202203290157040_AddArticleAndArticleNormalAddAuthorNameAndAuthorPic.resx">
+      <DependentUpon>202203290157040_AddArticleAndArticleNormalAddAuthorNameAndAuthorPic.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

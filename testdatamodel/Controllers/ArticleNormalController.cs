@@ -42,9 +42,13 @@ namespace testdatamodel.Controllers
                 });
             }
 
+            var authorname = checkusername.Name;
+            var authorPic = checkusername.PicName + "." + checkusername.FileName;
             var checkArt = username +DateTime.Now.ToFileTime();
             ArticleNormal article = new ArticleNormal();
             article.UserName = data.userName;
+            article.AuthorName = authorname;
+            article.AuthorPic = authorPic;
             article.Introduction = data.introduction;
             article.Title = data.title;
             article.Main = data.main;
@@ -67,12 +71,12 @@ namespace testdatamodel.Controllers
         /// 找到作者自己的所有一般文章
         /// </summary>
         /// <param name="isPush">是否發布(判斷是否在草稿)</param>
-        /// <param name="nowPage">現在頁數(預設1)</param>
-        /// <param name="showNum">一頁顯示幾筆資料</param>
+        /// <param name="nowpage">現在頁數(預設1)</param>
+        /// <param name="showcount">一頁顯示幾筆資料</param>
         /// <returns></returns>
         [HttpGet]
         [JwtAuthFilter]
-        public IHttpActionResult GetUserAllArticleNormal( bool isPush,int nowPage,int showNum)
+        public IHttpActionResult GetUserAllArticleNormal( bool isPush,int nowpage,int showcount)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var data = from a in db.ArticleNormals
@@ -91,22 +95,25 @@ namespace testdatamodel.Controllers
             foreach (var str in data.ToList())
             {
                 NormalArticles newartary = new NormalArticles();
-                newartary.ArticleID = str.ID;
-                newartary.UserName = str.UserName;
-                newartary.Introduction = str.Introduction;
-                newartary.Title = str.Title;
-                newartary.Articlecategory = str.Articlecategory.Name;
-                newartary.Isfree = str.IsFree;
-                newartary.Lovecount = str.Lovecount;
-                newartary.InitDateTime = str.InitDate;
+                newartary.artId= str.ID;
+                newartary.username = str.UserName;
+                newartary.author = str.AuthorName;
+                newartary.authorPic = str.AuthorPic;
+                newartary.introduction = str.Introduction;
+                newartary.title = str.Title;
+                newartary.artArtlog = str.Articlecategory.Name;
+                newartary.articlecategoryId = str.ArticlecategoryId;
+                newartary.isFree = str.IsFree;
+                newartary.lovecount = str.Lovecount;
+                newartary.artInitDate = str.InitDate;
 
                 arrayList.Add(newartary);
             }
 
             var total = arrayList.Count;
-            if (nowPage == 1)
+            if (nowpage == 1)
             {
-                var outPutData = arrayList.OrderByDescending(x => x.InitDateTime).Take(showNum);
+                var outPutData = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -116,8 +123,8 @@ namespace testdatamodel.Controllers
             }
             else
             {
-                var page = (nowPage - 1) * showNum;
-                var outPutData = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showNum);
+                var page = (nowpage - 1) * showcount;
+                var outPutData = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -285,7 +292,7 @@ namespace testdatamodel.Controllers
             var Art_title = data.Title;
             var Art_Info = data.Introduction;
             var Art_main = data.Main;
-            var Art_message = data.MessageNormals.ToList();
+            //var Art_message = data.MessageNormals.ToList();
             var Art_initdate = data.InitDate;
             var Art_ispush = data.IsPush;
             var Art_isfree = data.IsFree;
@@ -408,11 +415,11 @@ namespace testdatamodel.Controllers
         /// 一般文章的留言
         /// </summary>
         /// <param name="artId">文章ID</param>
-        /// <param name="messagemain">留言內容</param>
+        /// <param name="main">留言內容</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult AddmessageArticleNrmal(int artId, string messagemain)
+        public IHttpActionResult AddmessageArticleNrmal(int artId, string main)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
@@ -429,7 +436,7 @@ namespace testdatamodel.Controllers
             message.MemberID = userId;
             message.ArticleNorId = artId;
             message.UserName = username;
-            message.Main = messagemain;
+            message.Main = main;
             message.InitDate = DateTime.Now;
             db.MessageNormals.Add(message);
             db.SaveChanges();
@@ -443,11 +450,11 @@ namespace testdatamodel.Controllers
         /// 回覆一般文章留言
         /// </summary>
         /// <param name="messageId">留言ID</param>
-        /// <param name="messagemain">回覆留言的內容</param>
+        /// <param name="main">回覆留言的內容</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult Addremessage(int messageId, string messagemain)
+        public IHttpActionResult Addremessage(int messageId, string main)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var data = db.MessageNormals.FirstOrDefault(m => m.Id == messageId);
@@ -472,7 +479,7 @@ namespace testdatamodel.Controllers
             
             R_MessageNormal rMessage = new R_MessageNormal();
             rMessage.MessageNorId = messageId;
-            rMessage.Main = messagemain;
+            rMessage.Main = main;
             rMessage.InitDate = DateTime.Now;
             db.R_MessageNormals.Add(rMessage);
             db.SaveChanges();
@@ -624,6 +631,39 @@ namespace testdatamodel.Controllers
 
         }
         /// <summary>
+        /// 作者刪除回覆
+        /// </summary>
+        /// <param name="reMessageId">回覆ID</param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route("api/ArticleNormal/DeleteReMessage")]
+        [JwtAuthFilter]
+        public IHttpActionResult DeleteReMessage(int reMessageId)
+        {
+            var user = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var data = db.R_MessageNormals.FirstOrDefault(x => x.Id == reMessageId);
+            var messaageId = data.MessageNorId;
+            var dataId = db.MessageNormals.FirstOrDefault(x => x.Id == messaageId).ArticleNorId;
+            var artmember = db.ArticleNormals.FirstOrDefault(x => x.ID == dataId).UserName;
+            if (user != artmember)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "你沒有權限"
+                });
+            }
+
+            db.R_MessageNormals.Remove(data);
+            db.SaveChanges();
+            return Ok(new
+            {
+                success = true,
+                message = "刪除留言"
+            });
+
+        }
+        /// <summary>
         /// 取得此留言回覆
         /// </summary>
         /// <param name="messageId">留言id</param>
@@ -725,37 +765,39 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取得會員收藏的一般文章
         /// </summary>
-        /// <param name="Nowpage">現在頁數(預設為1)</param>
+        /// <param name="nowpage">現在頁數(預設為1)</param>
         /// <param name="showcount">一頁顯示幾筆</param>
         /// <returns></returns>
         [HttpGet]
         [JwtAuthFilter]
-        public IHttpActionResult GetAllcollectart(int Nowpage,int showcount)
+        public IHttpActionResult GetAllcollectart(int nowpage,int showcount)
         {
             var memberid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var data = db.Members.FirstOrDefault(x => x.ID == memberid);
             var art = data.ArticleNormals.ToList();
             List<NormalArticles> arrayList = new List<NormalArticles>();
-            foreach (var content in art)
+            foreach (var str in art)
             {
 
                 NormalArticles newartary = new NormalArticles();
-                newartary.ArticleID = content.ID;
-                newartary.UserName = content.UserName;
-                newartary.Title = content.Title;
-                newartary.Articlecategory = content.Articlecategory.Name;
-                newartary.Lovecount = content.Lovecount;
-                newartary.InitDateTime = content.InitDate;
+                newartary.artId = str.ID;
+                newartary.username = str.UserName;
+                newartary.introduction = str.Introduction;
+                newartary.title = str.Title;
+                newartary.artArtlog = str.Articlecategory.Name;
+                newartary.articlecategoryId = str.ArticlecategoryId;
+                newartary.isFree = str.IsFree;
+                newartary.lovecount = str.Lovecount;
+                newartary.artInitDate = str.InitDate;
 
                 arrayList.Add(newartary);
-
 
             }
 
             int total = arrayList.Count;
-            if (Nowpage == 1)
+            if (nowpage == 1)
             {
-                var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
+                var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -765,10 +807,10 @@ namespace testdatamodel.Controllers
             }
             else
             {
-                int page = (Nowpage - 1) * showcount;
+                int page = (nowpage - 1) * showcount;
                 //排序依照日期
 
-                var result = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
+                var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -782,12 +824,17 @@ namespace testdatamodel.Controllers
         /// 依照類別取得相關一般文章(前四筆)
         /// </summary>
         /// <param name="articlecategoryId">文章類別ID</param>
+        /// <param name="nowpage">現在頁數(預設為1)</param>
+        /// <param name="showcount">一頁顯示幾筆</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult GetArtlogNormalArticle(int articlecategoryId)
+        public IHttpActionResult GetArtlogNormalArticle(int articlecategoryId,int nowpage,int showcount)
         {
-            var data = db.ArticleNormals.Where(x => x.ArticlecategoryId == articlecategoryId).Where(x=>x.IsPush==true)
-                .OrderByDescending(x => x.InitDate).Take(4).ToList();
+            //var data = db.ArticleNormals.Where(x => x.ArticlecategoryId == articlecategoryId).Where(x=>x.IsPush==true)
+            //    .OrderByDescending(x => x.InitDate).ToList();
+            var data = from q in db.ArticleNormals
+                where q.ArticlecategoryId == articlecategoryId && q.IsPush == true
+                select q;
             if (data == null)
             {
                 return Ok(new
@@ -796,28 +843,146 @@ namespace testdatamodel.Controllers
                     message = "沒有相關文章"
                 });
             }
-            List<NormalArticles> arrayList = new List<NormalArticles>();
+            List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
 
-            foreach (var content in data)
+            foreach (var str in data.ToList())
             {
 
-                NormalArticles newartary = new NormalArticles();
-                newartary.ArticleID = content.ID;
-                newartary.UserName = content.UserName;
-                newartary.Introduction = content.Introduction;
-                newartary.Title = content.Title;
-                newartary.Articlecategory = content.Articlecategory.Name;
-                newartary.Isfree = content.IsFree;
-                newartary.Lovecount = content.Lovecount;
-                newartary.InitDateTime = content.InitDate;
+                NewNormalArticle newartary = new NewNormalArticle();
+                newartary.artId = str.ID;
+                newartary.username = str.UserName;
+                newartary.author = str.AuthorName;
+                newartary.authorPic = str.AuthorPic;
+                newartary.introduction = str.Introduction;
+                newartary.title = str.Title;
+                newartary.artArtlog = str.Articlecategory.Name;
+                newartary.articlecategoryId = str.ArticlecategoryId;
+                newartary.isFree = str.IsFree;
+                newartary.lovecount = str.Lovecount;
+                newartary.artInitDate = str.InitDate;
 
                 arrayList.Add(newartary);
 
             }
+
+            int total = arrayList.Count;
+            if (nowpage == 1)
+            {
+                var outPut = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
+                return Ok(new
+                {
+                    success = true,
+                    total=total,
+                    data = outPut
+                });
+            }
+            else
+            {
+                int page = (nowpage - 1) * showcount;
+                var outPut = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                return Ok(new
+                {
+                    success = true,
+                    total = total,
+                    data = outPut
+                });
+            }
+            
+        }
+
+        /// <summary>
+        /// 修改留言
+        /// </summary>
+        /// <param name="messageId">留言ID</param>
+        /// <param name="main">修改後內容</param>
+        /// <returns></returns>
+        [Route("api/ArticleNormal/EditMessage")]
+        [JwtAuthFilter]
+        [HttpPut]
+        public IHttpActionResult EditMessage(int messageId, string main)
+        {
+            var messageData = db.MessageNormals.FirstOrDefault(x => x.Id == messageId);
+            if (messageData == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此留言"
+                });
+            }
+            var memberUserName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var checkUserName = messageData.UserName;
+            if (checkUserName != memberUserName)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "你沒有權限"
+                });
+            }
+
+            var q = from p in db.MessageNormals
+                    where p.Id == messageId
+                    select p;
+            foreach (var p in q)
+            {
+                p.Main = main;
+            }
+
+            db.SaveChanges();
             return Ok(new
             {
                 success = true,
-                data = arrayList
+                message = "已修改留言"
+            });
+        }
+        /// <summary>
+        /// 修改回覆
+        /// </summary>
+        /// <param name="reMessageId">回覆的ID</param>
+        /// <param name="main">修改的內容</param>
+        /// <returns></returns>
+        [Route("api/ArticleNormal/EditReMessage")]
+        [JwtAuthFilter]
+        [HttpPut]
+        public IHttpActionResult EditReMessage(int reMessageId, string main)
+        {
+            var reData = db.R_MessageNormals.FirstOrDefault(x => x.Id == reMessageId);
+            if (reData == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此回覆"
+                });
+            }
+
+            var checkMessageId = reData.MessageNorId;
+            var checkArticleId = db.MessageNormals.FirstOrDefault(x => x.Id == checkMessageId).ArticleNorId;
+            var checkUserName = db.ArticleNormals.FirstOrDefault(x => x.ID == checkArticleId).UserName;
+            var memberUserName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            if (checkUserName != memberUserName)
+            {
+                return Ok(new
+                {
+                    suceess = false,
+                    message = "你沒有權限"
+                });
+            }
+
+            var q = from p in db.R_MessageNormals
+                    where p.Id == reMessageId
+                    select p;
+            foreach (var p in q)
+            {
+                p.Main = main;
+            }
+
+            db.SaveChanges();
+            return Ok(new
+            {
+                success = true,
+                message = "已修改回覆"
             });
         }
     }

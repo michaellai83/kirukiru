@@ -22,13 +22,15 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 依類別取切切文章(按照時間最新排列(有完成訂閱作者的話他的文章都會解鎖
         /// </summary>
-        /// <param name="artlog">類別的數字值</param>
+        /// <param name="articlecategoryId">類別的數字值</param>
         /// <param name="nowpage">現在的頁數(一開始請填1)</param>
         /// <param name="showcount">要顯示幾筆資料</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult SeekArticle(int artlog,int nowpage,int showcount)
+        [JwtAuthFilter]
+        public IHttpActionResult SeekArticle(int articlecategoryId, int nowpage,int showcount)
         {
+            //有鎖JWT 如果到時候確認訂閱方法可以用再把全部都加上去JWT
             var member = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var memberorder = db.Members.FirstOrDefault(x => x.ID == member).Orderlists.ToList();
             List<string> checkorder = new List<string>();
@@ -48,7 +50,7 @@ namespace testdatamodel.Controllers
             }
             int ordernum = checkorder.Count;
             var data = from a in db.Articles
-                where (a.ArticlecategoryId == artlog &
+                where (a.ArticlecategoryId == articlecategoryId &
                        a.IsPush == true)
                 select a;
             int pagecount = data.Count();
@@ -65,15 +67,18 @@ namespace testdatamodel.Controllers
 
                     //var good = db.Goods.Where(m => m.ArticleId == artid).Count();//不要在迴圈裡面開資料庫
                     NewArticle newartary = new NewArticle();
-                    newartary.ArticleID = content.ID;
-                    newartary.UserName = content.UserName;
-                    newartary.Title = content.Title;
-                    newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                    newartary.ArtInfo = content.Introduction;
-                    newartary.Articlecategory = content.Articlecategory.Name;
-                    newartary.Isfree = content.IsFree;
-                    newartary.Lovecount = content.Lovecount;
-                    newartary.InitDateTime = content.InitDate;
+                    newartary.artId = content.ID;
+                    newartary.username = content.UserName;
+                    newartary.author = content.AuthorName;
+                    newartary.authorPic = content.AuthorPic;
+                    newartary.title = content.Title;
+                    newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
+                    newartary.introduction = content.Introduction;
+                    newartary.articlecategoryId = content.ArticlecategoryId;
+                    newartary.artArtlog = content.Articlecategory.Name;
+                    newartary.isFree = content.IsFree;
+                    newartary.lovecount = content.Lovecount;
+                    newartary.ArtInitDate = content.InitDate;
 
                     arrayList.Add(newartary);
                 }
@@ -85,9 +90,9 @@ namespace testdatamodel.Controllers
 
                         for (int i = 0; i < ordernum; i++)
                         {
-                            if (checkorder[i] == str.UserName && str.Isfree == false)
+                            if (checkorder[i] == str.username && str.isFree == false)
                             {
-                                str.Isfree = true;
+                                str.isFree = true;
                                 break;
                             }
                         }
@@ -120,7 +125,7 @@ namespace testdatamodel.Controllers
                     //var result = from e in arrayList
                     //    orderby e.InitDateTime
                     //    select e;
-                    var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
                     pagecount = arrayList.Count();
                     return Ok(new
                     {
@@ -154,7 +159,7 @@ namespace testdatamodel.Controllers
                     int page = (nowpage - 1) * showcount;
                     //排序依照日期
                     
-                    var result = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
                     return Ok(new
                     {
                         success=true,
@@ -278,24 +283,28 @@ namespace testdatamodel.Controllers
             if (data != null /*&& dataNormal != null*/)
             {
                 List<NewArticle> arrayList = new List<NewArticle>();
+                foreach (var content in data.ToList())
+                {
+                    NewArticle newartary = new NewArticle();
+                    newartary.artId = content.ID;
+                    newartary.username = content.UserName;
+                    newartary.author = content.AuthorName;
+                    newartary.authorPic = content.AuthorPic;
+                    newartary.title = content.Title;
+                    newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
+                    newartary.introduction = content.Introduction;
+                    newartary.artArtlog = content.Articlecategory.Name;
+                    newartary.articlecategoryId = content.ArticlecategoryId;
+                    newartary.isFree = content.IsFree;
+                    newartary.lovecount = content.Lovecount;
+                    newartary.ArtInitDate = content.InitDate;
+
+                    arrayList.Add(newartary);
+                }
 
                 if (nowpage == 1)
                 {
-                    foreach (var content in data.ToList())
-                    {
-                        NewArticle newartary = new NewArticle();
-                        newartary.ArticleID = content.ID;
-                        newartary.UserName = content.UserName;
-                        newartary.Title = content.Title;
-                        newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                        newartary.ArtInfo = content.Introduction;
-                        newartary.Articlecategory = content.Articlecategory.Name;
-                        newartary.Isfree = content.IsFree;
-                        newartary.Lovecount = content.Lovecount;
-                        newartary.InitDateTime = content.InitDate;
-
-                        arrayList.Add(newartary);
-                    }
+                    
 
                     //foreach (var content in dataNormal.ToList())
                     //{
@@ -316,7 +325,7 @@ namespace testdatamodel.Controllers
 
                     //}
                     //排序依照日期
-                    var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
                     //var resultArticles = from e in arrayList
                     //    orderby e.InitDateTime
                     //    select e;
@@ -331,21 +340,6 @@ namespace testdatamodel.Controllers
                 }
                 else
                 {
-                    foreach (var content in data.ToList())
-                    {
-                        NewArticle newartary = new NewArticle();
-                        newartary.ArticleID = content.ID;
-                        newartary.UserName = content.UserName;
-                        newartary.Title = content.Title;
-                        newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                        newartary.ArtInfo = content.Introduction;
-                        newartary.Articlecategory = content.Articlecategory.Name;
-                        newartary.Isfree = content.IsFree;
-                        newartary.Lovecount = content.Lovecount;
-                        newartary.InitDateTime = content.InitDate;
-
-                        arrayList.Add(newartary);
-                    }
 
                     //foreach (var content in dataNormal.ToList())
                     //{
@@ -368,7 +362,7 @@ namespace testdatamodel.Controllers
 
                     int page = (nowpage - 1) * showcount;
                     //排序依照日期
-                    var result = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
 
 
                     return Ok(new
@@ -389,11 +383,13 @@ namespace testdatamodel.Controllers
             }
         }
         /// <summary>
-        /// 最新的切切文章排列(前三筆
+        /// 最新的切切文章排列
         /// </summary>
+        /// <param name="nowpage">現在頁數(預設1)</param>
+        /// <param name="showcount">一頁顯示幾筆</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult NewArticle()
+        public IHttpActionResult NewArticle(int nowpage, int showcount)
         {
             var data = from q in db.Articles 
                     where q.IsPush == true
@@ -408,15 +404,18 @@ namespace testdatamodel.Controllers
                 foreach (var content in data.ToList())
                 {
                     NewArticle newartary = new NewArticle();
-                    newartary.ArticleID = content.ID;
-                    newartary.UserName = content.UserName;
-                    newartary.Title = content.Title;
-                    newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                    newartary.ArtInfo = content.Introduction;
-                    newartary.Articlecategory = content.Articlecategory.Name;
-                    newartary.Isfree = content.IsFree;
-                    newartary.Lovecount = content.Lovecount;
-                    newartary.InitDateTime = content.InitDate;
+                    newartary.artId = content.ID;
+                    newartary.username = content.UserName;
+                    newartary.author = content.AuthorName;
+                    newartary.authorPic = content.AuthorPic;
+                    newartary.title = content.Title;
+                    newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
+                    newartary.introduction = content.Introduction;
+                    newartary.artArtlog = content.Articlecategory.Name;
+                    newartary.articlecategoryId = content.ArticlecategoryId;
+                    newartary.isFree = content.IsFree;
+                    newartary.lovecount = content.Lovecount;
+                    newartary.ArtInitDate = content.InitDate;
 
                     arrayList.Add(newartary);
                 }
@@ -439,18 +438,35 @@ namespace testdatamodel.Controllers
 
 
                 //}
-                //排序依照日期 desending遞減
-                //用Take表示拿取幾筆資料
-                var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(3);
-                //另一種寫法
-                //var result = from e in arrayList
-                //    orderby e.InitDateTime descending 
-                //    select e;
-                return Ok(new
+                var total = arrayList.Count;
+                if (nowpage == 1)
                 {
-                    success=true,
-                    data=result
-                });
+                    //排序依照日期 desending遞減
+                    //用Take表示拿取幾筆資料
+                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                    //另一種寫法
+                    //var result = from e in arrayList
+                    //    orderby e.InitDateTime descending 
+                    //    select e;
+                    return Ok(new
+                    {
+                        success = true,
+                        total = total,
+                        data = result
+                    });
+                }
+                else
+                {
+                    var page = (nowpage - 1) * showcount;
+                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                    return Ok(new
+                    {
+                        success = true,
+                        total = total,
+                        data = result
+                    });
+                }
+               
             }
             else
             {
@@ -462,13 +478,15 @@ namespace testdatamodel.Controllers
             }
         }
         /// <summary>
-        /// 最熱門的切切文章排列(前四筆
+        /// 最熱門的切切文章排列
         /// </summary>
+        /// <param name="nowpage">現在頁數(預設1)</param>
+        /// <param name="showcount">一頁顯示幾筆</param>
         /// <returns></returns>
         [Route("api/Homepage/lovearticle")]
         [HttpGet]
         
-        public IHttpActionResult Lovearticle()
+        public IHttpActionResult Lovearticle(int nowpage, int showcount)
         {
             var data = from q in db.Articles
                     where q.IsPush == true & q.Lovecount >0
@@ -483,15 +501,18 @@ namespace testdatamodel.Controllers
                 foreach (var content in data.ToList())
                 {
                     NewArticle newartary = new NewArticle();
-                    newartary.ArticleID = content.ID;
-                    newartary.UserName = content.UserName;
-                    newartary.Title = content.Title;
-                    newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                    newartary.ArtInfo = content.Introduction;
-                    newartary.Articlecategory = content.Articlecategory.Name;
-                    newartary.Isfree = content.IsFree;
-                    newartary.Lovecount = content.Lovecount;
-                    newartary.InitDateTime = content.InitDate;
+                    newartary.artId = content.ID;
+                    newartary.username = content.UserName;
+                    newartary.author = content.AuthorName;
+                    newartary.authorPic = content.AuthorPic;
+                    newartary.title = content.Title;
+                    newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
+                    newartary.introduction = content.Introduction;
+                    newartary.artArtlog = content.Articlecategory.Name;
+                    newartary.articlecategoryId = content.ArticlecategoryId;
+                    newartary.isFree = content.IsFree;
+                    newartary.lovecount = content.Lovecount;
+                    newartary.ArtInitDate = content.InitDate;
 
                     arrayList.Add(newartary);
                 }
@@ -514,14 +535,31 @@ namespace testdatamodel.Controllers
 
 
                 //}
-                //排序依照日期 desending遞減
-                var result = arrayList.OrderByDescending(x => x.Lovecount).Take(4);
-
-                return Ok(new
+                int total = arrayList.Count;
+                if (nowpage == 1)
                 {
-                    success=true,
-                    data=result
-                });
+                    //排序依照日期 desending遞減
+                    var result = arrayList.OrderByDescending(x => x.lovecount).Take(4);
+
+                    return Ok(new
+                    {
+                        success = true,
+                        total = total,
+                        data = result
+                    });
+                }
+                else
+                {
+                    int page = (nowpage - 1) * showcount;
+                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                    return Ok(new
+                    {
+                        success = true,
+                        total = total,
+                        data = result
+                    });
+                }
+               
             }
             else
             {
@@ -571,25 +609,26 @@ namespace testdatamodel.Controllers
             var articlelist = dataarticle.ToList();
             //var articleNlist = dataarticleN.ToList();
             List<NewArticle> arrayList = new List<NewArticle>();
+            foreach (var content in articlelist)
+            {
+                NewArticle newartary = new NewArticle();
+                newartary.artId = content.ID;
+                newartary.username = content.UserName;
+                newartary.author = content.AuthorName;
+                newartary.authorPic = content.AuthorPic;
+                newartary.title = content.Title;
+                newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
+                newartary.introduction = content.Introduction;
+                newartary.artArtlog = content.Articlecategory.Name;
+                newartary.articlecategoryId = content.ArticlecategoryId;
+                newartary.isFree = content.IsFree;
+                newartary.lovecount = content.Lovecount;
+                newartary.ArtInitDate = content.InitDate;
+
+                arrayList.Add(newartary);
+            }
             if (nowpage == 1)
             {
-
-
-                foreach (var content in articlelist)
-                {
-                    NewArticle newartary = new NewArticle();
-                    newartary.ArticleID = content.ID;
-                    newartary.UserName = content.UserName;
-                    newartary.Title = content.Title;
-                    newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                    newartary.ArtInfo = content.Introduction;
-                    newartary.Articlecategory = content.Articlecategory.Name;
-                    newartary.Isfree = content.IsFree;
-                    newartary.Lovecount = content.Lovecount;
-                    newartary.InitDateTime = content.InitDate;
-
-                    arrayList.Add(newartary);
-                }
 
                 //foreach (var content in articleNlist)
                 //{
@@ -610,7 +649,7 @@ namespace testdatamodel.Controllers
 
                 //}
                 //排序依照日期 desending遞減
-                var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
+                var result = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
                 //另一種寫法
                 //var result = from e in arrayList
                 //             orderby e.InitDateTime descending
@@ -625,21 +664,6 @@ namespace testdatamodel.Controllers
             }
             else
             {
-                foreach (var content in articlelist)
-                {
-                    NewArticle newartary = new NewArticle();
-                    newartary.ArticleID = content.ID;
-                    newartary.UserName = content.UserName;
-                    newartary.Title = content.Title;
-                    newartary.ArtPic = content.FirstPicName + "." + content.FirstPicFileName;
-                    newartary.ArtInfo = content.Introduction;
-                    newartary.Articlecategory = content.Articlecategory.Name;
-                    newartary.Isfree = content.IsFree;
-                    newartary.Lovecount = content.Lovecount;
-                    newartary.InitDateTime = content.InitDate;
-
-                    arrayList.Add(newartary);
-                }
 
                 //foreach (var content in articleNlist)
                 //{
@@ -661,7 +685,7 @@ namespace testdatamodel.Controllers
                 //}
 
                 int takepage = (nowpage - 1) * showcount;
-                var resultdata = arrayList.OrderByDescending(x => x.InitDateTime).Skip(takepage).Take(showcount);
+                var resultdata = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(takepage).Take(showcount);
                 return Ok(new
                     {
                         success=true,

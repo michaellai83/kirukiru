@@ -77,6 +77,7 @@ namespace testdatamodel.Controllers
                 orderlist.Ordernumber = orderno;
                 orderlist.MemberID = userid;
                 orderlist.AuthorName = main;
+                orderlist.Amount = amount;
                 orderlist.Issuccess = false;
                 orderlist.InitDateTime = DateTime.Now;
                 db.Orderlists.Add(orderlist);
@@ -241,7 +242,7 @@ namespace testdatamodel.Controllers
         }
 
         /// <summary>
-        /// 定期定額
+        /// 定期定額(藍新
         /// </summary>
         /// <param name="main">訂單內容</param>
         /// <param name="amount">訂單金額</param>
@@ -450,10 +451,16 @@ namespace testdatamodel.Controllers
                 var tradeQueryPara = string.Join("&", tradeData.Select(x => $"{x.Key}={x.Value}"));
                 // AES 加密
                 string ceckno = BuildCheckMacValue(tradeQueryPara);
-                
 
-               
-
+                Orderlist orderlist = new Orderlist();
+                orderlist.MemberID = userid;
+                orderlist.AuthorName = main;
+                orderlist.Amount = amount;
+                orderlist.InitDateTime = DateTime.Now;
+                orderlist.Ordernumber = orderno;
+                orderlist.Issuccess = false;
+                db.Orderlists.Add(orderlist);
+                db.SaveChanges();
 
                 ArrayList postary = new ArrayList();
                 var result = new

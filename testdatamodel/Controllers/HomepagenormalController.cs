@@ -18,36 +18,38 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 依類別搜尋一般文章(按照時間排列)
         /// </summary>
-        /// <param name="artlog">類別ID</param>
+        /// <param name="articlecategoryId">類別ID</param>
         /// <param name="nowpage">現在的頁數(一開始請填1)</param>
         /// <param name="showcount">要顯示幾筆資料</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult SeekArticle(int artlog, int nowpage, int showcount)
+        public IHttpActionResult SeekArticle(int articlecategoryId, int nowpage, int showcount)
         {
 
             var datanormal = from a in db.ArticleNormals
-                             where (a.ArticlecategoryId == artlog &
+                             where (a.ArticlecategoryId == articlecategoryId &
                                     a.IsPush == true)
                              select a;
             int pagecount = datanormal.Count();
             if ( datanormal != null)
             {
 
-                List<NormalArticles> arrayList = new List<NormalArticles>();
+                List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
 
                 foreach (var content in datanormal.ToList())
                 {
 
-                    NormalArticles newartary = new NormalArticles();
-                    newartary.ArticleID = content.ID;
-                    newartary.UserName = content.UserName;
-                    newartary.Introduction = content.Introduction;
-                    newartary.Title = content.Title;
-                    newartary.Articlecategory = content.Articlecategory.Name;
-                    newartary.Isfree = content.IsFree;
-                    newartary.Lovecount = content.Lovecount;
-                    newartary.InitDateTime = content.InitDate;
+                    NewNormalArticle newartary = new NewNormalArticle();
+                    newartary.artId = content.ID;
+                    newartary.username = content.UserName;
+                    newartary.author = content.AuthorName;
+                    newartary.authorPic = content.AuthorPic;
+                    newartary.introduction = content.Introduction;
+                    newartary.title = content.Title;
+                    newartary.artArtlog = content.Articlecategory.Name;
+                    newartary.isFree = content.IsFree;
+                    newartary.lovecount = content.Lovecount;
+                    newartary.artInitDate = content.InitDate;
 
                     arrayList.Add(newartary);
 
@@ -58,7 +60,7 @@ namespace testdatamodel.Controllers
                     //var result = from e in arrayList
                     //    orderby e.InitDateTime
                     //    select e;
-                    var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                     pagecount = arrayList.Count();
                     return Ok(new
                     {
@@ -75,7 +77,7 @@ namespace testdatamodel.Controllers
                     int page = (nowpage - 1) * showcount;
                     //排序依照日期
 
-                    var result = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                     return Ok(new
                     {
                         success = true,
@@ -115,22 +117,23 @@ namespace testdatamodel.Controllers
             int totalcount = dataNormal.Count();
             if (dataNormal != null)
             {
-                List<NormalArticles> arrayList = new List<NormalArticles>();
+                List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
                 foreach (var content in dataNormal.ToList())
                 {
 
-                    NormalArticles newartary = new NormalArticles();
-                    newartary.ArticleID = content.ID;
-                    newartary.UserName = content.UserName;
-                    newartary.Introduction = content.Introduction;
-                    newartary.Title = content.Title;
-                    newartary.Articlecategory = content.Articlecategory.Name;
-                    newartary.Isfree = content.IsFree;
-                    newartary.Lovecount = content.Lovecount;
-                    newartary.InitDateTime = content.InitDate;
+                    NewNormalArticle newartary = new NewNormalArticle();
+                    newartary.artId = content.ID;
+                    newartary.username = content.UserName;
+                    newartary.author = content.AuthorName;
+                    newartary.authorPic = content.AuthorPic;
+                    newartary.introduction = content.Introduction;
+                    newartary.title = content.Title;
+                    newartary.artArtlog = content.Articlecategory.Name;
+                    newartary.isFree = content.IsFree;
+                    newartary.lovecount = content.Lovecount;
+                    newartary.artInitDate = content.InitDate;
 
                     arrayList.Add(newartary);
-
 
                 }
 
@@ -139,7 +142,7 @@ namespace testdatamodel.Controllers
 
                     
                     //排序依照日期
-                    var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                     //var resultArticles = from e in arrayList
                     //    orderby e.InitDateTime
                     //    select e;
@@ -157,7 +160,7 @@ namespace testdatamodel.Controllers
 
                     int page = (nowpage - 1) * showcount;
                     //排序依照日期
-                    var result = arrayList.OrderByDescending(x => x.InitDateTime).Skip(page).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
 
 
                     return Ok(new
@@ -178,11 +181,13 @@ namespace testdatamodel.Controllers
             }
         }
         /// <summary>
-        /// 最新的一般文章(前三筆)
+        /// 最新的一般文章
         /// </summary>
+        /// <param name="showcount">一頁顯示幾筆</param>
+        /// <param name="nowpage">現在頁數</param>
         /// <returns></returns>
         [HttpGet]
-        public IHttpActionResult NewArticle()
+        public IHttpActionResult NewArticle(int nowpage,int showcount)
         {
 
             var dataNormal = db.ArticleNormals.Where(x => x.IsPush == true).ToList();
@@ -191,38 +196,58 @@ namespace testdatamodel.Controllers
             //                 select q;
             if (dataNormal != null)
             {
-                List<NormalArticles> arrayList = new List<NormalArticles>();
+                List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
 
 
                 foreach (var content in dataNormal)
                 {
 
-                    NormalArticles newartary = new NormalArticles();
-                    newartary.ArticleID = content.ID;
-                    newartary.UserName = content.UserName;
-                    newartary.Title = content.Title;
-                    newartary.Introduction = content.Introduction;
-                    newartary.Articlecategory = content.Articlecategory.Name;
-                    newartary.Isfree = content.IsFree;
-                    newartary.Lovecount = content.Lovecount;
-                    newartary.InitDateTime = content.InitDate;
+                    NewNormalArticle newartary = new NewNormalArticle();
+                    newartary.artId = content.ID;
+                    newartary.username = content.UserName;
+                    newartary.author = content.AuthorName;
+                    newartary.authorPic = content.AuthorPic;
+                    newartary.introduction = content.Introduction;
+                    newartary.title = content.Title;
+                    newartary.artArtlog = content.Articlecategory.Name;
+                    newartary.isFree = content.IsFree;
+                    newartary.lovecount = content.Lovecount;
+                    newartary.artInitDate = content.InitDate;
 
                     arrayList.Add(newartary);
 
-
                 }
-                //排序依照日期 desending遞減
-                //用Take表示拿取幾筆資料
-                var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(3);
-                //另一種寫法
-                //var result = from e in arrayList
-                //    orderby e.InitDateTime descending 
-                //    select e;
-                return Ok(new
+
+                int totalPage = arrayList.Count;
+                if (nowpage == 1)
                 {
-                    success=true,
-                    data=result
-                });
+                    //排序依照日期 desending遞減
+                    //用Take表示拿取幾筆資料
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
+                    //另一種寫法
+                    //var result = from e in arrayList
+                    //    orderby e.InitDateTime descending 
+                    //    select e;
+                    return Ok(new
+                    {
+                        success = true,
+                        total=totalPage,
+                        data = result
+                    });
+                }
+                else
+                {
+                    int page = (nowpage - 1) * showcount;
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                    return Ok(new
+                    {
+                        success = true,
+                        total = totalPage,
+                        data = result
+                    });
+                }
+
+               
             }
             else
             {
@@ -234,46 +259,67 @@ namespace testdatamodel.Controllers
             }
         }
         /// <summary>
-        /// 最熱門的一般文章(前四筆)
+        /// 最熱門的一般文章
         /// </summary>
+        /// <param name="nowpage">現在頁數(預設1)</param>
+        /// <param name="showcount">一頁顯示幾筆</param>
         /// <returns></returns>
         [Route("api/Homepagenormal/lovenormalarticle")]
         [HttpGet]
-        public IHttpActionResult Lovearticle()
+        public IHttpActionResult Lovearticle(int nowpage, int showcount)
         {
             var dataNormal = from q in db.ArticleNormals
                              where q.IsPush == true & q.Lovecount > 0
                              select q;
             if ( dataNormal != null)
             {
-                List<NormalArticles> arrayList = new List<NormalArticles>();
+                List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
 
 
                 foreach (var content in dataNormal.ToList())
                 {
 
-                    NormalArticles newartary = new NormalArticles();
-                    newartary.ArticleID = content.ID;
-                    newartary.UserName = content.UserName;
-                    newartary.Title = content.Title;
-                    newartary.Introduction = content.Introduction;
-                    newartary.Articlecategory = content.Articlecategory.Name;
-                    newartary.Isfree = content.IsFree;
-                    newartary.Lovecount = content.Lovecount;
-                    newartary.InitDateTime = content.InitDate;
+                    NewNormalArticle newartary = new NewNormalArticle();
+                    newartary.artId = content.ID;
+                    newartary.username = content.UserName;
+                    newartary.author = content.AuthorName;
+                    newartary.authorPic = content.AuthorPic;
+                    newartary.introduction = content.Introduction;
+                    newartary.title = content.Title;
+                    newartary.artArtlog = content.Articlecategory.Name;
+                    newartary.isFree = content.IsFree;
+                    newartary.lovecount = content.Lovecount;
+                    newartary.artInitDate = content.InitDate;
 
                     arrayList.Add(newartary);
 
-
                 }
-                //排序依照日期 desending遞減
-                var result = arrayList.OrderByDescending(x => x.Lovecount).Take(4);
 
-                return Ok(new
+                int total = arrayList.Count;
+                if (nowpage == 1)
                 {
-                    success=true,
-                    data=result
-                });
+                    //排序依照日期 desending遞減
+                    var result = arrayList.OrderByDescending(x => x.lovecount).Take(showcount);
+
+                    return Ok(new
+                    {
+                        success = true,
+                        total = total,
+                        data = result
+                    });
+                }
+                else
+                {
+                    int page = (nowpage - 1) * showcount;
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                    return Ok(new
+                    {
+                        success = true,
+                        total = total,
+                        data = result
+                    });
+                }
+                
             }
             else
             {
@@ -321,27 +367,29 @@ namespace testdatamodel.Controllers
             //                   select d;
 
             //var articleNlist = dataarticleN.ToList();
-            List<NormalArticles> arrayList = new List<NormalArticles>();
+            List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
             foreach (var content in articleNlist)
             {
 
-                NormalArticles newartary = new NormalArticles();
-                newartary.ArticleID = content.ID;
-                newartary.UserName = content.UserName;
-                newartary.Title = content.Title;
-                newartary.Introduction = content.Introduction;
-                newartary.Articlecategory = content.Articlecategory.Name;
-                newartary.Isfree = content.IsFree;
-                newartary.Lovecount = content.Lovecount;
-                newartary.InitDateTime = content.InitDate;
-                arrayList.Add(newartary);
+                NewNormalArticle newartary = new NewNormalArticle();
+                newartary.artId = content.ID;
+                newartary.username = content.UserName;
+                newartary.author = content.AuthorName;
+                newartary.authorPic = content.AuthorPic;
+                newartary.introduction = content.Introduction;
+                newartary.title = content.Title;
+                newartary.artArtlog = content.Articlecategory.Name;
+                newartary.isFree = content.IsFree;
+                newartary.lovecount = content.Lovecount;
+                newartary.artInitDate = content.InitDate;
 
+                arrayList.Add(newartary);
 
             }
             if (nowpage == 1)
             {
                 //排序依照日期 desending遞減
-                var result = arrayList.OrderByDescending(x => x.InitDateTime).Take(showcount);
+                var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                 //另一種寫法
                 //var result = from e in arrayList
                 //             orderby e.InitDateTime descending
@@ -357,7 +405,7 @@ namespace testdatamodel.Controllers
             else
             {
                 int takepage = (nowpage - 1) * showcount;
-                var resultdata = arrayList.OrderByDescending(x => x.InitDateTime).Skip(takepage).Take(showcount);
+                var resultdata = arrayList.OrderByDescending(x => x.artInitDate).Skip(takepage).Take(showcount);
                 return Ok(new
                 {
                     success=true,
