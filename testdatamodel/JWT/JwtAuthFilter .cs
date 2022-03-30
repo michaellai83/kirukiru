@@ -22,7 +22,7 @@ namespace testdatamodel.JWT
                 var errorMessage = new HttpResponseMessage()
                 {
                     ReasonPhrase = "Lost Token",
-                    Content = new StringContent("success=false"),//自訂的code
+                    Content = new StringContent("success=false,message=Lost Token"),//自訂的code
                 };
                 throw new HttpResponseException(errorMessage);
                
@@ -40,7 +40,7 @@ namespace testdatamodel.JWT
                         var errorMessage = new HttpResponseMessage()
                         {
                             ReasonPhrase = "Token Expired",
-                            Content = new StringContent(" success=false"),
+                            Content = new StringContent(" success=false,message=Token Expired"),
                         };
                         throw new HttpResponseException(errorMessage);
                         
@@ -51,7 +51,7 @@ namespace testdatamodel.JWT
                     var errorMessage = new HttpResponseMessage()
                     {
                         ReasonPhrase = "Lost Token",
-                        Content = new StringContent($"success=false,發生錯誤：{e}"),
+                        Content = new StringContent($"success=false,發生錯誤：{e},message=Lost Token"),
                     };
                     throw new HttpResponseException(errorMessage);
                 }

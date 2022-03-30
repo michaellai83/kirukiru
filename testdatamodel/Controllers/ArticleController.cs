@@ -523,6 +523,7 @@ namespace testdatamodel.Controllers
 
                     MessageList array = new MessageList();
                     array.messageId = str.Id;
+                    array.messageUserName = str.Members.UserName;
                     array.messageMember = str.Members.Name;
                     array.messageMemberPic = picName;
                     array.messageMain = str.Main;
@@ -1815,7 +1816,8 @@ namespace testdatamodel.Controllers
 
             return Ok(new
             {
-                success = true
+                success = true,
+                lovecount=lovecount
             });
         }
         /// <summary>

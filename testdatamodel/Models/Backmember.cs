@@ -22,6 +22,7 @@ namespace testdatamodel.Models
         public string Salt { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public string Photo { get; set; }
         public DateTime IniDateTime { get; set; }
 
         public virtual ICollection<BackArticle> BackArticles { get; set; }

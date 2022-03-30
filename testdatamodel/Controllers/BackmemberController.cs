@@ -39,6 +39,7 @@ namespace testdatamodel.Controllers
             backmember.Salt = hashResultSha256.Salt;
             backmember.Email = email;
             backmember.Name = name;
+            backmember.Photo = "origin.jpg";
             backmember.IniDateTime = DateTime.Now;
             db.Backmembers.Add(backmember);
             db.SaveChanges();

@@ -17,6 +17,10 @@ namespace testdatamodel.listclass
         /// <summary>
         /// 留言帳號
         /// </summary>
+        public string messageUserName { get; set; }
+        /// <summary>
+        /// 留言名字
+        /// </summary>
         public string messageMember { get; set; }
         /// <summary>
         /// 留言者圖片

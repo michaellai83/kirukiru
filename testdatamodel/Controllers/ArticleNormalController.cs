@@ -231,6 +231,7 @@ namespace testdatamodel.Controllers
         /// <param name="putlove">是否按愛心</param>
         /// <returns></returns>
         [HttpPut]
+        [JwtAuthFilter]
         public IHttpActionResult AddLoveArticleNormal(int artId, bool putlove)
         {
             var data = from q in db.ArticleNormals
@@ -268,7 +269,8 @@ namespace testdatamodel.Controllers
 
             return Ok(new
             {
-                success=true
+                success=true,
+                lovecount=lovecount
             });
         }
         /// <summary>
@@ -349,8 +351,8 @@ namespace testdatamodel.Controllers
                     introduction=Art_Info,
                     articlecategoryId=artlogid,
                     artInitDate =Art_initdate,
-                    isFree = Art_ispush,
-                    isPush = Art_isfree,
+                    isFree = Art_isfree,
+                    isPush = Art_ispush,
                     lovecount= lovenum,
                     /*messageArrayList*/}
         });
@@ -402,7 +404,7 @@ namespace testdatamodel.Controllers
                 data = new
                 {
                     title = Art_title,
-                    introdeuction = Art_info,
+                    introduction = Art_info,
                     main = Art_main,
                     articlecategoryId = artlogid,
                     artInitDate = Art_initdate,
@@ -534,6 +536,7 @@ namespace testdatamodel.Controllers
 
                 MessageList array = new MessageList();
                 array.messageId = str.Id;
+                array.messageUserName = str.Members.UserName;
                 array.messageMember = str.Members.Name;
                 array.messageMemberPic = picName;
                 array.messageMain = str.Main;

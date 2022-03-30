@@ -1949,9 +1949,14 @@
             留言ID
             </summary>
         </member>
-        <member name="P:testdatamodel.listclass.MessageList.messageMember">
+        <member name="P:testdatamodel.listclass.MessageList.messageUserName">
             <summary>
             留言帳號
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.messageMember">
+            <summary>
+            留言名字
             </summary>
         </member>
         <member name="P:testdatamodel.listclass.MessageList.messageMemberPic">

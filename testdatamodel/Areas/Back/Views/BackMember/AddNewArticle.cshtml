@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "AddNewArticle";
+    Layout = "~/Areas/Back/Views/Shared/_Layout.cshtml";
+}
+
+<h2>新增精選文章</h2>
+<div class="card">
+    <div class="card-block">
+        <form action="UploadPhoto" method="post" enctype="multipart/form-data">
+            <div class="form-group row">
+                <label class="col-sm-2 col-form-label">封面圖片</label>
+                <div class="col-sm-10">
+                    <input type="file" class="form-control" name="photo">
+                    <input type="submit" value="上傳"/>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <div class="card">
+       
+        <form method="post" action="@Url.Action("AddNewArticle")">
+            <div class="card-header">
+                <h5>新增精選文章</h5>
+            </div>
+            <div class="card-block">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">標題</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="title">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">封面圖片</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" name="photo" value="@TempData["Photo"]" readonly="">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">內文</label>
+                    <div class="col-sm-10">
+                        @Html.TextArea("ContentText", new { id = "ContentText", @name = "ContentText" })
+                        @*<textarea rows="5" cols="5" class="form-control" placeholder="Default textarea"></textarea>*@
+                    </div>
+                </div>
+                <input type="submit" class="btn btn-primary waves-effect waves-light" value="送出"/>
+            </div>
+
+        </form>
+    </div>
+
+    @section Scripts{
+        @Scripts.Render("~/bundles/jqueryval")
+        <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+        <script type="text/javascript" language="javascript">
+            var editor = CKEDITOR.editor.replace('ContentText', { skin: 'kama', width: '750px' });
+        </script>
+    }
+

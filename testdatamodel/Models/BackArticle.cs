@@ -20,9 +20,9 @@ namespace testdatamodel.Models
         public int BackmemberID { get; set; }
         [ForeignKey("BackmemberID")]
         public virtual Backmember Backmembers  { get; set; }
+        public string BackMemberPic { get; set; }
         public string Title { get; set; }
-        public string Titlepicname { get; set; }
-        public string Picfilename { get; set; }
+        public string Titlepic { get; set; }
         public string Main { get; set; }
 
         public DateTime IniDateTime { get; set; }

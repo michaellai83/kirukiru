@@ -1268,6 +1268,7 @@ namespace testdatamodel.Controllers
                 orderMyList.ID = order.ID;
                 orderMyList.Author = order.AuthorName;
                 orderMyList.Amount = order.Amount;
+                orderMyList.IsSuceess = order.Issuccess;
                 orderMyList.InitDate = order.InitDateTime;
                 orderOutPut.Add(orderMyList);
                 HowPay += order.Amount;
