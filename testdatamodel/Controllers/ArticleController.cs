@@ -514,6 +514,7 @@ namespace testdatamodel.Controllers
                     {
                         MessageList.RMG remessage = new MessageList.RMG();
                         remessage.reMessageId = rstr.Id;
+                        remessage.userName = userName;
                         remessage.author = author;
                         remessage.authorPic = authorPic;
                         remessage.reMessageMain = rstr.Main;

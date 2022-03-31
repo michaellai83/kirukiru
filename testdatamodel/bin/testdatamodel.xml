@@ -1462,6 +1462,12 @@
             <param name="backarticledata">文章所需資料</param>
             <returns></returns>
         </member>
+        <member name="M:testdatamodel.Controllers.BackmemberController.GetAllBackArticles">
+            <summary>
+            取得精選文章
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:testdatamodel.Controllers.BankController">
             <summary>
             藍星金流
@@ -1694,10 +1700,11 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.GetMemberartnumber">
+        <member name="M:testdatamodel.Controllers.MemberController.GetMemberartnumber(System.String)">
             <summary>
             取得作者發布的文章數量
             </summary>
+            <param name="memberUserName">會員帳號</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.MemberController.Collectauthorarticle(System.String,System.Int32,System.Int32)">
@@ -1743,16 +1750,18 @@
             <param name="Userpic">圖片名稱</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.Getordernumber">
+        <member name="M:testdatamodel.Controllers.MemberController.Getordernumber(System.String)">
             <summary>
             取得會員訂閱數量
             </summary>
+            <param name="memberUserName">會員帳號</param>
             <returns></returns>
         </member>
-        <member name="M:testdatamodel.Controllers.MemberController.GetBeordernumber">
+        <member name="M:testdatamodel.Controllers.MemberController.GetBeordernumber(System.String)">
             <summary>
             取得會員被多少人訂閱的數量
             </summary>
+            <param name="memberUserName">會員帳號</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.MemberController.GetName(System.String)">
@@ -1982,6 +1991,11 @@
         <member name="P:testdatamodel.listclass.MessageList.RMG.reMessageId">
             <summary>
             回覆留言ID
+            </summary>
+        </member>
+        <member name="P:testdatamodel.listclass.MessageList.RMG.userName">
+            <summary>
+            作者帳號
             </summary>
         </member>
         <member name="P:testdatamodel.listclass.MessageList.RMG.author">

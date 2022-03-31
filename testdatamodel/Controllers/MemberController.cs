@@ -655,19 +655,35 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取得作者發布的文章數量
         /// </summary>
+        /// <param name="memberUserName">會員帳號</param>
         /// <returns></returns>
         [Route("api/Member/getmemberartnumber")]
         [HttpGet]
-        [JwtAuthFilter]
-        public IHttpActionResult GetMemberartnumber()
+        public IHttpActionResult GetMemberartnumber(string memberUserName)
         {
-            string authorname =JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            string authorname = memberUserName;
             var artdata = from q in db.Articles
                           where (q.UserName == authorname & q.IsPush == true)
                           select q;
+            if (artdata == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此帳號"
+                });
+            }
             var norartdata = from q in db.ArticleNormals
                              where (q.UserName == authorname & q.IsPush == true)
                              select q;
+            if (norartdata == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此帳號"
+                });
+            }
             int number = artdata.Count() + norartdata.Count();
             return Ok(new { status = "success", artcount = number });
         }
@@ -1027,13 +1043,21 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取得會員訂閱數量
         /// </summary>
+        /// <param name="memberUserName">會員帳號</param>
         /// <returns></returns>
         [Route("api/Member/GetOrderNumber")]
         [HttpGet]
-        [JwtAuthFilter]
-        public IHttpActionResult Getordernumber()
+        public IHttpActionResult Getordernumber(string memberUserName)
         {
-            var memberId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
+            var memberId = db.Members.FirstOrDefault(x => x.UserName == memberUserName).ID;
+            if (memberId == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此作者"
+                });
+            }
             var orderData = from q in db.Orderlists
                 where (q.MemberID == memberId && q.Issuccess == true)
                 select q;
@@ -1049,16 +1073,23 @@ namespace testdatamodel.Controllers
         /// <summary>
         /// 取得會員被多少人訂閱的數量
         /// </summary>
+        /// <param name="memberUserName">會員帳號</param>
         /// <returns></returns>
         [Route("api/Member/GetBeOrder")]
         [HttpGet]
-        [JwtAuthFilter]
-        public IHttpActionResult GetBeordernumber()
+        public IHttpActionResult GetBeordernumber(string memberUserName)
         {
-            var memberUserName = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             var beOrder = from q in db.Orderlists
                 where (q.AuthorName == memberUserName && q.Issuccess == true)
                 select q;
+            if (beOrder == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此帳號"
+                });
+            }
             var oderlist = beOrder.ToList();
             int beOrderNum = oderlist.Count;
             return Ok(new

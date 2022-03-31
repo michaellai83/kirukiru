@@ -46,6 +46,10 @@ namespace testdatamodel.listclass
             /// </summary>
             public int reMessageId { get; set; }
             /// <summary>
+            /// 作者帳號
+            /// </summary>
+            public string userName { get; set; }
+            /// <summary>
             /// 作者名字
             /// </summary>
             public string author { get; set; }

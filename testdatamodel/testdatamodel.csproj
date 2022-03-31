@@ -825,6 +825,14 @@
     <Content Include="images\Thumbs.db" />
     <Content Include="Areas\Back\Views\BackLogin\Login.cshtml" />
     <Content Include="Areas\Back\Views\BackMember\AddNewArticle.cshtml" />
+    <Content Include="Areas\Back\Views\BackMember\MyProfile.cshtml" />
+    <Content Include="Areas\Back\Views\BackMember\AddQA.cshtml" />
+    <Content Include="Areas\Back\Views\BackMember\ShowNewArticle.cshtml" />
+    <Content Include="Areas\Back\Views\BackMember\DetailNewArticle.cshtml" />
+    <Content Include="Areas\Back\Views\BackMember\ShowAllQA.cshtml" />
+    <Content Include="Areas\Back\Views\BackMember\DetailQA.cshtml" />
+    <Content Include="Areas\Back\Views\BackMember\EditArticle.cshtml" />
+    <Content Include="Areas\Back\Views\BackMember\EditQA.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\box-layout.js" />
     <Content Include="Scripts\ckeditor\adapters\jquery.js" />

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using testdatamodel.Areas.Back.Controllers
+<!DOCTYPE html>
 <html>
 <head>
     @*<meta charset="utf-8" />
@@ -131,7 +132,7 @@
                                 </div>
                             </div>
                         </div>
-                        <a href="index.html">
+                        <a href="/Back/BackMember/Index">
                             <img class="img-fluid" src="~/images/logo.png" alt="Theme-Logo" />
                         </a>
                         <a class="mobile-options waves-effect waves-light">
@@ -194,8 +195,8 @@
                             </li>
                             <li class="user-profile header-notification">
                                 <a href="#!" class="waves-effect waves-light">
-                                    <img src="~/images/avatar-4.jpg" class="img-radius" alt="User-Profile-Image">
-                                    <span>John Doe</span>
+                                    <img src="@Url.Content("~/images/"+@Html.Action("GetAdminPic", "BackMember"))" class="img-radius" alt="User-Profile-Image">
+                                    <span>@Html.Action("GetAdminName","BackMember")</span>
                                     <i class="ti-angle-down"></i>
                                 </a>
                                 <ul class="show-notification profile-notification">
@@ -205,22 +206,22 @@
                                         </a>
                                     </li>
                                     <li class="waves-effect waves-light">
-                                        <a href="user-profile.html">
+                                        <a href="MyProfile">
                                             <i class="ti-user"></i> Profile
                                         </a>
                                     </li>
                                     <li class="waves-effect waves-light">
-                                        <a href="email-inbox.html">
+                                        <a href="#">
                                             <i class="ti-email"></i> My Messages
                                         </a>
                                     </li>
                                     <li class="waves-effect waves-light">
-                                        <a href="auth-lock-screen.html">
+                                        <a href="#">
                                             <i class="ti-lock"></i> Lock Screen
                                         </a>
                                     </li>
                                     <li class="waves-effect waves-light">
-                                        <a href="auth-normal-sign-in.html">
+                                        <a href="#">
                                             <i class="ti-layout-sidebar-left"></i> Logout
                                         </a>
                                     </li>
@@ -238,15 +239,15 @@
                         <div class="pcoded-inner-navbar main-menu">
                             <div class="">
                                 <div class="main-menu-header">
-                                    <img class="img-80 img-radius" src="~/images/avatar-4.jpg" alt="User-Profile-Image">
+                                    <img class="img-80 img-radius" src="@Url.Content("~/images/"+@Html.Action("GetAdminPic", "BackMember"))" alt="User-Profile-Image">
                                     <div class="user-details">
-                                        <span id="more-details">John Doe<i class="fa fa-caret-down"></i></span>
+                                        <span id="more-details">@Html.Action("GetAdminName", "BackMember")<i class="fa fa-caret-down"></i></span>
                                     </div>
                                 </div>
                                 <div class="main-menu-content">
                                     <ul>
                                         <li class="more-details">
-                                            <a href="user-profile.html"><i class="ti-user"></i>View Profile</a>
+                                            <a href="MyProfile"><i class="ti-user"></i>View Profile</a>
                                             <a href="#!"><i class="ti-settings"></i>Settings</a>
                                             <a href="auth-normal-sign-in.html"><i class="ti-layout-sidebar-left"></i>Logout</a>
                                         </li>
@@ -265,9 +266,9 @@
                             <div class="pcoded-navigation-label">Navigation</div>
                             <ul class="pcoded-item pcoded-left-item">
                                 <li class="active">
-                                    <a href="index.html" class="waves-effect waves-dark">
+                                    <a href="/Back/BackMember/Index" class="waves-effect waves-dark">
                                         <span class="pcoded-micon"><i class="ti-home"></i><b>D</b></span>
-                                        <span class="pcoded-mtext">Dashboard</span>
+                                        <span class="pcoded-mtext">首頁</span>
                                         <span class="pcoded-mcaret"></span>
                                     </a>
                                 </li>
@@ -282,63 +283,63 @@
                                     </a>
                                     <ul class="pcoded-submenu">
                                         <li class=" ">
-                                            <a href="BackMember/AddNewArticle" class="waves-effect waves-dark">
+                                            <a href="/Back/BackMember/AddNewArticle" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">新增精選文章</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
-                                            <a href="button.html" class="waves-effect waves-dark">
+                                            <a href="/Back/BackMember/ShowNewArticle" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                                                <span class="pcoded-mtext">Button</span>
+                                                <span class="pcoded-mtext">查看精選文章</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class="">
-                                            <a href="accordion.html" class="waves-effect waves-dark">
+                                            <a href="/Back/BackMember/AddQA" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                                                <span class="pcoded-mtext">Accordion</span>
+                                                <span class="pcoded-mtext">新增QA</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
-                                            <a href="tabs.html" class="waves-effect waves-dark">
+                                            <a href="/Back/BackMember/ShowAllQA" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
-                                                <span class="pcoded-mtext">Tabs</span>
+                                                <span class="pcoded-mtext">查看QA</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
-                                            <a href="color.html" class="waves-effect waves-dark">
+                                            <a href="#" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Color</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
-                                            <a href="label-badge.html" class="waves-effect waves-dark">
+                                            <a href="#" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Label Badge</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
-                                            <a href="tooltip.html" class="waves-effect waves-dark">
+                                            <a href="#" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Tooltip And Popover</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
-                                            <a href="typography.html" class="waves-effect waves-dark">
+                                            <a href="#" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Typography</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
-                                            <a href="notification.html" class="waves-effect waves-dark">
+                                            <a href="#" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Notifications</span>
                                                 <span class="pcoded-mcaret"></span>
@@ -350,7 +351,7 @@
                             <div class="pcoded-navigation-label">Forms</div>
                             <ul class="pcoded-item pcoded-left-item">
                                 <li class="">
-                                    <a href="form-elements-component.html" class="waves-effect waves-dark">
+                                    <a href="#" class="waves-effect waves-dark">
                                         <span class="pcoded-micon"><i class="ti-layers"></i><b>FC</b></span>
                                         <span class="pcoded-mtext">Form</span>
                                         <span class="pcoded-mcaret"></span>
@@ -360,7 +361,7 @@
                             <div class="pcoded-navigation-label">Tables</div>
                             <ul class="pcoded-item pcoded-left-item">
                                 <li class="">
-                                    <a href="bs-basic-table.html" class="waves-effect waves-dark">
+                                    <a href="#" class="waves-effect waves-dark">
                                         <span class="pcoded-micon"><i class="ti-receipt"></i><b>B</b></span>
                                         <span class="pcoded-mtext">Table</span>
                                         <span class="pcoded-mcaret"></span>
@@ -370,14 +371,14 @@
                             <div class="pcoded-navigation-label">Chart And Maps</div>
                             <ul class="pcoded-item pcoded-left-item">
                                 <li class="">
-                                    <a href="chart-morris.html" class="waves-effect waves-dark">
+                                    <a href="#" class="waves-effect waves-dark">
                                         <span class="pcoded-micon"><i class="ti-bar-chart-alt"></i><b>C</b></span>
                                         <span class="pcoded-mtext">Charts</span>
                                         <span class="pcoded-mcaret"></span>
                                     </a>
                                 </li>
                                 <li class="">
-                                    <a href="map-google.html" class="waves-effect waves-dark">
+                                    <a href="#" class="waves-effect waves-dark">
                                         <span class="pcoded-micon"><i class="ti-map-alt"></i><b>M</b></span>
                                         <span class="pcoded-mtext">Maps</span>
                                         <span class="pcoded-mcaret"></span>
@@ -387,7 +388,7 @@
                             <div class="pcoded-navigation-label">Pages</div>
                             <ul class="pcoded-item pcoded-left-item">
                                 <li class="pcoded-hasmenu ">
-                                    <a href="javascript:void(0)" class="waves-effect waves-dark">
+                                    <a href="#" class="waves-effect waves-dark">
                                         <span class="pcoded-micon"><i class="ti-id-badge"></i><b>A</b></span>
                                         <span class="pcoded-mtext">Pages</span>
                                         <span class="pcoded-mcaret"></span>
@@ -401,14 +402,14 @@
                                             </a>
                                         </li>
                                         <li class="">
-                                            <a href="auth-sign-up.html" class="waves-effect waves-dark">
+                                            <a href="#" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Registration</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class="">
-                                            <a href="sample-page.html" class="waves-effect waves-dark">
+                                            <a href="http://kirukiru.rocket-coding.com/" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-layout-sidebar-left"></i><b>S</b></span>
                                                 <span class="pcoded-mtext">Sample Page</span>
                                                 <span class="pcoded-mcaret"></span>
@@ -433,10 +434,10 @@
                                     <div class="col-md-4">
                                         <ul class="breadcrumb">
                                             <li class="breadcrumb-item">
-                                                <a href="index.html"> <i class="fa fa-home"></i> </a>
+                                                <a href="/Back/BackMember/Index"> <i class="fa fa-home"></i> </a>
                                             </li>
                                             <li class="breadcrumb-item">
-                                                <a href="#!">Dashboard</a>
+                                                <a href="/Back/BackMember/Index">首頁</a>
                                             </li>
                                         </ul>
                                     </div>

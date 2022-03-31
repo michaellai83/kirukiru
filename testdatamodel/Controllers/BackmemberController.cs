@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -177,6 +178,37 @@ namespace testdatamodel.Controllers
             {
                 success = true,
                 message = "已新增文章"
+            });
+        }
+        /// <summary>
+        /// 取得精選文章
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/Backmember/GetAllBackArticles")]
+        [HttpGet]
+        public IHttpActionResult GetAllBackArticles()
+        {
+            var data = db.BackArticles.OrderByDescending(x => x.IniDateTime).ToList();
+            ArrayList backList = new ArrayList();
+            foreach (var str in data)
+            {
+                var result = new
+                {
+                    artId = str.ID,
+                    author = str.Backmembers.Name,
+                    authorPic = str.Backmembers.Photo,
+                    title = str.Title,
+                    main = str.Main,
+                    firstPhoto=str.Titlepic,
+                    ArtIniteDate = str.IniDateTime
+                };
+                backList.Add(result);
+            }
+
+            return Ok(new
+            {
+                success=true,
+                data=backList
             });
         }
     }
