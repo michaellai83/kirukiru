@@ -22,6 +22,8 @@ namespace testdatamodel.Models
         public int MemberID { get; set; }
         [ForeignKey("MemberID")]
         public virtual Member Members { get; set; }
+        [Display(Name = "訂閱介紹")]
+        public string Introduction { get; set; }
         [Display(Name = "訂閱方案金額")]
         public string Amount { get; set; }
         [Display(Name = "創建時間")]

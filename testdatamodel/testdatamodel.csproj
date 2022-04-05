@@ -577,6 +577,10 @@
     <Compile Include="Migrations\202203301010469_EditBackArticleAddBackMemberPic.Designer.cs">
       <DependentUpon>202203301010469_EditBackArticleAddBackMemberPic.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204010346386_EditSubscriptionplanAddInfo.cs" />
+    <Compile Include="Migrations\202204010346386_EditSubscriptionplanAddInfo.Designer.cs">
+      <DependentUpon>202204010346386_EditSubscriptionplanAddInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Articlecategory.cs" />
@@ -1366,6 +1370,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202203301010469_EditBackArticleAddBackMemberPic.resx">
       <DependentUpon>202203301010469_EditBackArticleAddBackMemberPic.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204010346386_EditSubscriptionplanAddInfo.resx">
+      <DependentUpon>202204010346386_EditSubscriptionplanAddInfo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

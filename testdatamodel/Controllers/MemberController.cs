@@ -351,6 +351,14 @@ namespace testdatamodel.Controllers
                 });
             }
 
+            if (introduction == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有輸入內容"
+                });
+            }
             var q = from p in db.Members where p.UserName == username select p;
             foreach (var p in q)
             {
@@ -727,15 +735,20 @@ namespace testdatamodel.Controllers
 
             foreach (var content in artdata)
             {
-
+                var titlePhoto = content.FirstPicName + "." + content.FirstPicFileName;
                 NewArticle newartary = new NewArticle();
                 newartary.artId = content.ID;
                 newartary.username = content.UserName;
+                newartary.author = content.AuthorName;
+                newartary.authorPic = content.AuthorPic;
                 newartary.title = content.Title;
+                newartary.introduction = content.Introduction;
+                newartary.firstPhoto = titlePhoto;
                 newartary.artArtlog = content.Articlecategory.Name;
                 newartary.articlecategoryId = content.ArticlecategoryId;
+                newartary.isFree = content.IsFree;
                 newartary.lovecount = content.Lovecount;
-                newartary.ArtInitDate = content.InitDate;
+                newartary.artInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
 
@@ -746,7 +759,7 @@ namespace testdatamodel.Controllers
             if (nowpage == 1)
             {
                 
-                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                var newArticles = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                 
                 return Ok(new
                 {
@@ -758,7 +771,7 @@ namespace testdatamodel.Controllers
             else
             {
                 var page = (nowpage - 1) * showcount;
-                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                var newArticles = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 
                 return Ok(new
                 {
@@ -815,11 +828,15 @@ namespace testdatamodel.Controllers
                 NewArticle newartary = new NewArticle();
                 newartary.artId = content.ID;
                 newartary.username = content.UserName;
+                newartary.author = content.AuthorName;
+                newartary.authorPic = content.AuthorPic;
                 newartary.title = content.Title;
+                newartary.introduction = content.Introduction;
                 newartary.artArtlog = content.Articlecategory.Name;
                 newartary.articlecategoryId = content.ArticlecategoryId;
                 newartary.lovecount = content.Lovecount;
-                newartary.ArtInitDate = content.InitDate;
+                newartary.isFree = content.IsFree;
+                newartary.artInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
 
@@ -829,7 +846,7 @@ namespace testdatamodel.Controllers
             if (nowpage == 0)
             {
                 
-                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                var newArticles = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                 
                 return Ok(new
                 {
@@ -841,11 +858,11 @@ namespace testdatamodel.Controllers
             else
             {
                 var page = (nowpage - 1) * showcount;
-                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                var newArticles = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                
                 return Ok(new
                 {
-                    suceess=true,
+                    success=true,
                     total = totalpagecount,
                     data = newArticles
                 });
@@ -874,9 +891,11 @@ namespace testdatamodel.Controllers
 
             var author = data.Name;
             var authorPic = data.PicName + "." + data.FileName;
-            var artdata = db.Articles.Where(x => x.UserName == username).ToList();
-            List<ArticleListOutPut> arrayList = new List<ArticleListOutPut>();
-            foreach (var content in artdata)
+            var artdata = from q in db.Articles
+                where (q.UserName == username && q.IsPush == true)
+                select q;
+                  List < ArticleListOutPut > arrayList = new List<ArticleListOutPut>();
+            foreach (var content in artdata.ToList())
             {
                 ArticleListOutPut newartary = new ArticleListOutPut();
                 newartary.artId = content.ID;
@@ -954,21 +973,27 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var noratrdata = db.ArticleNormals.Where(x => x.UserName == username).ToList();
+            var noratrdata = from q in db.ArticleNormals
+                    where (q.UserName == username && q.IsPush == true)
+                             select q;
             List<NewArticle> arrayList = new List<NewArticle>();
 
 
-            foreach (var content in noratrdata)
+            foreach (var content in noratrdata.ToList())
             {
 
                 NewArticle newartary = new NewArticle();
                 newartary.artId = content.ID;
                 newartary.username = content.UserName;
+                newartary.author = content.AuthorName;
+                newartary.authorPic = content.AuthorPic;
                 newartary.title = content.Title;
+                newartary.introduction = content.Introduction;
                 newartary.artArtlog = content.Articlecategory.Name;
                 newartary.articlecategoryId = content.ArticlecategoryId;
+                newartary.isFree = content.IsFree;
                 newartary.lovecount = content.Lovecount;
-                newartary.ArtInitDate = content.InitDate;
+                newartary.artInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
 
@@ -979,7 +1004,7 @@ namespace testdatamodel.Controllers
             if (nowpage == 1)
             {
 
-                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                var newArticles = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                
                 return Ok(new
                 {
@@ -991,7 +1016,7 @@ namespace testdatamodel.Controllers
             else
             {
                 var page = (nowpage - 1) * showcount;
-                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                var newArticles = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                
                 return Ok(new
                 {
@@ -1187,7 +1212,8 @@ namespace testdatamodel.Controllers
                 authorId =userId,
                 subId = subData.ID,
                 authorUserName = userName,
-                subData.Amount
+                info=subData.Introduction,
+                amount=subData.Amount
             };
             return Ok(new
             {
@@ -1231,6 +1257,41 @@ namespace testdatamodel.Controllers
             });
         }
         /// <summary>
+        /// 修改訂閱簡介
+        /// </summary>
+        /// <param name="info">簡介輸入</param>
+        /// <returns></returns>
+        [Route("api/Member/EditSubInfo")]
+        [JwtAuthFilter]
+        [HttpPut]
+        public IHttpActionResult EditSubInfo(string info)
+        {
+            var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
+            var data = from q in db.Subscriptionplans
+                where q.MemberID == userId
+                select q;
+            if (data == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "還沒開通訂閱方案"
+                });
+            }
+
+            foreach (var q in data)
+            {
+                q.Introduction = info;
+            }
+
+            db.SaveChanges();
+            return Ok(new
+            {
+                success = true,
+                message = "已修改訂閱簡介"
+            });
+        }
+        /// <summary>
         /// 取得作者方案
         /// </summary>
         /// <param name="author">作者帳號</param>
@@ -1270,7 +1331,8 @@ namespace testdatamodel.Controllers
                 authorPic = authorPic,
                 subId = subData.ID,
                 authorUserName = author,
-                subData.Amount
+                info= subData.Introduction,
+                amount=subData.Amount
             };
             return Ok(new
             {

@@ -78,7 +78,7 @@ namespace testdatamodel.Controllers
                     newartary.artArtlog = content.Articlecategory.Name;
                     newartary.isFree = content.IsFree;
                     newartary.lovecount = content.Lovecount;
-                    newartary.ArtInitDate = content.InitDate;
+                    newartary.artInitDate = content.InitDate;
 
                     arrayList.Add(newartary);
                 }
@@ -125,7 +125,7 @@ namespace testdatamodel.Controllers
                     //var result = from e in arrayList
                     //    orderby e.InitDateTime
                     //    select e;
-                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                     pagecount = arrayList.Count();
                     return Ok(new
                     {
@@ -159,7 +159,7 @@ namespace testdatamodel.Controllers
                     int page = (nowpage - 1) * showcount;
                     //排序依照日期
                     
-                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                     return Ok(new
                     {
                         success=true,
@@ -297,7 +297,7 @@ namespace testdatamodel.Controllers
                     newartary.articlecategoryId = content.ArticlecategoryId;
                     newartary.isFree = content.IsFree;
                     newartary.lovecount = content.Lovecount;
-                    newartary.ArtInitDate = content.InitDate;
+                    newartary.artInitDate = content.InitDate;
 
                     arrayList.Add(newartary);
                 }
@@ -325,7 +325,7 @@ namespace testdatamodel.Controllers
 
                     //}
                     //排序依照日期
-                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                     //var resultArticles = from e in arrayList
                     //    orderby e.InitDateTime
                     //    select e;
@@ -362,7 +362,7 @@ namespace testdatamodel.Controllers
 
                     int page = (nowpage - 1) * showcount;
                     //排序依照日期
-                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
 
 
                     return Ok(new
@@ -415,7 +415,7 @@ namespace testdatamodel.Controllers
                     newartary.articlecategoryId = content.ArticlecategoryId;
                     newartary.isFree = content.IsFree;
                     newartary.lovecount = content.Lovecount;
-                    newartary.ArtInitDate = content.InitDate;
+                    newartary.artInitDate = content.InitDate;
 
                     arrayList.Add(newartary);
                 }
@@ -443,7 +443,7 @@ namespace testdatamodel.Controllers
                 {
                     //排序依照日期 desending遞減
                     //用Take表示拿取幾筆資料
-                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                     //另一種寫法
                     //var result = from e in arrayList
                     //    orderby e.InitDateTime descending 
@@ -458,7 +458,7 @@ namespace testdatamodel.Controllers
                 else
                 {
                     var page = (nowpage - 1) * showcount;
-                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                     return Ok(new
                     {
                         success = true,
@@ -512,7 +512,7 @@ namespace testdatamodel.Controllers
                     newartary.articlecategoryId = content.ArticlecategoryId;
                     newartary.isFree = content.IsFree;
                     newartary.lovecount = content.Lovecount;
-                    newartary.ArtInitDate = content.InitDate;
+                    newartary.artInitDate = content.InitDate;
 
                     arrayList.Add(newartary);
                 }
@@ -551,7 +551,7 @@ namespace testdatamodel.Controllers
                 else
                 {
                     int page = (nowpage - 1) * showcount;
-                    var result = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                     return Ok(new
                     {
                         success = true,
@@ -599,7 +599,7 @@ namespace testdatamodel.Controllers
                 });
             }
             var dataarticle = from d in db.Articles
-                where (d.Title.Contains(keywords))
+                where (d.Title.Contains(keywords)&& d.IsPush == true)
                 select d;
             int datacount = dataarticle.Count();
             //var dataarticleN = from d in db.ArticleNormals
@@ -623,7 +623,7 @@ namespace testdatamodel.Controllers
                 newartary.articlecategoryId = content.ArticlecategoryId;
                 newartary.isFree = content.IsFree;
                 newartary.lovecount = content.Lovecount;
-                newartary.ArtInitDate = content.InitDate;
+                newartary.artInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
             }
@@ -649,7 +649,7 @@ namespace testdatamodel.Controllers
 
                 //}
                 //排序依照日期 desending遞減
-                var result = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
                 //另一種寫法
                 //var result = from e in arrayList
                 //             orderby e.InitDateTime descending
@@ -685,7 +685,7 @@ namespace testdatamodel.Controllers
                 //}
 
                 int takepage = (nowpage - 1) * showcount;
-                var resultdata = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(takepage).Take(showcount);
+                var resultdata = arrayList.OrderByDescending(x => x.artInitDate).Skip(takepage).Take(showcount);
                 return Ok(new
                     {
                         success=true,

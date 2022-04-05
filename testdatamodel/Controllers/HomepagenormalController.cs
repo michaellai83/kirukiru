@@ -358,7 +358,7 @@ namespace testdatamodel.Controllers
                 });
             }
             var a = db.ArticleNormals.AsQueryable();
-            a = a.Where(x => x.Title.Contains(keywords));
+            a = a.Where(x => x.Title.Contains(keywords) && x.IsPush == true);
             var articleNlist = a.ToList();
             int resultcount = articleNlist.Count();
 

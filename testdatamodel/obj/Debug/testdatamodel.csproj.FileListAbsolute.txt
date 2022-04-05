@@ -204,3 +204,4 @@ C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.AddBackMemberPhoto.resources
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.EditBackArticleTitlePic.resources
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.EditBackArticleAddBackMemberPic.resources
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.EditSubscriptionplanAddInfo.resources

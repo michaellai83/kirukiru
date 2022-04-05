@@ -1790,6 +1790,13 @@
             <param name="Amount">訂閱金額</param>
             <returns></returns>
         </member>
+        <member name="M:testdatamodel.Controllers.MemberController.EditSubInfo(System.String)">
+            <summary>
+            修改訂閱簡介
+            </summary>
+            <param name="info">簡介輸入</param>
+            <returns></returns>
+        </member>
         <member name="M:testdatamodel.Controllers.MemberController.GetAuthorSubscriptionplans(System.String)">
             <summary>
             取得作者方案
