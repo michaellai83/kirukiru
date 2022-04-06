@@ -50,10 +50,10 @@
       <HintPath>..\packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="jose-jwt, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jose-jwt.3.2.0\lib\net461\jose-jwt.dll</HintPath>
@@ -383,6 +383,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Back\BackAreaRegistration.cs" />
+    <Compile Include="Areas\Back\Controllers\BackArticlesController.cs" />
     <Compile Include="Areas\Back\Controllers\BackLoginController.cs" />
     <Compile Include="Areas\Back\Controllers\BackMemberController.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
@@ -451,10 +452,12 @@
     <Compile Include="JWT\JwtAuthFilter .cs" />
     <Compile Include="JWT\JwtAuthUtil.cs" />
     <Compile Include="listclass\ArticleListOutPut.cs" />
+    <Compile Include="listclass\KiruMessageCount.cs" />
     <Compile Include="listclass\MessageList.cs" />
     <Compile Include="listclass\NewArticle.cs" />
     <Compile Include="listclass\NewNormalArticle.cs" />
     <Compile Include="listclass\NormalArticles.cs" />
+    <Compile Include="listclass\NormalMessageCount.cs" />
     <Compile Include="listclass\OrderMyList.cs" />
     <Compile Include="listclass\RemessageList.cs" />
     <Compile Include="Migrations\202203070846064_Addtable.cs" />
@@ -837,6 +840,11 @@
     <Content Include="Areas\Back\Views\BackMember\DetailQA.cshtml" />
     <Content Include="Areas\Back\Views\BackMember\EditArticle.cshtml" />
     <Content Include="Areas\Back\Views\BackMember\EditQA.cshtml" />
+    <Content Include="Areas\Back\Views\BackArticles\Create.cshtml" />
+    <Content Include="Areas\Back\Views\BackArticles\Delete.cshtml" />
+    <Content Include="Areas\Back\Views\BackArticles\Details.cshtml" />
+    <Content Include="Areas\Back\Views\BackArticles\Edit.cshtml" />
+    <Content Include="Areas\Back\Views\BackArticles\Index.cshtml" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\box-layout.js" />
     <Content Include="Scripts\ckeditor\adapters\jquery.js" />

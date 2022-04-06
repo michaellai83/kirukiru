@@ -213,6 +213,7 @@ namespace testdatamodel.Controllers
             var mail = Ismember.Email;
             if (Ismember != null && eMail == mail)
             {
+                string name = Ismember.Name;
                 string password = "000000";
                 PasswordWithSaltHasher passwordWithSalt = new PasswordWithSaltHasher();
                 HashWithSaltResult hashResultSha256 = passwordWithSalt.HashWithSalt(password, 64, SHA256.Create());
@@ -224,10 +225,11 @@ namespace testdatamodel.Controllers
                 }
 
                 db.SaveChanges();
+                Sendmail.SendForgetPassWordsMail(username,name,mail,password);
                 var result = new
                 {
                     success = true,
-                    message = $"密碼為{password},記得登入修改密碼"
+                    message = $"以寄信到您的信箱"
                 };
                 return Ok(result);
 
@@ -252,6 +254,15 @@ namespace testdatamodel.Controllers
         public IHttpActionResult ChangPassword(ChangePassword changePassworddata)
         {
             var username = changePassworddata.Username;
+            var jwtusername = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            if (jwtusername != username)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "帳號密碼錯誤"
+                });
+            }
             var O_password = changePassworddata.O_Password;
             var password = changePassworddata.N_Password;
             var Ismember = db.Members.FirstOrDefault(m => m.UserName == username);
@@ -908,7 +919,7 @@ namespace testdatamodel.Controllers
                 newartary.artArtlog = content.Articlecategory.Name;
                 newartary.isFree = content.IsFree;
                 newartary.lovecount = content.Lovecount;
-                newartary.ArtInitDate = content.InitDate;
+                newartary.artInitDate = content.InitDate;
 
                 arrayList.Add(newartary);
             }
@@ -929,7 +940,7 @@ namespace testdatamodel.Controllers
             if (nowpage == 1)
             {
 
-                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Take(showcount);
+                var newArticles = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
 
                 return Ok(new
                 {
@@ -941,7 +952,7 @@ namespace testdatamodel.Controllers
             else
             {
                 var page = (nowpage - 1) * showcount;
-                var newArticles = arrayList.OrderByDescending(x => x.ArtInitDate).Skip(page).Take(showcount);
+                var newArticles = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -1264,7 +1275,7 @@ namespace testdatamodel.Controllers
         [Route("api/Member/EditSubInfo")]
         [JwtAuthFilter]
         [HttpPut]
-        public IHttpActionResult EditSubInfo(string info)
+        public IHttpActionResult EditSubInfo([FromBody]string info)
         {
             var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var data = from q in db.Subscriptionplans

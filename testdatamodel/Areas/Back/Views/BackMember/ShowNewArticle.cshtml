@@ -46,7 +46,9 @@ var imgUrl = Url.Content("~/images/" + backArticle.Titlepic);
 
 }
 
-
+<p>
+    @Html.ActionLink("新增文章", "AddNewArticle")
+</p>
 <ul>
     @foreach (var article in Model)
     {

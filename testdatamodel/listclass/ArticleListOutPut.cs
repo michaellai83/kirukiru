@@ -21,6 +21,6 @@ namespace testdatamodel.listclass
         public string firstPhoto { get; set; }
         public bool isFree { get; set; }
         public int lovecount { get; set; }
-        public DateTime ArtInitDate { get; set; }
+        public DateTime artInitDate { get; set; }
     }
 }

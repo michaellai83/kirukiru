@@ -1478,13 +1478,14 @@
             金流基本資料(可再移到Web.config或資料庫設定)
             </summary>
         </member>
-        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPayBill(System.String,System.Int32,System.String)">
+        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPayBill(System.String,System.Int32,System.String,System.String)">
             <summary>
             [智付通支付]金流介接
             </summary>
             <param name="main">訂單內容</param>
             <param name="amount">訂單金額</param>
             <param name="payType">請款類型(CREDIT=信用卡付款\WEBATM=網路銀行轉帳付款)</param>
+            <param name="returnUrl">回傳網址</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.BankController.SpgatewayReturn(testdatamodel.Blue.NewebPayreturn)">
@@ -1920,6 +1921,15 @@
             <param name="mailaddress">註冊者信箱</param>
             <param name="emailidentify">信箱驗證號碼</param>
         </member>
+        <member name="M:testdatamodel.Email.Sendmail.SendForgetPassWordsMail(System.String,System.String,System.String,System.String)">
+            <summary>
+            忘記密碼寄信
+            </summary>
+            <param name="username">使用者帳號</param>
+            <param name="name">使用者名字</param>
+            <param name="mailaddress">使用者信箱</param>
+            <param name="passwords">預設密碼</param>
+        </member>
         <member name="M:testdatamodel.JWT.JwtAuthUtil.GenerateToken(System.Int32,System.String,System.String)">
             <summary>
             產生Token
@@ -1953,6 +1963,11 @@
         <member name="T:testdatamodel.listclass.ArticleListOutPut">
             <summary>
             切切用List
+            </summary>
+        </member>
+        <member name="T:testdatamodel.listclass.KiruMessageCount">
+            <summary>
+            切切文章有留言數量
             </summary>
         </member>
         <member name="T:testdatamodel.listclass.MessageList">
@@ -2033,6 +2048,11 @@
         <member name="T:testdatamodel.listclass.NormalArticles">
             <summary>
             正常文章列表
+            </summary>
+        </member>
+        <member name="T:testdatamodel.listclass.NormalMessageCount">
+            <summary>
+            正常文章有留言數量
             </summary>
         </member>
         <member name="T:testdatamodel.listclass.OrderMyList">

@@ -91,10 +91,10 @@ namespace testdatamodel.Controllers
                     message="沒有文章"
                 });
             }
-            List<NormalArticles> arrayList = new List<NormalArticles>();
+            List<NormalMessageCount> arrayList = new List<NormalMessageCount>();
             foreach (var str in data.ToList())
             {
-                NormalArticles newartary = new NormalArticles();
+                NormalMessageCount newartary = new NormalMessageCount();
                 newartary.artId= str.ID;
                 newartary.username = str.UserName;
                 newartary.author = str.AuthorName;
@@ -104,6 +104,7 @@ namespace testdatamodel.Controllers
                 newartary.artArtlog = str.Articlecategory.Name;
                 newartary.articlecategoryId = str.ArticlecategoryId;
                 newartary.isFree = str.IsFree;
+                newartary.messageCount = str.MessageNormals.Count;
                 newartary.lovecount = str.Lovecount;
                 newartary.artInitDate = str.InitDate;
 

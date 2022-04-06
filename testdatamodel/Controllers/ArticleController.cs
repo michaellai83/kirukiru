@@ -743,7 +743,7 @@ namespace testdatamodel.Controllers
             var Art_IsPush = havdata.IsPush;
             var Art_MainData = havdata.ArticleMains.ToList();
             var Art_message = havdata.Messages.ToList();
-            var ArtInitDate = havdata.InitDate.ToString();
+            var artInitDate = havdata.InitDate.ToString();
             var artRemark = havdata.Remarks.ToList();
 
             var finalMission = havdata.FinalMissions.ToList();
@@ -796,7 +796,7 @@ namespace testdatamodel.Controllers
                 isFree = Art_Isfree,
                 isPush = Art_IsPush,
                 lovecount,
-                ArtInitDate,
+                artInitDate,
                 final= artRemarkStr
                 //reMessageArrayList=remessageArrayList,
 
@@ -1530,7 +1530,7 @@ namespace testdatamodel.Controllers
             var Art_IsPush = havdata.IsPush;
             var Art_MainData = havdata.ArticleMains.ToList();
             var Art_message = havdata.Messages.ToList();
-            var ArtInitDate = havdata.InitDate.ToString();
+            var artInitDate = havdata.InitDate.ToString();
             var artRemark = havdata.Remarks.ToList();
 
             var finalMission = havdata.FinalMissions.ToList();
@@ -1578,7 +1578,7 @@ namespace testdatamodel.Controllers
                 fMissionList,
                 isFree = Art_Isfree,
                 isPush = Art_IsPush,
-                ArtInitDate,
+                artInitDate,
                 final = artRemarkStr
             };
             return Ok(new
@@ -1722,11 +1722,11 @@ namespace testdatamodel.Controllers
             var data = from q in db.Articles
                 where (q.UserName == username & q.IsPush == ispush)
                 select q;
-            List<NewArticle> arrayList = new List<NewArticle>();
+            List<KiruMessageCount> arrayList = new List<KiruMessageCount>();
 
             foreach (var content in data.ToList())
             {
-                NewArticle newartary = new NewArticle();
+                KiruMessageCount newartary = new KiruMessageCount();
                 newartary.artId = content.ID;
                 newartary.author = content.AuthorName;
                 newartary.authorPic = content.AuthorPic;
@@ -1738,6 +1738,7 @@ namespace testdatamodel.Controllers
                 newartary.articlecategoryId = content.ArticlecategoryId;
                 newartary.isFree = content.IsFree;
                 newartary.lovecount = content.Lovecount;
+                newartary.messageCount = content.Messages.Count;
                 newartary.artInitDate = content.InitDate;
 
                 arrayList.Add(newartary);

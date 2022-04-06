@@ -49,10 +49,11 @@ namespace testdatamodel.Controllers
         /// <param name="main">訂單內容</param>
         /// <param name="amount">訂單金額</param>
         /// <param name="payType">請款類型(CREDIT=信用卡付款\WEBATM=網路銀行轉帳付款)</param>
+        /// <param name="returnUrl">回傳網址</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult SpgatewayPayBill( string main, int amount, string payType)
+        public IHttpActionResult SpgatewayPayBill( string main, int amount, string payType,string returnUrl)
         {
             var userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var memberdata = db.Members.FirstOrDefault(x => x.ID == userid);

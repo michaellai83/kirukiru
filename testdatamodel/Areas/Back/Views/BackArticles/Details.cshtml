@@ -1,0 +1,67 @@
+﻿@model testdatamodel.Models.BackArticle
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Back/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>BackArticle</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Backmembers.Username)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Backmembers.Username)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BackMemberPic)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BackMemberPic)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Titlepic)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Titlepic)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Main)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Main)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IniDateTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IniDateTime)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
