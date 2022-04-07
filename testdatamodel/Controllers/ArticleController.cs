@@ -303,8 +303,7 @@ namespace testdatamodel.Controllers
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             //var username = dataArticle.memberUserName;
-            var arttitle = dataArticle.title;
-            if (dataArticle.firstPhoto.Equals("") || dataArticle.title.Equals("") || dataArticle.articlecategoryId == 0)
+            if (string.IsNullOrWhiteSpace(dataArticle.firstPhoto) || string.IsNullOrWhiteSpace(dataArticle.title) || dataArticle.articlecategoryId == 0)
             {
                 return Ok(new
                 {
@@ -315,52 +314,32 @@ namespace testdatamodel.Controllers
             var artTitlePic = dataArticle.firstPhoto.Split('.');
             string titlePicName = artTitlePic[0];
             string titleFileName = artTitlePic[1];
-            var artinfo = dataArticle.introduction;
             var memberdata = db.Members.FirstOrDefault(x => x.UserName == username);
-            var author = memberdata.Name;
-            var authorPic = memberdata.PicName + "." + memberdata.FileName;
 
-            var artlogid = dataArticle.articlecategoryId;
-            var artisFree = dataArticle.isFree;
-            //bool isfree = true;
-            //if (artisFree.Equals("False"))
-            //{
-            //    isfree = false;
-            //}
-            var artisPush = dataArticle.isPush;
-            //bool ispush = true;
-            //if (artisPush.Equals("False"))
-            //{
-            //    ispush = false;
-            //}
             Article article = new Article();
             article.UserName = username;
-            article.Title = arttitle;
-            article.AuthorName = author;
-            article.AuthorPic = authorPic;
+            article.Title = dataArticle.title;
+            article.AuthorName = memberdata.Name;
+            article.AuthorPic = memberdata.PicName + "." + memberdata.FileName;
             article.FirstPicName = titlePicName;
             article.FirstPicFileName = titleFileName;
-            article.Introduction = artinfo;
-            article.ArticlecategoryId = artlogid;
+            article.Introduction = dataArticle.introduction;
+            article.ArticlecategoryId = dataArticle.articlecategoryId;
             article.InitDate = DateTime.Now;
-            article.IsFree = artisFree;
-            article.IsPush = artisPush;
+            article.IsFree = dataArticle.isFree;
+            article.IsPush = dataArticle.isPush;
             article.Lovecount = 0;
             db.Articles.Add(article);
             db.SaveChanges();
-            var artId = db.Articles.FirstOrDefault(x => x.FirstPicName == titlePicName).ID;
+            //存完直接回傳ID
+            var artId = article.ID;
 
 
-            var firstMission = dataArticle.fArrayList;
-            var kiruMain = dataArticle.mArrayList;
-            var finalMission = dataArticle.fMissionList;
-            var remark = dataArticle.final;
-
-            foreach (var data in firstMission)
+            foreach (var data in dataArticle.fArrayList)
             {
                 string picName = "";
                 string picFileName = "";
-                if (data.secPhoto.Equals(""))
+                if (string.IsNullOrWhiteSpace(data.secPhoto))
                 {
                     Firstmission firstmission = new Firstmission();
                     firstmission.ArticleId = artId;
@@ -387,11 +366,11 @@ namespace testdatamodel.Controllers
 
             }
 
-            foreach (var data in kiruMain)
+            foreach (var data in dataArticle.mArrayList)
             {
                 string picName = "";
                 string picFileName = "";
-                if (data.thirdPhoto.Equals(""))
+                if (string.IsNullOrWhiteSpace(data.thirdPhoto))
                 {
                     ArticleMain articleMain = new ArticleMain();
                     articleMain.ArticleId = artId;
@@ -419,7 +398,7 @@ namespace testdatamodel.Controllers
 
             }
 
-            foreach (var data in finalMission)
+            foreach (var data in dataArticle.fMissionList)
             {
                 FinalMission finalmission = new FinalMission();
                 finalmission.Title = data.auxiliary;
@@ -431,7 +410,7 @@ namespace testdatamodel.Controllers
 
             Remark lastData = new Remark();
             lastData.ArticleId = artId;
-            lastData.Main = remark;
+            lastData.Main = dataArticle.final;
             lastData.InitTime = DateTime.Now;
             db.Remarks.Add(lastData);
 
@@ -496,48 +475,31 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult GetAllMessage(int artId ,int nowpage,int showcount)
         {
-            var data = db.Messages.Where(m => m.ArticleId == artId).ToList();
+            var data = db.Messages.Where(m => m.ArticleId == artId).Select(x=>new
+            {
+                messageId=x.Id,
+                messageUserName=x.Members.UserName,
+                messageMember=x.Members.Name,
+                messageMemberPic=x.Members.PicName+ "." + x.Members.FileName,
+                messageMain =x.Main,
+                messageInitDate=x.InitDate,
+                reMessageData=x.R_Messages.Select(y=>new
+                {
+                    reMessageId=y.Id,
+                    userName=y.Messages.Articles.UserName,
+                    author=y.Messages.Articles.AuthorName,
+                    authorPic=y.Messages.Articles.AuthorPic,
+                    reMessageMain=y.Main,
+                    reMessageInitDate=y.InitDate
+                })
+
+            }).ToList();
             if (data.Count > 0)
             {
-                var userName = db.Articles.FirstOrDefault(x => x.ID == artId).UserName;
-                var userData = db.Members.FirstOrDefault(x => x.UserName == userName);
-                var author = userData.Name;
-                var authorPic = userData.PicName + "." + userData.FileName;
-                List<MessageList> arrayList = new List<MessageList>();
-               
-                foreach (var str in data)
-                {
-                    List<MessageList.RMG> reList = new List<MessageList.RMG>();
-                    var picName = str.Members.PicName + "." + str.Members.FileName;
-                    var remessageDate = str.R_Messages.ToList();
-                    foreach (var rstr in remessageDate)
-                    {
-                        MessageList.RMG remessage = new MessageList.RMG();
-                        remessage.reMessageId = rstr.Id;
-                        remessage.userName = userName;
-                        remessage.author = author;
-                        remessage.authorPic = authorPic;
-                        remessage.reMessageMain = rstr.Main;
-                        remessage.reMessageInitDate = rstr.InitDate;
-                        reList.Add(remessage);
-                    }
-
-                    MessageList array = new MessageList();
-                    array.messageId = str.Id;
-                    array.messageUserName = str.Members.UserName;
-                    array.messageMember = str.Members.Name;
-                    array.messageMemberPic = picName;
-                    array.messageMain = str.Main;
-                    array.messageInitDate = str.InitDate;
-                    array.reMessageData = reList;
-                    arrayList.Add(array);
-
-                }
-
-                var total = arrayList.Count;
+                var total = data.Count;
                 if (nowpage == 1)
                 {
-                    var result = arrayList.OrderByDescending(x => x.messageInitDate).Take(showcount);
+                    var result = data.OrderByDescending(x => x.messageInitDate).Take(showcount);
                     return Ok(new
                     {
                         success = true,
@@ -548,7 +510,7 @@ namespace testdatamodel.Controllers
                 else
                 {
                     var page = (nowpage - 1) * showcount;
-                    var result = arrayList.OrderByDescending(x => x.messageInitDate).Skip(page).Take(showcount);
+                    var result = data.OrderByDescending(x => x.messageInitDate).Skip(page).Take(showcount);
                     return Ok(new
                     {
                         success = true,
@@ -579,7 +541,14 @@ namespace testdatamodel.Controllers
         [ResponseType(typeof(OutPutMessage))]
         public IHttpActionResult Getmessage(int messageId)
         {
-            var data = db.Messages.FirstOrDefault(x => x.Id == messageId);
+            var data = db.Messages.Where(x => x.Id == messageId).Select(y=>new
+            {
+                messageUserName = y.UserName,
+                messageMember=y.Members.Name,
+                messageMemberPic =y.Members.PicName+"."+y.Members.FileName,
+                messageMain=y.Main,
+                messageInitDate=y.InitDate
+            }).ToList();
             if (data == null)
             {
                 return Ok(new
@@ -589,20 +558,10 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var userName = data.UserName;
-
-            var userPic = data.Members.PicName + "." + data.Members.FileName;
-            var result = new
-            {
-                messageMember=data.UserName,
-                messageMemberPic = userPic,
-                messageMain = data.Main,
-                messageInitDate = data.InitDate
-            };
             return Ok(new
             {
                 success = true,
-                data = result
+                data = data
             });
         }
 
@@ -629,8 +588,6 @@ namespace testdatamodel.Controllers
             int checkartId = data.ArticleId;
             var artData = db.Articles.FirstOrDefault(x => x.ID == checkartId).UserName;
             var memberUsername = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
-         
-            
 
             if (artData != memberUsername)
             {
@@ -665,23 +622,22 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult GetReMessage(int messageId)
         {
-            var data = db.R_Messages.Where(m => m.MessageId == messageId).ToList();
+            var data = db.R_Messages.Where(m => m.MessageId == messageId).Select(x=>new
+            {
+                reMessageId = x.Id,
+                userName = x.Messages.Articles.UserName,
+                author = x.Messages.Articles.AuthorName,
+                authorPic = x.Messages.Articles.AuthorPic,
+                reMessageMain = x.Main,
+                reMessageInitDate = x.InitDate
+            }).ToList();
+            
             if (data.Count > 0)
             {
-                ArrayList arrayList = new ArrayList();
-                foreach (var str in data)
-                {
-                    var result = new {
-                        reMessageId = str.Id,
-                        reMessageMain = str.Main,
-                        reMessageInitDate = str.InitDate};
-                    arrayList.Add(result);
-                }
-
                 return Ok(new
                 {
                     success = true,
-                    data =arrayList
+                    data =data
                 });
             }
             else
@@ -705,7 +661,41 @@ namespace testdatamodel.Controllers
         [ResponseType(typeof(Kirukiruoutput))]
         public IHttpActionResult GetArctile(int artId)
         {
-            var havdata = db.Articles.FirstOrDefault(m => m.ID == artId);
+            var havdata = db.Articles.Where(m => m.ID == artId).Select(x=>new
+            {
+                artId = x.ID,
+                username = x.UserName,
+                authorPic = x.AuthorPic,
+                author = x.AuthorName,
+                title = x.Title,
+                firstPhoto = x.FirstPicName +"."+ x.FirstPicFileName,
+                introduction = x.Introduction,
+                articlecategoryId = x.ArticlecategoryId,
+                artArtlog = x.Articlecategory.Name,
+                isFree = x.IsFree,
+                isPush = x.IsPush,
+                lovecount=x.Lovecount,
+                artInitDate=x.InitDate,
+                fArrayList=x.Firstmissions.Select(y=>new
+                {
+                    fId = y.Id,
+                    secPhoto = y.PicName + "." + y.PicFileName,
+                    mission = y.FirstItem,
+                }),
+                mArrayList=x.ArticleMains.Select(y=>new
+                {
+                    mId = y.Id,
+                    thirdPhoto = y.PicName + "." + y.PicFileName,
+                    main = y.Main
+                }),
+                fMissionList=x.FinalMissions.Select(y=>new
+                {
+                    fId = y.ID,
+                    auxiliary = y.Title,
+                    auxiliarymain = y.Main
+                }),
+                final = x.Remarks.FirstOrDefault(y=>y.ArticleId ==artId).Main
+            }).FirstOrDefault();
             if (havdata == null)
             {
                 return Ok(new
@@ -715,96 +705,10 @@ namespace testdatamodel.Controllers
                 });
             }
             
-            var Art_Title = havdata.Title.ToString();
-            var Art_TitlePic = havdata.FirstPicName.ToString() + "." +
-                               havdata.FirstPicFileName.ToString();
-            var Art_Info = havdata.Introduction;
-            var Art_Artlog = havdata.Articlecategory.Name.ToString();
-            var artlogid = havdata.Articlecategory.Id;
-            var lovecount = havdata.Lovecount;
-            var Art_FirstMissionData = havdata.Firstmissions.ToList();
-            var userName = havdata.UserName;
-            var userdata = db.Members.FirstOrDefault(x => x.UserName == userName);
-            var userPic = userdata.PicName + "." + userdata.FileName;
-            var authorName = userdata.Name;
-            ArrayList fArrayList = new ArrayList();
-            foreach (var str in Art_FirstMissionData)
-            {
-                var Fdata = new
-                {
-                    fId = str.Id,
-                    secPhoto = str.PicName + "." + str.PicFileName,
-                    mission = str.FirstItem,
-                };
-                fArrayList.Add(Fdata);
-            }
-
-            var Art_Isfree = havdata.IsFree;
-            var Art_IsPush = havdata.IsPush;
-            var Art_MainData = havdata.ArticleMains.ToList();
-            var Art_message = havdata.Messages.ToList();
-            var artInitDate = havdata.InitDate.ToString();
-            var artRemark = havdata.Remarks.ToList();
-
-            var finalMission = havdata.FinalMissions.ToList();
-            ArrayList fMissionList = new ArrayList();
-            foreach (var str in finalMission)
-            {
-                var fdata = new
-                {
-                    fId = str.ID,
-                    auxiliary = str.Title,
-                    auxiliarymain = str.Main
-                };
-                fMissionList.Add(fdata);
-            }
-            
-            
-            ArrayList mArrayList = new ArrayList();
-            foreach (var str in Art_MainData)
-            {
-                var Mdata = new
-                {
-                    mId = str.Id,
-                    thirdPhoto = str.PicName + "." + str.PicFileName,
-                    main = str.Main
-                };
-                mArrayList.Add(Mdata);
-            }
-
-
-            string artRemarkStr = "";
-            foreach (var str in artRemark)
-            {
-                artRemarkStr = str.Main;
-            }
-            
-            var result = new
-            {
-                artId= artId,
-                username = userName,
-                authorPic= userPic,
-                author = authorName,
-                title = Art_Title,
-                firstPhoto = Art_TitlePic,
-                introduction = Art_Info,
-                articlecategoryId=artlogid,
-                artArtlog =Art_Artlog,
-                fArrayList,
-                mArrayList,
-                fMissionList,
-                isFree = Art_Isfree,
-                isPush = Art_IsPush,
-                lovecount,
-                artInitDate,
-                final= artRemarkStr
-                //reMessageArrayList=remessageArrayList,
-
-            };
             return Ok(new
             {
                 success = true,
-                data =result
+                data =havdata
             });
         }
 
@@ -1340,8 +1244,7 @@ namespace testdatamodel.Controllers
             }
             db.SaveChanges();
             var username = editkirukiru.userName;
-            var arttitle = editkirukiru.title;
-            if (editkirukiru.firstPhoto.Equals("") && editkirukiru.title.Equals(""))
+            if (string.IsNullOrWhiteSpace(editkirukiru.firstPhoto) && string.IsNullOrWhiteSpace(editkirukiru.title))
             {
                 return Ok(new
                 {
@@ -1352,36 +1255,22 @@ namespace testdatamodel.Controllers
             var artTitlePic = editkirukiru.firstPhoto.Split('.');
             string titlePicName = artTitlePic[0];
             string titleFileName = artTitlePic[1];
-            var artinfo = editkirukiru.introduction;
 
-            var artlogid = editkirukiru.articlecategoryId;
-            var artisFree = editkirukiru.isFree;
-            //bool isfree = true;
-            //if (artisFree.Equals("False"))
-            //{
-            //    isfree = false;
-            //}
-            var artisPush = editkirukiru.isPush;
-            //bool ispush = true;
-            //if (artisPush.Equals("False"))
-            //{
-            //    ispush = false;
-            //}
-            var q = from p in db.Articles where p.ID == artId select p;
+            var q = db.Articles.Where(p => p.ID == artId);
+            //var q = from p in db.Articles where p.ID == artId select p;
             foreach (var p in q)
             {
-                p.Title = arttitle;
+                p.Title = editkirukiru.title;
                 p.FirstPicName = titlePicName;
                 p.FirstPicFileName = titleFileName;
-                p.Introduction = artinfo;
-                p.ArticlecategoryId = artlogid;
-                p.IsFree = artisFree;
-                p.IsPush = artisPush;
+                p.Introduction = editkirukiru.introduction;
+                p.ArticlecategoryId = editkirukiru.articlecategoryId;
+                p.IsFree = editkirukiru.isFree;
+                p.IsPush = editkirukiru.isPush;
             }
            
             db.SaveChanges();
-           
-
+            
 
             var firstMission = editkirukiru.fArrayList.ToList();
             var kiruMain = editkirukiru.mArrayList.ToList();
@@ -1392,7 +1281,7 @@ namespace testdatamodel.Controllers
             {
                 string picName = "";
                 string picFileName = "";
-                if (data.secPhoto.Equals(""))
+                if (string.IsNullOrWhiteSpace(data.secPhoto))
                 {
                     Firstmission firstmission = new Firstmission();
                     firstmission.ArticleId = artId;
@@ -1423,7 +1312,7 @@ namespace testdatamodel.Controllers
             {
                 string picName = "";
                 string picFileName = "";
-                if (data.thirdPhoto.Equals(""))
+                if (string.IsNullOrWhiteSpace(data.thirdPhoto))
                 {
                     ArticleMain articleMain = new ArticleMain();
                     articleMain.ArticleId = artId;
@@ -1486,8 +1375,39 @@ namespace testdatamodel.Controllers
         [ResponseType(typeof(KiruOutPutForEdit))]
         public IHttpActionResult GetEditArticle(int artId)
         {
-            var havdata = db.Articles.FirstOrDefault(m => m.ID == artId);
-            if (havdata == null)
+            var jwtusername = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var havdata = db.Articles.Where(m => m.ID == artId).Select(x=>new
+            {
+                artId = x.ID,
+                title = x.Title,
+                firstPhoto = x.FirstPicName+"."+x.FirstPicFileName,
+                introduction = x.Introduction,
+                articlecategoryId = x.ArticlecategoryId,
+                artArtlog = x.Articlecategory.Name,
+                fArrayList=x.Firstmissions.Select(y=>new
+                {
+                    fId = y.Id,
+                    secPhoto = y.PicName + "." + y.PicFileName,
+                    mission = y.FirstItem,
+                }),
+                mArrayList=x.ArticleMains.Select(y=>new
+                {
+                    mId = y.Id,
+                    thirdPhoto = y.PicName + "." + y.PicFileName,
+                    main = y.Main
+                }),
+                fMissionList=x.FinalMissions.Select(y=>new
+                {
+                    fId = y.ID,
+                    auxiliary = y.Title,
+                    auxiliarymain = y.Main
+                }),
+                isFree = x.IsFree,
+                isPush = x.IsPush,
+                artInitDate=x.InitDate,
+                final = x.Remarks.FirstOrDefault(y=>y.ArticleId == artId).Main
+            }).ToList();
+            if (havdata.Count == 0)
             {
                 return Ok(new
                 {
@@ -1496,8 +1416,8 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var checkusername = havdata.UserName;
-            var jwtusername = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var checkusername = db.Articles.FirstOrDefault(m => m.ID == artId).UserName;
+           
             if (checkusername != jwtusername)
             {
                 return Ok(new
@@ -1506,85 +1426,11 @@ namespace testdatamodel.Controllers
                     message = "你沒有權限"
                 });
             }
-            var Art_Title = havdata.Title.ToString();
-            var Art_TitlePic = havdata.FirstPicName.ToString() + "." +
-                               havdata.FirstPicFileName.ToString();
-            var Art_Info = havdata.Introduction;
-            var Art_Artlog = havdata.Articlecategory.Name.ToString();
-            var artlogid = havdata.Articlecategory.Id;
-
-            var Art_FirstMissionData = havdata.Firstmissions.ToList();
-            ArrayList fArrayList = new ArrayList();
-            foreach (var str in Art_FirstMissionData)
-            {
-                var Fdata = new
-                {
-                    fId = str.Id,
-                    secPhoto = str.PicName + "." + str.PicFileName,
-                    mission = str.FirstItem,
-                };
-                fArrayList.Add(Fdata);
-            }
-
-            var Art_Isfree = havdata.IsFree;
-            var Art_IsPush = havdata.IsPush;
-            var Art_MainData = havdata.ArticleMains.ToList();
-            var Art_message = havdata.Messages.ToList();
-            var artInitDate = havdata.InitDate.ToString();
-            var artRemark = havdata.Remarks.ToList();
-
-            var finalMission = havdata.FinalMissions.ToList();
-            ArrayList fMissionList = new ArrayList();
-            foreach (var str in finalMission)
-            {
-                var fdata = new
-                {
-                    fId = str.ID,
-                    auxiliary = str.Title,
-                    auxiliarymain = str.Main
-                };
-                fMissionList.Add(fdata);
-            }
-
-
-            ArrayList mArrayList = new ArrayList();
-            foreach (var str in Art_MainData)
-            {
-                var Mdata = new
-                {
-                    mId = str.Id,
-                    thirdPhoto = str.PicName + "." + str.PicFileName,
-                    main = str.Main
-                };
-                mArrayList.Add(Mdata);
-            }
-
-            string artRemarkStr = "";
-            foreach (var str in artRemark)
-            {
-                artRemarkStr = str.Main;
-            }
-
-            var result = new
-            {
-                artId = artId,
-                title = Art_Title,
-                firstPhoto = Art_TitlePic,
-                introduction = Art_Info,
-                articlecategoryId = artlogid,
-                artArtlog = Art_Artlog,
-                fArrayList,
-                mArrayList,
-                fMissionList,
-                isFree = Art_Isfree,
-                isPush = Art_IsPush,
-                artInitDate,
-                final = artRemarkStr
-            };
+            
             return Ok(new
             {
                 success = true,
-                data = result
+                data = havdata
             });
 
         }
@@ -1709,8 +1555,24 @@ namespace testdatamodel.Controllers
         public IHttpActionResult GetUserArticle( bool ispush, int nowpage,int showcount)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
-            var havedata = db.Articles.FirstOrDefault(m => m.UserName == username);
-            if (havedata == null)
+            var havedata = db.Articles.Where(m => m.UserName == username).Where(m=>m.IsPush == ispush).Select(x=>new
+            {
+                artId=x.ID,
+                author=x.AuthorName,
+                authorPic=x.AuthorPic,
+                username=x.UserName,
+                title=x.Title,
+                firstPhoto=x.FirstPicName+"."+x.FirstPicFileName,
+                introduction=x.Introduction,
+                artArtlog=x.Articlecategory.Name,
+                articlecategoryId=x.ArticlecategoryId,
+                isFree=x.IsFree,
+                lovecount=x.Lovecount,
+                messageCount=x.Messages.Count,
+                artInitDate=x.InitDate
+
+            }).ToList();
+            if (havedata.Count == 0)
             {
                 return Ok(new
                 {
@@ -1719,35 +1581,11 @@ namespace testdatamodel.Controllers
                 });
 
             }
-            var data = from q in db.Articles
-                where (q.UserName == username & q.IsPush == ispush)
-                select q;
-            List<KiruMessageCount> arrayList = new List<KiruMessageCount>();
 
-            foreach (var content in data.ToList())
-            {
-                KiruMessageCount newartary = new KiruMessageCount();
-                newartary.artId = content.ID;
-                newartary.author = content.AuthorName;
-                newartary.authorPic = content.AuthorPic;
-                newartary.username = content.UserName;
-                newartary.title = content.Title;
-                newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
-                newartary.introduction = content.Introduction;
-                newartary.artArtlog = content.Articlecategory.Name;
-                newartary.articlecategoryId = content.ArticlecategoryId;
-                newartary.isFree = content.IsFree;
-                newartary.lovecount = content.Lovecount;
-                newartary.messageCount = content.Messages.Count;
-                newartary.artInitDate = content.InitDate;
-
-                arrayList.Add(newartary);
-            }
-
-            int pagecount = arrayList.Count;
+            int pagecount = havedata.Count;
             if (nowpage == 1)
             {
-                var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
+                var result = havedata.OrderByDescending(x => x.artInitDate).Take(showcount);
                
                 return Ok(new
                 {
@@ -1761,7 +1599,7 @@ namespace testdatamodel.Controllers
                 int page = (nowpage - 1) * showcount;
                 //排序依照日期
 
-                var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                var result = havedata.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -1781,9 +1619,8 @@ namespace testdatamodel.Controllers
         [JwtAuthFilter]
         public IHttpActionResult AddLoveArticle( int artId, bool putlove)
         {
-            var data = from q in db.Articles
-                where (q.ID == artId)
-                select q;
+            var data = db.Articles.FirstOrDefault(x => x.ID == artId);
+           
             if (data == null)
             {
                 return Ok(new
@@ -1793,24 +1630,17 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            int lovecount = db.Articles.FirstOrDefault(m => m.ID == artId).Lovecount;
+           
             if (putlove == true)
             {
-                lovecount ++;
-                foreach (var str in data)
-                {
-                    str.Lovecount = lovecount;
-                }
+                data.Lovecount++;
 
                 db.SaveChanges();
             }
             else
             {
-                lovecount--;
-                foreach (var str in data)
-                {
-                    str.Lovecount = lovecount;
-                }
+
+                data.Lovecount--;
                 db.SaveChanges();
             }
 
@@ -1819,7 +1649,7 @@ namespace testdatamodel.Controllers
             return Ok(new
             {
                 success = true,
-                lovecount=lovecount
+                lovecount= data.Lovecount
             });
         }
         /// <summary>
@@ -1893,47 +1723,27 @@ namespace testdatamodel.Controllers
         public IHttpActionResult GetAllcollectart(int nowpage, int showcount)
         {
             var memberid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
-            var data = db.Members.FirstOrDefault(x => x.ID == memberid);
-            var art = data.Articles.ToList();
-            //ArrayList artlList = new ArrayList();
-            //foreach (var str in art)
-            //{
-            //    var result = new
-            //    {
-            //        str.ID,
-            //        str.Articlecategory.Name,
-            //        str.UserName,
-            //        str.Title,
-            //    };
-            //    artlList.Add(result);
-            //}
-            List<NewArticle> arrayList = new List<NewArticle>();
-            foreach (var content in art)
+            var data = db.Members.FirstOrDefault(m => m.ID == memberid).Articles.Select(x=>new
             {
+                artId = x.ID,
+                author = x.AuthorName,
+                authorPic = x.AuthorPic,
+                username = x.UserName,
+                title = x.Title,
+                firstPhoto = x.FirstPicName + "." + x.FirstPicFileName,
+                introduction = x.Introduction,
+                artArtlog = x.Articlecategory.Name,
+                articlecategoryId = x.ArticlecategoryId,
+                isFree = x.IsFree,
+                lovecount = x.Lovecount,
+                messageCount = x.Messages.Count,
+                artInitDate = x.InitDate
+            }).ToList();
 
-                NewArticle newartary = new NewArticle();
-                newartary.artId = content.ID;
-                newartary.username = content.UserName;
-                newartary.author = content.AuthorName;
-                newartary.authorPic = content.AuthorPic;
-                newartary.artArtlog = content.Articlecategory.Name;
-                newartary.articlecategoryId = content.ArticlecategoryId;
-                newartary.title = content.Title;
-                newartary.isFree = content.IsFree;
-                newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
-                newartary.introduction = content.Introduction;
-                newartary.lovecount = content.Lovecount;
-                newartary.artInitDate = content.InitDate;
-
-                arrayList.Add(newartary);
-
-
-            }
-
-            int total = arrayList.Count;
+            int total = data.Count;
             if (nowpage == 1)
             {
-                var newArticles = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
+                var newArticles = data.OrderByDescending(x => x.artInitDate).Take(showcount);
                
                 return Ok(new
                 {
@@ -1945,7 +1755,7 @@ namespace testdatamodel.Controllers
             else
             {
                 var page = (nowpage - 1) * showcount;
-                var newArticles = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                var newArticles = data.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -1966,13 +1776,25 @@ namespace testdatamodel.Controllers
         [ResponseType(typeof(KiruArtLogFourOutPut))]
         public IHttpActionResult GetArtlogArticle(int articlecategoryId,int nowpage, int showcount)
         {
-            //var data = db.Articles.Where(x => x.ArticlecategoryId == articlecategoryId).Where(x=>x.IsPush == true)
-            //    .OrderByDescending(x => x.InitDate).Take(4);
-            var data = from q in db.Articles
-                where q.ArticlecategoryId == articlecategoryId && q.IsPush == true
-                select q;
-               var kiruData = data.ToList();
-            if (kiruData == null )
+            var data = db.Articles.Where(x => x.ArticlecategoryId == articlecategoryId).Where(x => x.IsPush == true)
+                .Select(x=> new
+                {
+                    artId=x.ID,
+                    username=x.UserName,
+                    author=x.AuthorName,
+                    authorPic=x.AuthorPic,
+                    title=x.Title,
+                    firstPhoto=x.FirstPicName+"."+x.FirstPicFileName,
+                    introduction=x.Introduction,
+                    artArtlog=x.Articlecategory.Name,
+                    articlecategoryId=x.ArticlecategoryId,
+                    isFree=x.IsFree,
+                    lovecount=x.Lovecount,
+                    artInitDate=x.InitDate,
+                    
+                }).ToList();
+               
+            if (data == null )
             {
                 return Ok(new
                 {
@@ -1982,30 +1804,11 @@ namespace testdatamodel.Controllers
             }
 
             
-            List<NewArticle> arrayList = new List<NewArticle>();
-            foreach (var content in kiruData)
-            {
-                NewArticle newartary = new NewArticle();
-                newartary.artId = content.ID;
-                newartary.username = content.UserName;
-                newartary.author = content.AuthorName;
-                newartary.authorPic = content.AuthorPic;
-                newartary.title = content.Title;
-                newartary.firstPhoto = content.FirstPicName + "." + content.FirstPicFileName;
-                newartary.introduction = content.Introduction;
-                newartary.artArtlog = content.Articlecategory.Name;
-                newartary.articlecategoryId = content.ArticlecategoryId;
-                newartary.isFree = content.IsFree;
-                newartary.lovecount = content.Lovecount;
-                newartary.artInitDate = content.InitDate;
 
-                arrayList.Add(newartary);
-            }
-
-            int total = arrayList.Count;
+            int total = data.Count;
             if (nowpage == 1)
             {
-                var dataOutput = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
+                var dataOutput = data.OrderByDescending(x => x.artInitDate).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -2016,7 +1819,7 @@ namespace testdatamodel.Controllers
             else
             {
                 int page = (nowpage - 1) * showcount;
-                var dataOutput = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                var dataOutput = data.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -2057,14 +1860,12 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var q = from p in db.Messages
-                where p.Id == messageId
-                select p;
-            foreach (var p in q)
+            var q = db.Messages.Where(x => x.Id == messageId);
+            foreach (var str in q)
             {
-                p.Main = main;
+                str.Main = main;
             }
-
+            
             db.SaveChanges();
             return Ok(new
             {
@@ -2106,9 +1907,7 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var q = from p in db.R_Messages
-                where p.Id == reMessageId
-                select p;
+            var q = db.R_Messages.Where(x => x.Id == reMessageId);
             foreach (var p in q)
             {
                 p.Main = main;

@@ -25,7 +25,7 @@ namespace testdatamodel.listclass
         /// <summary>
         /// 交易是否成功
         /// </summary>
-        public bool IsSuceess { get; set; }
+        public bool IsSuccess { get; set; }
         /// <summary>
         /// 訂閱日期
         /// </summary>

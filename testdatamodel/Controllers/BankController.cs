@@ -47,13 +47,12 @@ namespace testdatamodel.Controllers
         /// [智付通支付]金流介接
         /// </summary>
         /// <param name="main">訂單內容</param>
-        /// <param name="amount">訂單金額</param>
         /// <param name="payType">請款類型(CREDIT=信用卡付款\WEBATM=網路銀行轉帳付款)</param>
         /// <param name="returnUrl">回傳網址</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult SpgatewayPayBill( string main, int amount, string payType,string returnUrl)
+        public IHttpActionResult SpgatewayPayBill( string main, string payType,string returnUrl)
         {
             var userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var memberdata = db.Members.FirstOrDefault(x => x.ID == userid);
@@ -62,12 +61,24 @@ namespace testdatamodel.Controllers
             {
                 return Ok(new
                 {
-                    status = true,
+                    success = false,
                     message= "請登入帳號密碼"
                 });
             }
             else
             {
+                var haveSub = db.Subscriptionplans.FirstOrDefault(x => x.Members.UserName == main);
+                if (haveSub == null)
+                {
+                    return Ok(new
+                    {
+                        success = false,
+                        message = "作者未開通訂閱"
+                    });
+                }
+                var orderAmount = haveSub.Amount;
+                var amount = Convert.ToInt32(orderAmount);
+                
                 string version = "1.5";
 
                 // 目前時間轉換 +08:00, 防止傳入時間或Server時間時區不同造成錯誤
@@ -104,7 +115,7 @@ namespace testdatamodel.Controllers
                     // 繳費有效期限(適用於非即時交易)
                     ExpireDate = null,
                     // 支付完成 返回商店網址
-                    ReturnURL = _bankInfoModel.ReturnURL+ "?orderno="+orderno,
+                    ReturnURL = returnUrl,
                     // 支付通知網址
                     NotifyURL = _bankInfoModel.NotifyURL,
                     // 商店取號網址

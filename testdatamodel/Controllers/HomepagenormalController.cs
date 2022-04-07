@@ -25,47 +25,40 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult SeekArticle(int articlecategoryId, int nowpage, int showcount)
         {
-
-            var datanormal = from a in db.ArticleNormals
-                             where (a.ArticlecategoryId == articlecategoryId &
-                                    a.IsPush == true)
-                             select a;
-            int pagecount = datanormal.Count();
-            if ( datanormal != null)
-            {
-
-                List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
-
-                foreach (var content in datanormal.ToList())
+            var datanormal = db.ArticleNormals.Where(m => m.ArticlecategoryId == articlecategoryId)
+                .Where(m => m.IsPush == true).Select(x => new
                 {
-
-                    NewNormalArticle newartary = new NewNormalArticle();
-                    newartary.artId = content.ID;
-                    newartary.username = content.UserName;
-                    newartary.author = content.AuthorName;
-                    newartary.authorPic = content.AuthorPic;
-                    newartary.introduction = content.Introduction;
-                    newartary.title = content.Title;
-                    newartary.artArtlog = content.Articlecategory.Name;
-                    newartary.isFree = content.IsFree;
-                    newartary.lovecount = content.Lovecount;
-                    newartary.artInitDate = content.InitDate;
-
-                    arrayList.Add(newartary);
-
-                }
+                    artId = x.ID,
+                    author = x.AuthorName,
+                    authorPic = x.AuthorPic,
+                    username = x.UserName,
+                    title = x.Title,
+                    introduction = x.Introduction,
+                    artArtlog = x.Articlecategory.Name,
+                    articlecategoryId = x.ArticlecategoryId,
+                    isFree = x.IsFree,
+                    lovecount = x.Lovecount,
+                    messageCount = x.MessageNormals.Count,
+                    artInitDate = x.InitDate
+                }).ToList();
+            //var datanormal = from a in db.ArticleNormals
+            //                 where (a.ArticlecategoryId == articlecategoryId &
+            //                        a.IsPush == true)
+            //                 select a;
+            int pagecount = datanormal.Count();
+            if ( datanormal.Count != 0)
+            {
                 if (nowpage == 1)
                 {
                     //排序依照日期
                     //var result = from e in arrayList
                     //    orderby e.InitDateTime
                     //    select e;
-                    var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
-                    pagecount = arrayList.Count();
+                    var result = datanormal.OrderByDescending(x => x.artInitDate).Take(showcount);
                     return Ok(new
                     {
                         success = true,
-                        total = pagecount,
+                        total = datanormal.Count,
                         data = result
                     });
                    
@@ -77,11 +70,11 @@ namespace testdatamodel.Controllers
                     int page = (nowpage - 1) * showcount;
                     //排序依照日期
 
-                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                    var result = datanormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                     return Ok(new
                     {
                         success = true,
-                        total = pagecount,
+                        total = datanormal.Count,
                         data =result
                     });
                 }
@@ -111,47 +104,44 @@ namespace testdatamodel.Controllers
             var datetime01 = DateTime.Parse(datetime1);
             var datetime02 = DateTime.Parse(datetime2).AddDays(1);
 
-            var dataNormal = from q in db.ArticleNormals
-                             where q.InitDate >= datetime01 && q.InitDate < datetime02 & q.IsPush == true
-                             select q;
-            int totalcount = dataNormal.Count();
-            if (dataNormal != null)
-            {
-                List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
-                foreach (var content in dataNormal.ToList())
+            var dataNormal = db.ArticleNormals.Where(m => m.InitDate >= datetime01).Where(m => m.InitDate < datetime02)
+                .Where(m => m.IsPush).Select(x => new
                 {
-
-                    NewNormalArticle newartary = new NewNormalArticle();
-                    newartary.artId = content.ID;
-                    newartary.username = content.UserName;
-                    newartary.author = content.AuthorName;
-                    newartary.authorPic = content.AuthorPic;
-                    newartary.introduction = content.Introduction;
-                    newartary.title = content.Title;
-                    newartary.artArtlog = content.Articlecategory.Name;
-                    newartary.isFree = content.IsFree;
-                    newartary.lovecount = content.Lovecount;
-                    newartary.artInitDate = content.InitDate;
-
-                    arrayList.Add(newartary);
-
-                }
+                    artId = x.ID,
+                    author = x.AuthorName,
+                    authorPic = x.AuthorPic,
+                    username = x.UserName,
+                    title = x.Title,
+                    introduction = x.Introduction,
+                    artArtlog = x.Articlecategory.Name,
+                    articlecategoryId = x.ArticlecategoryId,
+                    isFree = x.IsFree,
+                    lovecount = x.Lovecount,
+                    messageCount = x.MessageNormals.Count,
+                    artInitDate = x.InitDate
+                });
+            //var dataNormal = from q in db.ArticleNormals
+            //                 where q.InitDate >= datetime01 && q.InitDate < datetime02 & q.IsPush == true
+            //                 select q;
+            
+            if (dataNormal.Count() != 0)
+            {
+                
 
                 if (nowpage == 1)
                 {
 
                     
                     //排序依照日期
-                    var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
+                    var result = dataNormal.OrderByDescending(x => x.artInitDate).Take(showcount);
                     //var resultArticles = from e in arrayList
                     //    orderby e.InitDateTime
                     //    select e;
-                    totalcount = arrayList.Count();
 
                     return Ok(new
                     {
                         success=true,
-                        total = totalcount,
+                        total = dataNormal.Count(),
                         data=result
                     });
                 }
@@ -160,13 +150,13 @@ namespace testdatamodel.Controllers
 
                     int page = (nowpage - 1) * showcount;
                     //排序依照日期
-                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                    var result = dataNormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
 
 
                     return Ok(new
                     {
                         success=true,
-                        total = totalcount,
+                        total = dataNormal.Count(),
                         data =result
                     });
                 }
@@ -190,40 +180,32 @@ namespace testdatamodel.Controllers
         public IHttpActionResult NewArticle(int nowpage,int showcount)
         {
 
-            var dataNormal = db.ArticleNormals.Where(x => x.IsPush == true).ToList();
+            var dataNormal = db.ArticleNormals.Where(x => x.IsPush == true).Select(x=>new
+            {
+                artId = x.ID,
+                author = x.AuthorName,
+                authorPic = x.AuthorPic,
+                username = x.UserName,
+                title = x.Title,
+                introduction = x.Introduction,
+                artArtlog = x.Articlecategory.Name,
+                articlecategoryId = x.ArticlecategoryId,
+                isFree = x.IsFree,
+                lovecount = x.Lovecount,
+                messageCount = x.MessageNormals.Count,
+                artInitDate = x.InitDate
+            }).ToList();
             //var dataNormal = from q in db.ArticleNormals
             //                 where q.IsPush == true
             //                 select q;
-            if (dataNormal != null)
+            if (dataNormal.Count != 0)
             {
-                List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
 
-
-                foreach (var content in dataNormal)
-                {
-
-                    NewNormalArticle newartary = new NewNormalArticle();
-                    newartary.artId = content.ID;
-                    newartary.username = content.UserName;
-                    newartary.author = content.AuthorName;
-                    newartary.authorPic = content.AuthorPic;
-                    newartary.introduction = content.Introduction;
-                    newartary.title = content.Title;
-                    newartary.artArtlog = content.Articlecategory.Name;
-                    newartary.isFree = content.IsFree;
-                    newartary.lovecount = content.Lovecount;
-                    newartary.artInitDate = content.InitDate;
-
-                    arrayList.Add(newartary);
-
-                }
-
-                int totalPage = arrayList.Count;
                 if (nowpage == 1)
                 {
                     //排序依照日期 desending遞減
                     //用Take表示拿取幾筆資料
-                    var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
+                    var result = dataNormal.OrderByDescending(x => x.artInitDate).Take(showcount);
                     //另一種寫法
                     //var result = from e in arrayList
                     //    orderby e.InitDateTime descending 
@@ -231,18 +213,18 @@ namespace testdatamodel.Controllers
                     return Ok(new
                     {
                         success = true,
-                        total=totalPage,
+                        total=dataNormal.Count,
                         data = result
                     });
                 }
                 else
                 {
                     int page = (nowpage - 1) * showcount;
-                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                    var result = dataNormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                     return Ok(new
                     {
                         success = true,
-                        total = totalPage,
+                        total = dataNormal.Count,
                         data = result
                     });
                 }
@@ -268,54 +250,46 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult Lovearticle(int nowpage, int showcount)
         {
-            var dataNormal = from q in db.ArticleNormals
-                             where q.IsPush == true & q.Lovecount > 0
-                             select q;
-            if ( dataNormal != null)
+            var dataNormal = db.ArticleNormals.Where(x => x.IsPush == true).Where(x => x.Lovecount > 0).Select(x => new
             {
-                List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
-
-
-                foreach (var content in dataNormal.ToList())
-                {
-
-                    NewNormalArticle newartary = new NewNormalArticle();
-                    newartary.artId = content.ID;
-                    newartary.username = content.UserName;
-                    newartary.author = content.AuthorName;
-                    newartary.authorPic = content.AuthorPic;
-                    newartary.introduction = content.Introduction;
-                    newartary.title = content.Title;
-                    newartary.artArtlog = content.Articlecategory.Name;
-                    newartary.isFree = content.IsFree;
-                    newartary.lovecount = content.Lovecount;
-                    newartary.artInitDate = content.InitDate;
-
-                    arrayList.Add(newartary);
-
-                }
-
-                int total = arrayList.Count;
+                artId = x.ID,
+                author = x.AuthorName,
+                authorPic = x.AuthorPic,
+                username = x.UserName,
+                title = x.Title,
+                introduction = x.Introduction,
+                artArtlog = x.Articlecategory.Name,
+                articlecategoryId = x.ArticlecategoryId,
+                isFree = x.IsFree,
+                lovecount = x.Lovecount,
+                messageCount = x.MessageNormals.Count,
+                artInitDate = x.InitDate
+            }).ToList();
+            //var dataNormal = from q in db.ArticleNormals
+            //                 where q.IsPush == true & q.Lovecount > 0
+            //                 select q;
+            if ( dataNormal.Count != 0)
+            {
                 if (nowpage == 1)
                 {
                     //排序依照日期 desending遞減
-                    var result = arrayList.OrderByDescending(x => x.lovecount).Take(showcount);
+                    var result = dataNormal.OrderByDescending(x => x.lovecount).Take(showcount);
 
                     return Ok(new
                     {
                         success = true,
-                        total = total,
+                        total = dataNormal.Count,
                         data = result
                     });
                 }
                 else
                 {
                     int page = (nowpage - 1) * showcount;
-                    var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                    var result = dataNormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                     return Ok(new
                     {
                         success = true,
-                        total = total,
+                        total = dataNormal.Count,
                         data = result
                     });
                 }
@@ -357,39 +331,32 @@ namespace testdatamodel.Controllers
                     message = "請輸入關鍵字"
                 });
             }
-            var a = db.ArticleNormals.AsQueryable();
-            a = a.Where(x => x.Title.Contains(keywords) && x.IsPush == true);
-            var articleNlist = a.ToList();
-            int resultcount = articleNlist.Count();
-
-            //var dataarticleN = from d in db.ArticleNormals
-            //                   where (d.Title.Contains(keywords))
-            //                   select d;
-
-            //var articleNlist = dataarticleN.ToList();
-            List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
-            foreach (var content in articleNlist)
-            {
-
-                NewNormalArticle newartary = new NewNormalArticle();
-                newartary.artId = content.ID;
-                newartary.username = content.UserName;
-                newartary.author = content.AuthorName;
-                newartary.authorPic = content.AuthorPic;
-                newartary.introduction = content.Introduction;
-                newartary.title = content.Title;
-                newartary.artArtlog = content.Articlecategory.Name;
-                newartary.isFree = content.IsFree;
-                newartary.lovecount = content.Lovecount;
-                newartary.artInitDate = content.InitDate;
-
-                arrayList.Add(newartary);
-
-            }
+            //var a = db.ArticleNormals.AsQueryable();
+            //a = a.Where(x => x.Title.Contains(keywords) && x.IsPush == true);
+            //var articleNlist = a.ToList();
+            //int resultcount = articleNlist.Count();
+            var dataNormal = db.ArticleNormals.Where(x => x.Title.Contains(keywords)).Where(x => x.IsPush == true)
+                .Select(x => new
+                {
+                    artId = x.ID,
+                    author = x.AuthorName,
+                    authorPic = x.AuthorPic,
+                    username = x.UserName,
+                    title = x.Title,
+                    introduction = x.Introduction,
+                    artArtlog = x.Articlecategory.Name,
+                    articlecategoryId = x.ArticlecategoryId,
+                    isFree = x.IsFree,
+                    lovecount = x.Lovecount,
+                    messageCount = x.MessageNormals.Count,
+                    artInitDate = x.InitDate
+                }).ToList();
+            
+           
             if (nowpage == 1)
             {
                 //排序依照日期 desending遞減
-                var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
+                var result = dataNormal.OrderByDescending(x => x.artInitDate).Take(showcount);
                 //另一種寫法
                 //var result = from e in arrayList
                 //             orderby e.InitDateTime descending
@@ -398,18 +365,18 @@ namespace testdatamodel.Controllers
                 return Ok(new
                 {
                     success=true,
-                    total = resultcount,
+                    total = dataNormal.Count,
                     data=result
                 });
             }
             else
             {
                 int takepage = (nowpage - 1) * showcount;
-                var resultdata = arrayList.OrderByDescending(x => x.artInitDate).Skip(takepage).Take(showcount);
+                var resultdata = dataNormal.OrderByDescending(x => x.artInitDate).Skip(takepage).Take(showcount);
                 return Ok(new
                 {
                     success=true,
-                    total = resultcount,
+                    total = dataNormal.Count,
                     data =resultdata
                 });
             }

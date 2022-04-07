@@ -42,13 +42,10 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var authorname = checkusername.Name;
-            var authorPic = checkusername.PicName + "." + checkusername.FileName;
-            var checkArt = username +DateTime.Now.ToFileTime();
             ArticleNormal article = new ArticleNormal();
             article.UserName = data.userName;
-            article.AuthorName = authorname;
-            article.AuthorPic = authorPic;
+            article.AuthorName = checkusername.Name;
+            article.AuthorPic = checkusername.PicName + "." + checkusername.FileName;
             article.Introduction = data.introduction;
             article.Title = data.title;
             article.Main = data.main;
@@ -56,15 +53,15 @@ namespace testdatamodel.Controllers
             article.IsFree = data.isFree;
             article.IsPush = data.isPush;
             article.InitDate = DateTime.Now;
-            article.CheckArticle = checkArt;
+            article.CheckArticle = username + DateTime.Now.ToFileTime();
             db.ArticleNormals.Add(article);
             db.SaveChanges();
-            var artId = db.ArticleNormals.FirstOrDefault(x => x.CheckArticle == checkArt).ID;
+        
             return Ok(new
             {
                 success=true,
                 message = "已新增文章",
-                artId = artId
+                artId = article.ID
             });
         }
         /// <summary>
@@ -79,11 +76,25 @@ namespace testdatamodel.Controllers
         public IHttpActionResult GetUserAllArticleNormal( bool isPush,int nowpage,int showcount)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
-            var data = from a in db.ArticleNormals
-            where(a.UserName == username &
-                  a.IsPush == isPush)
-            select a;
-            if (data == null)
+            var data = db.ArticleNormals.Where(m => m.UserName == username).Where(m => m.IsPush == isPush).Select(x =>
+                new
+                {
+                    artId=x.ID,
+                    username=x.UserName,
+                    author=x.AuthorName,
+                    authorPic=x.AuthorPic,
+                    introduction=x.Introduction,
+                    title=x.Title,
+                    artArtlog=x.Articlecategory.Name,
+                    articlecategoryId=x.ArticlecategoryId,
+                    isFree=x.IsFree,
+                    messageCount=x.MessageNormals.Count,
+                    lovecount=x.Lovecount,
+                    artInitDate=x.InitDate
+
+                }).ToList();
+     
+            if (data.Count == 0)
             {
                 return Ok(new
                 {
@@ -91,30 +102,11 @@ namespace testdatamodel.Controllers
                     message="沒有文章"
                 });
             }
-            List<NormalMessageCount> arrayList = new List<NormalMessageCount>();
-            foreach (var str in data.ToList())
-            {
-                NormalMessageCount newartary = new NormalMessageCount();
-                newartary.artId= str.ID;
-                newartary.username = str.UserName;
-                newartary.author = str.AuthorName;
-                newartary.authorPic = str.AuthorPic;
-                newartary.introduction = str.Introduction;
-                newartary.title = str.Title;
-                newartary.artArtlog = str.Articlecategory.Name;
-                newartary.articlecategoryId = str.ArticlecategoryId;
-                newartary.isFree = str.IsFree;
-                newartary.messageCount = str.MessageNormals.Count;
-                newartary.lovecount = str.Lovecount;
-                newartary.artInitDate = str.InitDate;
 
-                arrayList.Add(newartary);
-            }
-
-            var total = arrayList.Count;
+            var total = data.Count;
             if (nowpage == 1)
             {
-                var outPutData = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
+                var outPutData = data.OrderByDescending(x => x.artInitDate).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -125,7 +117,7 @@ namespace testdatamodel.Controllers
             else
             {
                 var page = (nowpage - 1) * showcount;
-                var outPutData = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                var outPutData = data.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -204,9 +196,8 @@ namespace testdatamodel.Controllers
                     message = "你沒有權限"
                 });
             }
-            var editdata = from q in db.ArticleNormals
-                where (q.ID == artId)
-                select q;
+
+            var editdata = db.ArticleNormals.Where(x => x.ID == artId);
             foreach (var q in editdata)
             {
                 q.Title = data.title;
@@ -235,9 +226,7 @@ namespace testdatamodel.Controllers
         [JwtAuthFilter]
         public IHttpActionResult AddLoveArticleNormal(int artId, bool putlove)
         {
-            var data = from q in db.ArticleNormals
-                where (q.ID == artId)
-                select q;
+            var data = db.ArticleNormals.FirstOrDefault(x => x.ID == artId);
             if (data == null)
             {
                 return Ok(new
@@ -247,32 +236,23 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            int lovecount = db.ArticleNormals.FirstOrDefault(m => m.ID == artId).Lovecount;
             if (putlove == true)
             {
-                lovecount++;
-                foreach (var str in data)
-                {
-                    str.Lovecount = lovecount;
-                }
+                data.Lovecount++;
 
                 db.SaveChanges();
             }
             else
             {
-                lovecount--;
-                foreach (var str in data)
-                {
-                    str.Lovecount = lovecount;
-                }
+                data.Lovecount--;
                 db.SaveChanges();
             }
 
             return Ok(new
             {
                 success=true,
-                lovecount=lovecount
-            });
+                lovecount= data.Lovecount
+        });
         }
         /// <summary>
         /// 取得一般文章頁面所需資訊
@@ -282,7 +262,21 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult GetArticleNormal(int? artId)
         {
-            var data = db.ArticleNormals.FirstOrDefault(m => m.ID == artId);
+            var data = db.ArticleNormals.Where(m => m.ID == artId).Select(x=>new
+            {
+                username = x.UserName,
+                author = x.AuthorName,
+                authorPic = x.AuthorPic,
+                introduction = x.Introduction,
+                title = x.Title,
+                articlecategoryId = x.ArticlecategoryId,
+                isFree = x.IsFree,
+                isPush=x.IsPush,
+                messageCount = x.MessageNormals.Count,
+                lovecount = x.Lovecount,
+                artInitDate = x.InitDate
+            }).FirstOrDefault();
+            
             if (data == null)
             {
                 return Ok(new
@@ -292,70 +286,10 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var Art_title = data.Title;
-            var Art_Info = data.Introduction;
-            var Art_main = data.Main;
-            //var Art_message = data.MessageNormals.ToList();
-            var Art_initdate = data.InitDate;
-            var Art_ispush = data.IsPush;
-            var Art_isfree = data.IsFree;
-            var lovenum = data.Lovecount;
-            var username = data.UserName;
-            var userData = db.Members.FirstOrDefault(x => x.UserName == username);
-            var authorPic = userData.PicName + "." + userData.FileName;
-            var author = userData.Name;
-
-            var artlogid = data.ArticlecategoryId;
-            
-            //ArrayList messageArrayList = new ArrayList();
-           
-            //foreach (var str in Art_message)
-            //{
-            //    ArrayList remessageArrayList = new ArrayList();
-            //    var rmessagedata = str.R_MessageNormals.ToList();
-            //    foreach (var rstr in rmessagedata)
-            //    {
-            //        var rdata = new
-            //        {
-            //            reMessageId = rstr.Id,
-            //            author = author,
-            //            authorPic = authorPic,
-            //            reMessageMain = rstr.Main,
-            //            reMessageInitDate = rstr.InitDate,
-            //        };
-            //        remessageArrayList.Add(rdata);
-            //    }
-
-            //    var picname = str.Members.PicName + "." + str.Members.FileName;
-            //    var mdata = new
-            //    {
-            //        messageId = str.Id,
-            //        messageMember = str.Members.Name,
-            //        messageMemberPic = picname,
-            //        messageMain = str.Main,
-            //        messageInitDate = str.InitDate,
-            //        reMessageArrayList = remessageArrayList
-            //    };
-            //    messageArrayList.Add(mdata);
-                
-                
-            //}
             return Ok(new
             {
                 success = true,
-                data =new{
-                    username=username,
-                    author= author,
-                    authorPic = authorPic,
-                    title = Art_title,
-                    main = Art_main,
-                    introduction=Art_Info,
-                    articlecategoryId=artlogid,
-                    artInitDate =Art_initdate,
-                    isFree = Art_isfree,
-                    isPush = Art_ispush,
-                    lovecount= lovenum,
-                    /*messageArrayList*/}
+                data =data
         });
         }
         /// <summary>
@@ -369,7 +303,17 @@ namespace testdatamodel.Controllers
         [JwtAuthFilter]
         public IHttpActionResult GetNormalArticleForEdit(int? artId)
         {
-            var data = db.ArticleNormals.FirstOrDefault(m => m.ID == artId);
+            var data = db.ArticleNormals.Where(m => m.ID == artId).Select(x=>new
+            {
+                title = x.Title,
+                introduction = x.Introduction,
+                main = x.Main,
+                articlecategoryId = x.ArticlecategoryId,
+                artInitDate = x.InitDate,
+                isFree = x.IsFree,
+                isPush = x.IsPush,
+            }).FirstOrDefault();
+            
             if (data == null)
             {
                 return Ok(new
@@ -379,7 +323,7 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var checkusername = data.UserName;
+            var checkusername = db.ArticleNormals.FirstOrDefault(x=>x.ID==artId).UserName;
             var jwtUsrname = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
             if (checkusername != jwtUsrname)
             {
@@ -389,29 +333,13 @@ namespace testdatamodel.Controllers
                     message = "你沒有權限"
                 });
             }
-            var Art_title = data.Title;
-            var Art_info = data.Introduction;
-            var Art_main = data.Main;
-            var Art_message = data.MessageNormals.ToList();
-            var Art_initdate = data.InitDate;
-            var Art_ispush = data.IsPush;
-            var Art_isfree = data.IsFree;
-
-            var artlogid = data.ArticlecategoryId;
+          
 
             return Ok(new
             {
                 success = true,
-                data = new
-                {
-                    title = Art_title,
-                    introduction = Art_info,
-                    main = Art_main,
-                    articlecategoryId = artlogid,
-                    artInitDate = Art_initdate,
-                    isFree = Art_ispush,
-                    isPush = Art_isfree,
-                }
+                data = data
+                
             });
         }
         /// <summary>
@@ -503,8 +431,25 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult Getmessage(int artId ,int nowpage,int showcount)
         {
-            var data = db.MessageNormals.Where(x => x.ArticleNorId == artId).ToList();
-            if (data == null)
+            var data = db.MessageNormals.Where(m => m.ArticleNorId == artId).Select(x=>new
+            {
+                messageId = x.Id,
+                messageUserName = x.Members.UserName,
+                messageMember = x.Members.Name,
+                messageMemberPic = x.Members.PicName + "." + x.Members.FileName,
+                messageMain = x.Main,
+                messageInitDate = x.InitDate,
+                reMessageData = x.R_MessageNormals.Select(y => new
+                {
+                    reMessageId = y.Id,
+                    userName = y.MessageNormals.ArticleNormals.UserName,
+                    author = y.MessageNormals.ArticleNormals.AuthorName,
+                    authorPic = y.MessageNormals.ArticleNormals.AuthorPic,
+                    reMessageMain = y.Main,
+                    reMessageInitDate = y.InitDate
+                })
+            }).ToList();
+            if (data.Count == 0)
             {
                 return Ok(new
                 {
@@ -513,45 +458,11 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var userName = db.ArticleNormals.FirstOrDefault(x => x.ID == artId).UserName;
-            var userData = db.Members.FirstOrDefault(x => x.UserName == userName);
-            var author = userData.Name;
-            var authorPic = userData.PicName + "." + userData.FileName;
-            List<MessageList> arrayList = new List<MessageList>();
 
-            foreach (var str in data)
-            {
-                List<MessageList.RMG> reList = new List<MessageList.RMG>();
-                var picName = str.Members.PicName + "." + str.Members.FileName;
-                var remessageDate = str.R_MessageNormals.ToList();
-                foreach (var rstr in remessageDate)
-                {
-                    MessageList.RMG remessage = new MessageList.RMG();
-                    remessage.reMessageId = rstr.Id;
-                    remessage.userName = userName;
-                    remessage.author = author;
-                    remessage.authorPic = authorPic;
-                    remessage.reMessageMain = rstr.Main;
-                    remessage.reMessageInitDate = rstr.InitDate;
-                    reList.Add(remessage);
-                }
-
-                MessageList array = new MessageList();
-                array.messageId = str.Id;
-                array.messageUserName = str.Members.UserName;
-                array.messageMember = str.Members.Name;
-                array.messageMemberPic = picName;
-                array.messageMain = str.Main;
-                array.messageInitDate = str.InitDate;
-                array.reMessageData = reList;
-                arrayList.Add(array);
-
-            }
-
-            var total = arrayList.Count;
+            var total = data.Count;
             if (nowpage == 1)
             {
-                var result = arrayList.OrderByDescending(x => x.messageInitDate).Take(showcount);
+                var result = data.OrderByDescending(x => x.messageInitDate).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -562,7 +473,7 @@ namespace testdatamodel.Controllers
             else
             {
                 var page = (nowpage - 1) * showcount;
-                var result = arrayList.OrderByDescending(x => x.messageInitDate).Skip(page).Take(showcount);
+                var result = data.OrderByDescending(x => x.messageInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -581,8 +492,15 @@ namespace testdatamodel.Controllers
         [ResponseType(typeof(OutPutMessage))]
         public IHttpActionResult GetOneMessage(int messageId)
         {
-            var data = db.MessageNormals.FirstOrDefault(x => x.Id == messageId);
-            if (data == null)
+            var data = db.MessageNormals.Where(m => m.Id == messageId).Select(y=>new
+            {
+                messageUserName = y.UserName,
+                messageMember = y.Members.Name,
+                messageMemberPic = y.Members.PicName + "." + y.Members.FileName,
+                messageMain = y.Main,
+                messageInitDate = y.InitDate
+            }).ToList();
+            if (data.Count == 0)
             {
                 return Ok(new
                 {
@@ -590,18 +508,12 @@ namespace testdatamodel.Controllers
                     message = "沒有此留言"
                 });
             }
-            var userName = data.UserName;
-          
-            var userPic = data.Members.PicName + "." + data.Members.FileName;
-            var main = data.Main;
-            var initDate = data.InitDate;
+
+
             return Ok(new
             {
                 success = true,
-                messageMember = userName,
-                messageMemberPic = userPic,
-                messaageMain = main,
-                messaageIniteDate = initDate
+                data=data
             });
         }
         /// <summary>
@@ -677,7 +589,12 @@ namespace testdatamodel.Controllers
         [ResponseType(typeof(OutPutReMessage))]
         public IHttpActionResult Getrmessage(int messageId)
         {
-            var data = db.MessageNormals.FirstOrDefault(x => x.Id == messageId);
+            var data = db.MessageNormals.Where(x => x.Id == messageId).Select(y=>new
+            {
+                reMessageId = y.Id,
+                reMessageMain = y.Main,
+                reMessageInitDate = y.InitDate
+            }).ToList();
             if (data == null)
             {
                 return Ok(new
@@ -687,23 +604,12 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var message = data.R_MessageNormals.ToList();
-            ArrayList resultList = new ArrayList();
-            foreach (var str in message)
-            {
-                var result = new
-                {
-                    reMessageId = str.Id,
-                    reMessageMain = str.Main,
-                    reMessageInitDate = str.InitDate
-                };
-                resultList.Add(result);
-            }
+            
 
             return Ok(new
             {
                 success=true,
-                data=resultList
+                data=data
             });
         }
         /// <summary>
@@ -778,31 +684,27 @@ namespace testdatamodel.Controllers
         public IHttpActionResult GetAllcollectart(int nowpage,int showcount)
         {
             var memberid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
-            var data = db.Members.FirstOrDefault(x => x.ID == memberid);
-            var art = data.ArticleNormals.ToList();
-            List<NormalArticles> arrayList = new List<NormalArticles>();
-            foreach (var str in art)
+            var data = db.Members.FirstOrDefault(m => m.ID == memberid).ArticleNormals.Select(x=>new
             {
+                artId = x.ID,
+                author = x.AuthorName,
+                authorPic = x.AuthorPic,
+                username = x.UserName,
+                title = x.Title,
+                introduction = x.Introduction,
+                artArtlog = x.Articlecategory.Name,
+                articlecategoryId = x.ArticlecategoryId,
+                isFree = x.IsFree,
+                lovecount = x.Lovecount,
+                messageCount = x.MessageNormals.Count,
+                artInitDate = x.InitDate
+            }).ToList();
+           
 
-                NormalArticles newartary = new NormalArticles();
-                newartary.artId = str.ID;
-                newartary.username = str.UserName;
-                newartary.introduction = str.Introduction;
-                newartary.title = str.Title;
-                newartary.artArtlog = str.Articlecategory.Name;
-                newartary.articlecategoryId = str.ArticlecategoryId;
-                newartary.isFree = str.IsFree;
-                newartary.lovecount = str.Lovecount;
-                newartary.artInitDate = str.InitDate;
-
-                arrayList.Add(newartary);
-
-            }
-
-            int total = arrayList.Count;
+            int total = data.Count;
             if (nowpage == 1)
             {
-                var result = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
+                var result = data.OrderByDescending(x => x.artInitDate).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -815,7 +717,7 @@ namespace testdatamodel.Controllers
                 int page = (nowpage - 1) * showcount;
                 //排序依照日期
 
-                var result = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                var result = data.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -837,10 +739,23 @@ namespace testdatamodel.Controllers
         {
             //var data = db.ArticleNormals.Where(x => x.ArticlecategoryId == articlecategoryId).Where(x=>x.IsPush==true)
             //    .OrderByDescending(x => x.InitDate).ToList();
-            var data = from q in db.ArticleNormals
-                where q.ArticlecategoryId == articlecategoryId && q.IsPush == true
-                select q;
-            if (data == null)
+            var data = db.ArticleNormals.Where(m => m.ArticlecategoryId == articlecategoryId)
+                .Where(m => m.IsPush == true).Select(x=>new
+                {
+                    artId = x.ID,
+                    author = x.AuthorName,
+                    authorPic = x.AuthorPic,
+                    username = x.UserName,
+                    title = x.Title,
+                    introduction = x.Introduction,
+                    artArtlog = x.Articlecategory.Name,
+                    articlecategoryId = x.ArticlecategoryId,
+                    isFree = x.IsFree,
+                    lovecount = x.Lovecount,
+                    artInitDate = x.InitDate
+                }).ToList();
+          
+            if (data.Count == 0)
             {
                 return Ok(new
                 {
@@ -848,32 +763,12 @@ namespace testdatamodel.Controllers
                     message = "沒有相關文章"
                 });
             }
-            List<NewNormalArticle> arrayList = new List<NewNormalArticle>();
+            
 
-            foreach (var str in data.ToList())
-            {
-
-                NewNormalArticle newartary = new NewNormalArticle();
-                newartary.artId = str.ID;
-                newartary.username = str.UserName;
-                newartary.author = str.AuthorName;
-                newartary.authorPic = str.AuthorPic;
-                newartary.introduction = str.Introduction;
-                newartary.title = str.Title;
-                newartary.artArtlog = str.Articlecategory.Name;
-                newartary.articlecategoryId = str.ArticlecategoryId;
-                newartary.isFree = str.IsFree;
-                newartary.lovecount = str.Lovecount;
-                newartary.artInitDate = str.InitDate;
-
-                arrayList.Add(newartary);
-
-            }
-
-            int total = arrayList.Count;
+            int total = data.Count;
             if (nowpage == 1)
             {
-                var outPut = arrayList.OrderByDescending(x => x.artInitDate).Take(showcount);
+                var outPut = data.OrderByDescending(x => x.artInitDate).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -884,7 +779,7 @@ namespace testdatamodel.Controllers
             else
             {
                 int page = (nowpage - 1) * showcount;
-                var outPut = arrayList.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+                var outPut = data.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
                     success = true,
@@ -926,9 +821,7 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var q = from p in db.MessageNormals
-                    where p.Id == messageId
-                    select p;
+            var q = db.MessageNormals.Where(x => x.Id == messageId);
             foreach (var p in q)
             {
                 p.Main = main;
@@ -975,9 +868,8 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var q = from p in db.R_MessageNormals
-                    where p.Id == reMessageId
-                    select p;
+            var q = db.R_MessageNormals.Where(x => x.Id == reMessageId);
+            
             foreach (var p in q)
             {
                 p.Main = main;

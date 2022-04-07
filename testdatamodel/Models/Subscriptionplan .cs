@@ -28,5 +28,6 @@ namespace testdatamodel.Models
         public string Amount { get; set; }
         [Display(Name = "創建時間")]
         public DateTime InitDateTime { get; set; }
+
     }
 }

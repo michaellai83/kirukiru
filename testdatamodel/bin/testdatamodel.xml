@@ -1478,12 +1478,11 @@
             金流基本資料(可再移到Web.config或資料庫設定)
             </summary>
         </member>
-        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPayBill(System.String,System.Int32,System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPayBill(System.String,System.String,System.String)">
             <summary>
             [智付通支付]金流介接
             </summary>
             <param name="main">訂單內容</param>
-            <param name="amount">訂單金額</param>
             <param name="payType">請款類型(CREDIT=信用卡付款\WEBATM=網路銀行轉帳付款)</param>
             <param name="returnUrl">回傳網址</param>
             <returns></returns>
@@ -2075,7 +2074,7 @@
             訂閱金額
             </summary>
         </member>
-        <member name="P:testdatamodel.listclass.OrderMyList.IsSuceess">
+        <member name="P:testdatamodel.listclass.OrderMyList.IsSuccess">
             <summary>
             交易是否成功
             </summary>
