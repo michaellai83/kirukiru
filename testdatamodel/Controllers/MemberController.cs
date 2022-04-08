@@ -722,11 +722,12 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult Collectauthorarticle(string authorusername, int nowpage ,int showcount)
         {
-            var memberdata = db.Members.Where(x => x.UserName == authorusername)
-                .Where(x => x.Opencollectarticles == true).FirstOrDefault();
+            //var memberdata = db.Members.Where(x => x.UserName == authorusername)
+            //    .Where(x => x.Opencollectarticles == true).FirstOrDefault();
             //var memberdata = from q in db.Members
             //                 where (q.UserName == authorusername & q.Opencollectarticles == true)
             //                 select q;
+            var memberdata = db.Members.Where(x => x.UserName == authorusername && x.Opencollectarticles == true).FirstOrDefault();
             if (memberdata == null)
             {
                 return Ok(new
@@ -736,21 +737,53 @@ namespace testdatamodel.Controllers
                 });
             }
             int memberid = memberdata.ID;
-            var authordata = db.Members.FirstOrDefault(m => m.ID == memberid).Articles.Select(x=>new
+            //var authordata = db.Members.FirstOrDefault(m => m.ID == memberid).Articles.Select(x=>new
+            //{
+            //    artId = x.ID,
+            //    author = x.AuthorName,
+            //    authorPic = x.AuthorPic,
+            //    username = x.UserName,
+            //    title = x.Title,
+            //    firstPhoto = x.FirstPicName + "." + x.FirstPicFileName,
+            //    introduction = x.Introduction,
+            //    artArtlog = x.Articlecategory.Name,
+            //    articlecategoryId = x.ArticlecategoryId,
+            //    isFree = x.IsFree,
+            //    lovecount = x.Lovecount,
+            //    artInitDate = x.InitDate
+            //}).ToList();
+            var authordata = db.Members.FirstOrDefault(m => m.ID == memberid).Articles
+                .Join(db.Members,a=>a.UserName,b=>b.UserName,(a,b)=>new
+                {
+                    artId = a.ID,
+                    author = b.Name,
+                    authorPic = b.PicName + "." + b.FileName,
+                    username = b.UserName,
+                    title = a.Title,
+                    firstPhoto = a.FirstPicName + "." + a.FirstPicFileName,
+                    introduction = a.Introduction,
+                    artArtlog = a.Articlecategory.Name,
+                    articlecategoryId = a.ArticlecategoryId,
+                    isFree = a.IsFree,
+                    lovecount = a.Lovecount,
+                    messageCount = a.Messages.Count,
+                    artInitDate = a.InitDate
+                }).Select(x => new
             {
-                artId = x.ID,
-                author = x.AuthorName,
-                authorPic = x.AuthorPic,
-                username = x.UserName,
-                title = x.Title,
-                firstPhoto = x.FirstPicName + "." + x.FirstPicFileName,
-                introduction = x.Introduction,
-                artArtlog = x.Articlecategory.Name,
-                articlecategoryId = x.ArticlecategoryId,
-                isFree = x.IsFree,
-                lovecount = x.Lovecount,
-                artInitDate = x.InitDate
-            }).ToList();
+                artId = x.artId,
+                author = x.author,
+                authorPic = x.authorPic,
+                username = x.username,
+                title = x.title,
+                firstPhoto = x.firstPhoto,
+                introduction = x.introduction,
+                artArtlog = x.artArtlog,
+                articlecategoryId = x.articlecategoryId,
+                isFree = x.isFree,
+                lovecount = x.lovecount,
+                messageCount = x.messageCount,
+                artInitDate = x.artInitDate
+                }).ToList();
             if (authordata.Count == 0)
             {
                 return Ok(new
@@ -798,11 +831,12 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult CollectauthorNormalarticle(string authorusername, int nowpage, int showcount)
         {
-            var memberdata = db.Members.Where(x => x.UserName == authorusername)
-                .Where(x => x.Opencollectarticles == true).FirstOrDefault();
+            //var memberdata = db.Members.Where(x => x.UserName == authorusername)
+            //    .Where(x => x.Opencollectarticles == true).FirstOrDefault();
             //var memberdata = from q in db.Members
             //                 where (q.UserName == authorusername & q.Opencollectarticles == true)
             //                 select q;
+            var memberdata = db.Members.Where(x => x.UserName == authorusername && x.Opencollectarticles == true).FirstOrDefault();
             if (memberdata == null)
             {
                 return Ok(new
@@ -812,22 +846,52 @@ namespace testdatamodel.Controllers
                 });
             }
             int memberid = 0;
-          
-            var authordata = db.Members.Where(m => m.ID == memberid).FirstOrDefault().ArticleNormals.Select(x=>new
+
+            //var authordata = db.Members.Where(m => m.ID == memberid).FirstOrDefault().ArticleNormals.Select(x=>new
+            //{
+            //    artId = x.ID,
+            //    author = x.AuthorName,
+            //    authorPic = x.AuthorPic,
+            //    username = x.UserName,
+            //    title = x.Title,
+            //    introduction = x.Introduction,
+            //    artArtlog = x.Articlecategory.Name,
+            //    articlecategoryId = x.ArticlecategoryId,
+            //    isFree = x.IsFree,
+            //    lovecount = x.Lovecount,
+            //    messageCount = x.MessageNormals.Count,
+            //    artInitDate = x.InitDate
+            //}).ToList();
+            var authordata = db.Members.Where(m => m.ID == memberid).FirstOrDefault().ArticleNormals.
+                Join(db.Members,a=>a.UserName,b=>b.UserName,(a,b)=>new
+                {
+                    artId = a.ID,
+                    userName = a.UserName,
+                    authorName = b.Name,
+                    authorPic = b.PicName + "." + b.FileName,
+                    introduction = a.Introduction,
+                    title = a.Title,
+                    articlecategoryId = a.ArticlecategoryId,
+                    main = a.Main,
+                    isFree = a.IsFree,
+                    messageCount = a.MessageNormals.Count,
+                    lovecount = a.Lovecount,
+                    artInitDate = a.InitDate
+                }).Select(x => new
             {
-                artId = x.ID,
-                author = x.AuthorName,
-                authorPic = x.AuthorPic,
-                username = x.UserName,
-                title = x.Title,
-                introduction = x.Introduction,
-                artArtlog = x.Articlecategory.Name,
-                articlecategoryId = x.ArticlecategoryId,
-                isFree = x.IsFree,
-                lovecount = x.Lovecount,
-                messageCount = x.MessageNormals.Count,
-                artInitDate = x.InitDate
-            }).ToList();
+                artId = x.artId,
+                username = x.userName,
+                author = x.authorName,
+                authorPic = x.authorPic,
+                introduction = x.introduction,
+                title = x.title,
+                articlecategoryId = x.articlecategoryId,
+                main = x.main,
+                isFree = x.isFree,
+                messageCount = x.messageCount,
+                lovecount = x.lovecount,
+                artInitDate = x.artInitDate
+                }).ToList();
             if (authordata.Count == 0)
             {
                 return Ok(new
@@ -883,26 +947,58 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var artdata = db.Articles.Where(x => x.UserName == username).Where(x => x.IsPush == true).Select(x => new
-            {
-                artId = x.ID,
-                author = x.AuthorName,
-                authorPic = x.AuthorPic,
-                username = x.UserName,
-                title = x.Title,
-                firstPhoto = x.FirstPicName + "." + x.FirstPicFileName,
-                introduction = x.Introduction,
-                artArtlog = x.Articlecategory.Name,
-                articlecategoryId = x.ArticlecategoryId,
-                isFree = x.IsFree,
-                lovecount = x.Lovecount,
-                artInitDate = x.InitDate
-            }).ToList();
-            var author = data.Name;
-            var authorPic = data.PicName + "." + data.FileName;
+            //var artdata = db.Articles.Where(x => x.UserName == username).Where(x => x.IsPush == true).Select(x => new
+            //{
+            //    artId = x.ID,
+            //    author = x.AuthorName,
+            //    authorPic = x.AuthorPic,
+            //    username = x.UserName,
+            //    title = x.Title,
+            //    firstPhoto = x.FirstPicName + "." + x.FirstPicFileName,
+            //    introduction = x.Introduction,
+            //    artArtlog = x.Articlecategory.Name,
+            //    articlecategoryId = x.ArticlecategoryId,
+            //    isFree = x.IsFree,
+            //    lovecount = x.Lovecount,
+            //    artInitDate = x.InitDate
+            //}).ToList();
+            //var author = data.Name;
+            //var authorPic = data.PicName + "." + data.FileName;
             //var artdata = from q in db.Articles
             //    where (q.UserName == username && q.IsPush == true)
             //    select q;
+            var artdata = db.Articles.Where(x => x.UserName == username && x.IsPush == true)
+                .Join(db.Members,a=>a.UserName,b=>b.UserName,(a,b)=>new
+                {
+                    artId = a.ID,
+                    author = b.Name,
+                    authorPic = b.PicName + "." + b.FileName,
+                    username = b.UserName,
+                    title = a.Title,
+                    firstPhoto = a.FirstPicName + "." + a.FirstPicFileName,
+                    introduction = a.Introduction,
+                    artArtlog = a.Articlecategory.Name,
+                    articlecategoryId = a.ArticlecategoryId,
+                    isFree = a.IsFree,
+                    lovecount = a.Lovecount,
+                    messageCount = a.Messages.Count,
+                    artInitDate = a.InitDate
+                }).Select(x => new
+            {
+                artId = x.artId,
+                author = x.author,
+                authorPic = x.authorPic,
+                username = x.username,
+                title = x.title,
+                firstPhoto = x.firstPhoto,
+                introduction = x.introduction,
+                artArtlog = x.artArtlog,
+                articlecategoryId = x.articlecategoryId,
+                isFree = x.isFree,
+                lovecount = x.lovecount,
+                messageCount = x.messageCount,
+                artInitDate = x.artInitDate
+                }).ToList();
 
             if (nowpage == 1)
             {
@@ -951,28 +1047,58 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var noratrdata = db.ArticleNormals.Where(x => x.UserName == username).Where(x => x.IsPush == true).Select(
-                x => new
-                {
-                    artId = x.ID,
-                    author = x.AuthorName,
-                    authorPic = x.AuthorPic,
-                    username = x.UserName,
-                    title = x.Title,
-                    introduction = x.Introduction,
-                    artArtlog = x.Articlecategory.Name,
-                    articlecategoryId = x.ArticlecategoryId,
-                    isFree = x.IsFree,
-                    lovecount = x.Lovecount,
-                    messageCount = x.MessageNormals.Count,
-                    artInitDate = x.InitDate
-                }).ToList();
+            //var noratrdata = db.ArticleNormals.Where(x => x.UserName == username).Where(x => x.IsPush == true).Select(
+            //    x => new
+            //    {
+            //        artId = x.ID,
+            //        author = x.AuthorName,
+            //        authorPic = x.AuthorPic,
+            //        username = x.UserName,
+            //        title = x.Title,
+            //        introduction = x.Introduction,
+            //        artArtlog = x.Articlecategory.Name,
+            //        articlecategoryId = x.ArticlecategoryId,
+            //        isFree = x.IsFree,
+            //        lovecount = x.Lovecount,
+            //        messageCount = x.MessageNormals.Count,
+            //        artInitDate = x.InitDate
+            //    }).ToList();
             //var noratrdata = from q in db.ArticleNormals
             //        where (q.UserName == username && q.IsPush == true)
             //                 select q;
-           
+            var noratrdata = db.ArticleNormals.Where(x => x.UserName == username && x.IsPush == true)
+                .Join(db.Members,a=>a.UserName,b=>b.UserName,(a,b)=>new
+                {
+                    artId = a.ID,
+                    userName = a.UserName,
+                    authorName = b.Name,
+                    authorPic = b.PicName + "." + b.FileName,
+                    introduction = a.Introduction,
+                    title = a.Title,
+                    articlecategoryId = a.ArticlecategoryId,
+                    main = a.Main,
+                    isFree = a.IsFree,
+                    messageCount = a.MessageNormals.Count,
+                    lovecount = a.Lovecount,
+                    artInitDate = a.InitDate
+                }).Select(
+                x => new
+                {
+                    artId = x.artId,
+                    username = x.userName,
+                    author = x.authorName,
+                    authorPic = x.authorPic,
+                    introduction = x.introduction,
+                    title = x.title,
+                    articlecategoryId = x.articlecategoryId,
+                    main = x.main,
+                    isFree = x.isFree,
+                    messageCount = x.messageCount,
+                    lovecount = x.lovecount,
+                    artInitDate = x.artInitDate
+                }).ToList();
 
-            
+
             if (nowpage == 1)
             {
 

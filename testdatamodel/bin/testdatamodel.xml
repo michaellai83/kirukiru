@@ -1208,7 +1208,7 @@
         </member>
         <member name="M:testdatamodel.Controllers.ArticleController.GetArtlogArticle(System.Int32,System.Int32,System.Int32)">
             <summary>
-            依類別取得四筆切切文章
+            依類別取得切切文章
             </summary>
             <param name="articlecategoryId">類別ID</param>
             <param name="nowpage">現在頁數(預設1)</param>
@@ -1380,7 +1380,7 @@
         </member>
         <member name="M:testdatamodel.Controllers.ArticleNormalController.GetArtlogNormalArticle(System.Int32,System.Int32,System.Int32)">
             <summary>
-            依照類別取得相關一般文章(前四筆)
+            依照類別取得相關一般文章
             </summary>
             <param name="articlecategoryId">文章類別ID</param>
             <param name="nowpage">現在頁數(預設為1)</param>

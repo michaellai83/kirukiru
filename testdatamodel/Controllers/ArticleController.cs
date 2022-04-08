@@ -475,23 +475,53 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult GetAllMessage(int artId ,int nowpage,int showcount)
         {
-            var data = db.Messages.Where(m => m.ArticleId == artId).Select(x=>new
+            //var data = db.Messages.Where(m => m.ArticleId == artId).Select(x=>new
+            //{
+            //    messageId=x.Id,
+            //    messageUserName=x.Members.UserName,
+            //    messageMember=x.Members.Name,
+            //    messageMemberPic=x.Members.PicName+ "." + x.Members.FileName,
+            //    messageMain =x.Main,
+            //    messageInitDate=x.InitDate,
+            //    reMessageData=x.R_Messages.Select(y=>new
+            //    {
+            //        reMessageId=y.Id,
+            //        userName=y.Messages.Articles.UserName,
+            //        author=y.Messages.Articles.AuthorName,
+            //        authorPic=y.Messages.Articles.AuthorPic,
+            //        reMessageMain=y.Main,
+            //        reMessageInitDate=y.InitDate
+            //    })
+
+            //}).ToList();
+            var data = db.Messages.Where(m => m.ArticleId == artId).Select(x => new
             {
-                messageId=x.Id,
-                messageUserName=x.Members.UserName,
-                messageMember=x.Members.Name,
-                messageMemberPic=x.Members.PicName+ "." + x.Members.FileName,
-                messageMain =x.Main,
-                messageInitDate=x.InitDate,
-                reMessageData=x.R_Messages.Select(y=>new
+                messageId = x.Id,
+                messageUserName = x.Members.UserName,
+                messageMember = x.Members.Name,
+                messageMemberPic = x.Members.PicName + "." + x.Members.FileName,
+                messageMain = x.Main,
+                messageInitDate = x.InitDate,
+                reMessageData = x.R_Messages.Join(db.Members,
+                    a=>a.Messages.Articles.UserName,
+                    b=>b.UserName,
+                    (a,b)=>new
+                    {
+                        reMessageId = a.Id,
+                        userName = b.UserName,
+                        author = b.Name,
+                        authorPic = b.PicName+"."+b.FileName,
+                        reMessageMain = a.Main,
+                        reMessageInitDate = a.InitDate
+                    }).Select(y=>new
                 {
-                    reMessageId=y.Id,
-                    userName=y.Messages.Articles.UserName,
-                    author=y.Messages.Articles.AuthorName,
-                    authorPic=y.Messages.Articles.AuthorPic,
-                    reMessageMain=y.Main,
-                    reMessageInitDate=y.InitDate
-                })
+                    reMessageId = y.reMessageId,
+                    userName = y.userName,
+                    author = y.author,
+                    authorPic = y.authorPic,
+                    reMessageMain = y.reMessageMain,
+                    reMessageInitDate = y.reMessageInitDate
+                    })
 
             }).ToList();
             if (data != null)
@@ -622,14 +652,35 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult GetReMessage(int messageId)
         {
-            var data = db.R_Messages.Where(m => m.MessageId == messageId).Select(x=>new
+            //var data = db.R_Messages.Where(m => m.MessageId == messageId).Select(x=>new
+            //{
+            //    reMessageId = x.Id,
+            //    userName = x.Messages.Articles.UserName,
+            //    author = x.Messages.Articles.AuthorName,
+            //    authorPic = x.Messages.Articles.AuthorPic,
+            //    reMessageMain = x.Main,
+            //    reMessageInitDate = x.InitDate
+            //}).ToList();
+            var data = db.R_Messages.Where(m => m.MessageId == messageId).Join(
+                db.Members,
+                a=>a.Messages.Articles.UserName,
+                b=>b.UserName,
+                (a,b)=>new
+                {
+                    reMessageId = a.Id,
+                    userName = b.UserName,
+                    author = b.Name,
+                    authorPic = b.PicName+"."+b.FileName,
+                    reMessageMain = a.Main,
+                    reMessageInitDate = a.InitDate
+                }).Select(x => new
             {
-                reMessageId = x.Id,
-                userName = x.Messages.Articles.UserName,
-                author = x.Messages.Articles.AuthorName,
-                authorPic = x.Messages.Articles.AuthorPic,
-                reMessageMain = x.Main,
-                reMessageInitDate = x.InitDate
+                reMessageId = x.reMessageId,
+                userName = x.userName,
+                author = x.author,
+                authorPic = x.authorPic,
+                reMessageMain = x.reMessageMain,
+                reMessageInitDate = x.reMessageInitDate
             }).ToList();
             
             if (data.Count > 0)
@@ -661,41 +712,116 @@ namespace testdatamodel.Controllers
         [ResponseType(typeof(Kirukiruoutput))]
         public IHttpActionResult GetArctile(int artId)
         {
-            var havdata = db.Articles.Where(m => m.ID == artId).Select(x=>new
+            //var havdata = db.Articles.Where(m => m.ID == artId).Select(x=>new
+            //{
+            //    artId = x.ID,
+            //    username = x.UserName,
+            //    authorPic = x.AuthorPic,
+            //    author = x.AuthorName,
+            //    title = x.Title,
+            //    firstPhoto = x.FirstPicName +"."+ x.FirstPicFileName,
+            //    introduction = x.Introduction,
+            //    articlecategoryId = x.ArticlecategoryId,
+            //    artArtlog = x.Articlecategory.Name,
+            //    isFree = x.IsFree,
+            //    isPush = x.IsPush,
+            //    lovecount=x.Lovecount,
+            //    artInitDate=x.InitDate,
+            //    fArrayList=x.Firstmissions.Select(y=>new
+            //    {
+            //        fId = y.Id,
+            //        secPhoto = y.PicName + "." + y.PicFileName,
+            //        mission = y.FirstItem,
+            //    }),
+            //    mArrayList=x.ArticleMains.Select(y=>new
+            //    {
+            //        mId = y.Id,
+            //        thirdPhoto = y.PicName + "." + y.PicFileName,
+            //        main = y.Main
+            //    }),
+            //    fMissionList=x.FinalMissions.Select(y=>new
+            //    {
+            //        fId = y.ID,
+            //        auxiliary = y.Title,
+            //        auxiliarymain = y.Main
+            //    }),
+            //    final = x.Remarks.FirstOrDefault(y=>y.ArticleId ==artId).Main
+            //}).FirstOrDefault();
+
+            var havdata = db.Articles.Join(
+                db.Members,
+                a => a.UserName,
+                b => b.UserName,
+                (a, b) => new
+                {
+                    artId = a.ID,
+                    username = a.UserName,
+                    authorPic = b.PicName + "." + b.FileName,
+                    author = b.Name,
+                    title = a.Title,
+                    firstPhoto = a.FirstPicName + "." + a.FirstPicFileName,
+                    introduction = a.Introduction,
+                    articlecategoryId = a.ArticlecategoryId,
+                    artArtlog = a.Articlecategory.Name,
+                    isFree = a.IsFree,
+                    isPush = a.IsPush,
+                    lovecount = a.Lovecount,
+                    artInitDate = a.InitDate,
+                    fArrayList = a.Firstmissions.Select(y => new
+                    {
+                        fId = y.Id,
+                        secPhoto = y.PicName + "." + y.PicFileName,
+                        mission = y.FirstItem,
+                    }),
+                    mArrayList = a.ArticleMains.Select(y => new
+                    {
+                        mId = y.Id,
+                        thirdPhoto = y.PicName + "." + y.PicFileName,
+                        main = y.Main
+                    }),
+                    fMissionList = a.FinalMissions.Select(y => new
+                    {
+                        fId = y.ID,
+                        auxiliary = y.Title,
+                        auxiliarymain = y.Main
+                    }),
+                    final = a.Remarks.FirstOrDefault(y => y.ArticleId == artId).Main
+                }).Where(x => x.artId == artId).Select(x => new
             {
-                artId = x.ID,
-                username = x.UserName,
-                authorPic = x.AuthorPic,
-                author = x.AuthorName,
-                title = x.Title,
-                firstPhoto = x.FirstPicName +"."+ x.FirstPicFileName,
-                introduction = x.Introduction,
-                articlecategoryId = x.ArticlecategoryId,
-                artArtlog = x.Articlecategory.Name,
-                isFree = x.IsFree,
-                isPush = x.IsPush,
-                lovecount=x.Lovecount,
-                artInitDate=x.InitDate,
-                fArrayList=x.Firstmissions.Select(y=>new
+                artId = x.artId,
+                username = x.username,
+                authorPic = x.authorPic,
+                author = x.author,
+                title = x.title,
+                firstPhoto = x.firstPhoto,
+                introduction = x.introduction,
+                articlecategoryId = x.articlecategoryId,
+                artArtlog = x.artArtlog,
+                isFree = x.isFree,
+                isPush = x.isPush,
+                lovecount = x.lovecount,
+                artInitDate = x.artInitDate,
+                fArrayList = x.fArrayList.Select(y => new
                 {
-                    fId = y.Id,
-                    secPhoto = y.PicName + "." + y.PicFileName,
-                    mission = y.FirstItem,
+                    fId = y.fId,
+                    secPhoto = y.secPhoto,
+                    mission = y.mission,
                 }),
-                mArrayList=x.ArticleMains.Select(y=>new
+                mArrayList = x.mArrayList.Select(y => new
                 {
-                    mId = y.Id,
-                    thirdPhoto = y.PicName + "." + y.PicFileName,
-                    main = y.Main
+                    mId = y.mId,
+                    thirdPhoto = y.thirdPhoto,
+                    main = y.main
                 }),
-                fMissionList=x.FinalMissions.Select(y=>new
+                fMissionList = x.fMissionList.Select(y => new
                 {
-                    fId = y.ID,
-                    auxiliary = y.Title,
-                    auxiliarymain = y.Main
+                    fId = y.fId,
+                    auxiliary = y.auxiliary,
+                    auxiliarymain = y.auxiliary
                 }),
-                final = x.Remarks.FirstOrDefault(y=>y.ArticleId ==artId).Main
+                final = x.final
             }).FirstOrDefault();
+            
             if (havdata == null)
             {
                 return Ok(new
@@ -1555,23 +1681,60 @@ namespace testdatamodel.Controllers
         public IHttpActionResult GetUserArticle( bool ispush, int nowpage,int showcount)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
-            var havedata = db.Articles.Where(m => m.UserName == username).Where(m=>m.IsPush == ispush).Select(x=>new
+            //var havedata = db.Articles.Where(m => m.UserName == username).Where(m=>m.IsPush == ispush).Select(x=>new
+            //{
+            //    artId=x.ID,
+            //    author=x.AuthorName,
+            //    authorPic=x.AuthorPic,
+            //    username=x.UserName,
+            //    title=x.Title,
+            //    firstPhoto=x.FirstPicName+"."+x.FirstPicFileName,
+            //    introduction=x.Introduction,
+            //    artArtlog=x.Articlecategory.Name,
+            //    articlecategoryId=x.ArticlecategoryId,
+            //    isFree=x.IsFree,
+            //    lovecount=x.Lovecount,
+            //    messageCount=x.Messages.Count,
+            //    artInitDate=x.InitDate
+
+            //}).ToList();
+
+            var havedata = db.Articles.Where(m => m.UserName == username &&  m.IsPush == ispush).Join(db.Members,
+                a=>a.UserName,
+                b=>b.UserName,
+                (a,b)=>new
+                {
+                    artId = a.ID,
+                    author = b.Name,
+                    authorPic = b.PicName+"."+b.FileName,
+                    username = b.UserName,
+                    title = a.Title,
+                    firstPhoto = a.FirstPicName + "." + a.FirstPicFileName,
+                    introduction = a.Introduction,
+                    artArtlog = a.Articlecategory.Name,
+                    articlecategoryId = a.ArticlecategoryId,
+                    isFree = a.IsFree,
+                    lovecount = a.Lovecount,
+                    messageCount = a.Messages.Count,
+                    artInitDate = a.InitDate
+                }).Select(x => new
             {
-                artId=x.ID,
-                author=x.AuthorName,
-                authorPic=x.AuthorPic,
-                username=x.UserName,
-                title=x.Title,
-                firstPhoto=x.FirstPicName+"."+x.FirstPicFileName,
-                introduction=x.Introduction,
-                artArtlog=x.Articlecategory.Name,
-                articlecategoryId=x.ArticlecategoryId,
-                isFree=x.IsFree,
-                lovecount=x.Lovecount,
-                messageCount=x.Messages.Count,
-                artInitDate=x.InitDate
+                artId = x.artId,
+                author = x.author,
+                authorPic = x.authorPic,
+                username = x.username,
+                title = x.title,
+                firstPhoto = x.firstPhoto,
+                introduction = x.introduction,
+                artArtlog = x.artArtlog,
+                articlecategoryId = x.articlecategoryId,
+                isFree = x.isFree,
+                lovecount = x.lovecount,
+                messageCount = x.messageCount,
+                artInitDate = x.artInitDate
 
             }).ToList();
+
             if (havedata.Count == 0)
             {
                 return Ok(new
@@ -1723,21 +1886,55 @@ namespace testdatamodel.Controllers
         public IHttpActionResult GetAllcollectart(int nowpage, int showcount)
         {
             var memberid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
-            var data = db.Members.FirstOrDefault(m => m.ID == memberid).Articles.Select(x=>new
+            //var data = db.Members.FirstOrDefault(m => m.ID == memberid).Articles.Select(x=>new
+            //{
+            //    artId = x.ID,
+            //    author = x.AuthorName,
+            //    authorPic = x.AuthorPic,
+            //    username = x.UserName,
+            //    title = x.Title,
+            //    firstPhoto = x.FirstPicName + "." + x.FirstPicFileName,
+            //    introduction = x.Introduction,
+            //    artArtlog = x.Articlecategory.Name,
+            //    articlecategoryId = x.ArticlecategoryId,
+            //    isFree = x.IsFree,
+            //    lovecount = x.Lovecount,
+            //    messageCount = x.Messages.Count,
+            //    artInitDate = x.InitDate
+            //}).ToList();
+            var data = db.Members.FirstOrDefault(m => m.ID == memberid).Articles.Join(db.Members,
+                a => a.UserName,
+                b => b.UserName,
+                (a, b) => new
+                {
+                    artId = a.ID,
+                    author = b.Name,
+                    authorPic = b.PicName + "." + b.FileName,
+                    username = b.UserName,
+                    title = a.Title,
+                    firstPhoto = a.FirstPicName + "." + a.FirstPicFileName,
+                    introduction = a.Introduction,
+                    artArtlog = a.Articlecategory.Name,
+                    articlecategoryId = a.ArticlecategoryId,
+                    isFree = a.IsFree,
+                    lovecount = a.Lovecount,
+                    messageCount = a.Messages.Count,
+                    artInitDate = a.InitDate
+                }).Select(x => new
             {
-                artId = x.ID,
-                author = x.AuthorName,
-                authorPic = x.AuthorPic,
-                username = x.UserName,
-                title = x.Title,
-                firstPhoto = x.FirstPicName + "." + x.FirstPicFileName,
-                introduction = x.Introduction,
-                artArtlog = x.Articlecategory.Name,
-                articlecategoryId = x.ArticlecategoryId,
-                isFree = x.IsFree,
-                lovecount = x.Lovecount,
-                messageCount = x.Messages.Count,
-                artInitDate = x.InitDate
+                artId = x.artId,
+                author = x.author,
+                authorPic = x.authorPic,
+                username = x.username,
+                title = x.title,
+                firstPhoto = x.firstPhoto,
+                introduction = x.introduction,
+                artArtlog = x.artArtlog,
+                articlecategoryId = x.articlecategoryId,
+                isFree = x.isFree,
+                lovecount = x.lovecount,
+                messageCount = x.messageCount,
+                artInitDate = x.artInitDate
             }).ToList();
 
             int total = data.Count;
@@ -1766,7 +1963,7 @@ namespace testdatamodel.Controllers
 
         }
         /// <summary>
-        /// 依類別取得四筆切切文章
+        /// 依類別取得切切文章
         /// </summary>
         /// <param name="articlecategoryId">類別ID</param>
         /// <param name="nowpage">現在頁數(預設1)</param>
@@ -1776,24 +1973,57 @@ namespace testdatamodel.Controllers
         [ResponseType(typeof(KiruArtLogFourOutPut))]
         public IHttpActionResult GetArtlogArticle(int articlecategoryId,int nowpage, int showcount)
         {
-            var data = db.Articles.Where(x => x.ArticlecategoryId == articlecategoryId).Where(x => x.IsPush == true)
-                .Select(x=> new
+            //var data = db.Articles.Where(x => x.ArticlecategoryId == articlecategoryId && x.IsPush == true)
+            //    .Select(x=> new
+            //    {
+            //        artId=x.ID,
+            //        username=x.UserName,
+            //        author=x.AuthorName,
+            //        authorPic=x.AuthorPic,
+            //        title=x.Title,
+            //        firstPhoto=x.FirstPicName+"."+x.FirstPicFileName,
+            //        introduction=x.Introduction,
+            //        artArtlog=x.Articlecategory.Name,
+            //        articlecategoryId=x.ArticlecategoryId,
+            //        isFree=x.IsFree,
+            //        lovecount=x.Lovecount,
+            //        artInitDate=x.InitDate,
+
+            //    }).ToList();
+            var data = db.Articles.Where(x => x.ArticlecategoryId == articlecategoryId && x.IsPush == true).Join(db.Members,a=>a.UserName,b=>b.UserName,(a,b)=>new
                 {
-                    artId=x.ID,
-                    username=x.UserName,
-                    author=x.AuthorName,
-                    authorPic=x.AuthorPic,
-                    title=x.Title,
-                    firstPhoto=x.FirstPicName+"."+x.FirstPicFileName,
-                    introduction=x.Introduction,
-                    artArtlog=x.Articlecategory.Name,
-                    articlecategoryId=x.ArticlecategoryId,
-                    isFree=x.IsFree,
-                    lovecount=x.Lovecount,
-                    artInitDate=x.InitDate,
-                    
+                    artId = a.ID,
+                    author = b.Name,
+                    authorPic = b.PicName + "." + b.FileName,
+                    username = b.UserName,
+                    title = a.Title,
+                    firstPhoto = a.FirstPicName + "." + a.FirstPicFileName,
+                    introduction = a.Introduction,
+                    artArtlog = a.Articlecategory.Name,
+                    articlecategoryId = a.ArticlecategoryId,
+                    isFree = a.IsFree,
+                    lovecount = a.Lovecount,
+                    messageCount = a.Messages.Count,
+                    artInitDate = a.InitDate
+            })
+                .Select(x => new
+                {
+                    artId = x.artId,
+                    author = x.author,
+                    authorPic = x.authorPic,
+                    username = x.username,
+                    title = x.title,
+                    firstPhoto = x.firstPhoto,
+                    introduction = x.introduction,
+                    artArtlog = x.artArtlog,
+                    articlecategoryId = x.articlecategoryId,
+                    isFree = x.isFree,
+                    lovecount = x.lovecount,
+                    messageCount = x.messageCount,
+                    artInitDate = x.artInitDate
+
                 }).ToList();
-               
+
             if (data == null )
             {
                 return Ok(new
