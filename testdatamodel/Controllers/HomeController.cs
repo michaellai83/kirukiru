@@ -12,7 +12,7 @@ namespace testdatamodel.Controllers
         {
             ViewBag.Title = "Home Page";
 
-            return View();
+            return Redirect("index.html");
         }
     }
 }

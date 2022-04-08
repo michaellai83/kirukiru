@@ -46,6 +46,7 @@ namespace testdatamodel.Areas.Back.Controllers
             backArticle.IniDateTime = DateTime.Now;
             db.BackArticles.Add(backArticle);
             db.SaveChanges();
+            var artId = backArticle.ID;
             return RedirectToAction("ShowNewArticle");
         }
 

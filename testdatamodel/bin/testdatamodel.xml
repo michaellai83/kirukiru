@@ -1478,13 +1478,12 @@
             金流基本資料(可再移到Web.config或資料庫設定)
             </summary>
         </member>
-        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPayBill(System.String,System.String,System.String)">
+        <member name="M:testdatamodel.Controllers.BankController.SpgatewayPayBill(System.String,System.String)">
             <summary>
             [智付通支付]金流介接
             </summary>
             <param name="main">訂單內容</param>
             <param name="payType">請款類型(CREDIT=信用卡付款\WEBATM=網路銀行轉帳付款)</param>
-            <param name="returnUrl">回傳網址</param>
             <returns></returns>
         </member>
         <member name="M:testdatamodel.Controllers.BankController.SpgatewayReturn(testdatamodel.Blue.NewebPayreturn)">
@@ -2838,6 +2837,12 @@
             <summary>
             隨機
             </summary>
+        </member>
+        <member name="M:testdatamodel.Startup.ConfigureAuth(Owin.IAppBuilder)">
+            <summary>
+            啟用跨域及驗證配置
+            </summary>
+            <param name="app"></param>
         </member>
         <member name="T:testdatamodel.Swagger.KiruArtLogFourOutPut">
             <summary>

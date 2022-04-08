@@ -34,7 +34,8 @@ namespace testdatamodel.Controllers
             HashKey = "2g38Fdjgzfhp2kG4H9Uvtv93y1bjpBBe",
             HashIV = "CJw6ToMX0fOFcKWP",
             //藍新回導入前端畫面的網站位置
-            ReturnURL = "https://kirukiru.rocket-coding.com",
+            //ReturnURL = "https://kirukiru.rocket-coding.com",
+            ReturnURL = "https://kirukiru.rocket-coding.com/#author/",
             //NotifyURL 為藍新打給後端告知是否訂單成功的連結 所以記得填上自己接資料的api
             NotifyURL = "https://kirukiru.rocket-coding.com/api/Bank/SpgatewayReturn",
             CustomerURL = "https://kirukiru.rocket-coding.com/Bank/SpgatewayCustomer",
@@ -48,11 +49,10 @@ namespace testdatamodel.Controllers
         /// </summary>
         /// <param name="main">訂單內容</param>
         /// <param name="payType">請款類型(CREDIT=信用卡付款\WEBATM=網路銀行轉帳付款)</param>
-        /// <param name="returnUrl">回傳網址</param>
         /// <returns></returns>
         [HttpPost]
         [JwtAuthFilter]
-        public IHttpActionResult SpgatewayPayBill( string main, string payType,string returnUrl)
+        public IHttpActionResult SpgatewayPayBill( string main, string payType)
         {
             var userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var memberdata = db.Members.FirstOrDefault(x => x.ID == userid);
@@ -115,7 +115,7 @@ namespace testdatamodel.Controllers
                     // 繳費有效期限(適用於非即時交易)
                     ExpireDate = null,
                     // 支付完成 返回商店網址
-                    ReturnURL = returnUrl,
+                    ReturnURL = _bankInfoModel.ReturnURL+main,
                     // 支付通知網址
                     NotifyURL = _bankInfoModel.NotifyURL,
                     // 商店取號網址

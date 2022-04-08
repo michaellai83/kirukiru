@@ -16,7 +16,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Http;
-using System.Web.Http.Cors;
 using System.Web.ModelBinding;
 using testdatamodel.Email;
 using testdatamodel.JWT;
@@ -325,13 +324,14 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var q = db.Members.Where(x => x.UserName == username);
+            var q = db.Members.Where(x => x.UserName == username).FirstOrDefault();
             //var q = from p in db.Members where p.UserName == username select p;
-            foreach (var p in q)
-            {
-                p.Name = name;
-            }
-
+            //foreach (var p in q)
+            //{
+            //    p.Name = name;
+            //}
+            q.Name = name;
+            
             db.SaveChanges();
             return Ok(new
             {
@@ -369,13 +369,14 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var q = db.Members.Where(x => x.UserName == username);
+            var q = db.Members.Where(x => x.UserName == username).FirstOrDefault();
             //var q = from p in db.Members where p.UserName == username select p;
-            foreach (var p in q)
-            {
-                p.Introduction = introduction;
-            }
-
+            //foreach (var p in q)
+            //{
+            //    p.Introduction = introduction;
+            //}
+            q.Introduction = introduction;
+            
             db.SaveChanges();
             return Ok(new
             {
@@ -403,13 +404,14 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var q = db.Members.Where(x => x.UserName == username);
+            var q = db.Members.Where(x => x.UserName == username).FirstOrDefault();
             //var q = from p in db.Members where p.UserName == username select p;
-            foreach (var p in q)
-            {
-                p.Email = email;
-            }
-
+            //foreach (var p in q)
+            //{
+            //    p.Email = email;
+            //}
+            q.Email = email;
+            
             db.SaveChanges();
             return Ok(new
             {
@@ -427,13 +429,14 @@ namespace testdatamodel.Controllers
         public IHttpActionResult ChagneOpenCollect(bool opencollect)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
-            var data = db.Members.Where(x => x.UserName == username).ToList();
+            var data = db.Members.Where(x => x.UserName == username).FirstOrDefault();
             
-            foreach (var p in data)
-            {
-                p.Opencollectarticles = opencollect;
-            }
-
+            //foreach (var p in data)
+            //{
+            //    p.Opencollectarticles = opencollect;
+            //}
+            data.Opencollectarticles = opencollect;
+            
             db.SaveChanges();
             return Ok(new
             {
@@ -1020,13 +1023,15 @@ namespace testdatamodel.Controllers
             var photo = Userpic.Split('.');
             string memberPhoto = photo[0];
             string PhotoFileName = photo[1];
-            var q = db.Members.Where(x => x.UserName == userName);
-            foreach (var p in q)
-            {
-                p.PicName = memberPhoto;
-                p.FileName = PhotoFileName;
-            }
-
+            var q = db.Members.FirstOrDefault(x => x.UserName == userName);
+            //foreach (var p in q)
+            //{
+            //    p.PicName = memberPhoto;
+            //    p.FileName = PhotoFileName;
+            //}
+            q.PicName = memberPhoto;
+            q.FileName = PhotoFileName;
+            
             db.SaveChanges();
             return Ok(new
             {
@@ -1078,7 +1083,7 @@ namespace testdatamodel.Controllers
             //var beOrder = from q in db.Orderlists
             //              where (q.AuthorName == memberUserName && q.Issuccess == true)
             //              select q;
-            if (beOrder.Count == 0)
+            if (beOrder == null)
             {
                 return Ok(new
                 {
@@ -1195,7 +1200,7 @@ namespace testdatamodel.Controllers
         public IHttpActionResult EditSubserciptionplans(string Amount)
         {
             var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
-            var data = db.Subscriptionplans.Where(x => x.MemberID == userId);
+            var data = db.Subscriptionplans.FirstOrDefault(x => x.MemberID == userId);
           
             if (data == null)
             {
@@ -1206,10 +1211,11 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            foreach (var q in data)
-            {
-                q.Amount = Amount;
-            }
+            data.Amount = Amount;
+            //foreach (var q in data)
+            //{
+            //    q.Amount = Amount;
+            //}
 
             db.SaveChanges();
             return Ok(new
@@ -1229,7 +1235,7 @@ namespace testdatamodel.Controllers
         public IHttpActionResult EditSubInfo([FromBody]string info)
         {
             var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
-            var data = db.Subscriptionplans.Where(x => x.MemberID == userId);
+            var data = db.Subscriptionplans.FirstOrDefault(x => x.MemberID == userId);
             if (data == null)
             {
                 return Ok(new
@@ -1239,10 +1245,11 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            foreach (var q in data)
-            {
-                q.Introduction = info;
-            }
+            data.Introduction = info;
+            //foreach (var q in data)
+            //{
+            //    q.Introduction = info;
+            //}
 
             db.SaveChanges();
             return Ok(new
@@ -1308,7 +1315,7 @@ namespace testdatamodel.Controllers
         public IHttpActionResult GetMyOrder(int nowpage, int showcount)
         {
             var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
-            var orderList = db.Orderlists.Where(x => x.MemberID == userId).Select(x=>new
+            var orderList = db.Orderlists.Where(x => x.MemberID == userId).Where(x=>x.Issuccess == true).Select(x=>new
             {
                 ID=x.ID,
                 Author=x.AuthorName,

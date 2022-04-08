@@ -270,6 +270,7 @@ namespace testdatamodel.Controllers
                 introduction = x.Introduction,
                 title = x.Title,
                 articlecategoryId = x.ArticlecategoryId,
+                main=x.Main,
                 isFree = x.IsFree,
                 isPush=x.IsPush,
                 messageCount = x.MessageNormals.Count,
@@ -449,7 +450,7 @@ namespace testdatamodel.Controllers
                     reMessageInitDate = y.InitDate
                 })
             }).ToList();
-            if (data.Count == 0)
+            if (data == null)
             {
                 return Ok(new
                 {
@@ -589,7 +590,7 @@ namespace testdatamodel.Controllers
         [ResponseType(typeof(OutPutReMessage))]
         public IHttpActionResult Getrmessage(int messageId)
         {
-            var data = db.MessageNormals.Where(x => x.Id == messageId).Select(y=>new
+            var data = db.R_MessageNormals.Where(x => x.Id == messageId).Select(y=>new
             {
                 reMessageId = y.Id,
                 reMessageMain = y.Main,
@@ -821,11 +822,12 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var q = db.MessageNormals.Where(x => x.Id == messageId);
-            foreach (var p in q)
-            {
-                p.Main = main;
-            }
+            messageData.Main = main;
+            //var q = db.MessageNormals.Where(x => x.Id == messageId);
+            //foreach (var p in q)
+            //{
+            //    p.Main = main;
+            //}
 
             db.SaveChanges();
             return Ok(new
@@ -868,12 +870,13 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var q = db.R_MessageNormals.Where(x => x.Id == reMessageId);
+            reData.Main = main;
+            //var q = db.R_MessageNormals.Where(x => x.Id == reMessageId);
             
-            foreach (var p in q)
-            {
-                p.Main = main;
-            }
+            //foreach (var p in q)
+            //{
+            //    p.Main = main;
+            //}
 
             db.SaveChanges();
             return Ok(new

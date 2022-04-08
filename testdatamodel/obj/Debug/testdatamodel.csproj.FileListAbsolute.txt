@@ -169,7 +169,6 @@ C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Syste
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\System.Numerics.Vectors.dll
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\System.Text.Encodings.Web.dll
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\System.Web.Cors.dll
-C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\System.Web.Http.Cors.dll
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Microsoft.AspNetCore.Http.Abstractions.xml
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Microsoft.AspNetCore.Http.Extensions.xml
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Microsoft.AspNetCore.Http.Features.xml
@@ -182,7 +181,6 @@ C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Syste
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\System.Memory.xml
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\System.Numerics.Vectors.xml
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\System.Text.Encodings.Web.xml
-C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\System.Web.Http.Cors.xml
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.EditmemberV2.resources
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\BouncyCastle.Crypto.dll
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\MailKit.dll
@@ -205,3 +203,7 @@ C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.EditBackArticleTitlePic.resources
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.EditBackArticleAddBackMemberPic.resources
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.EditSubscriptionplanAddInfo.resources
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Microsoft.Owin.Security.dll
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Microsoft.Owin.Security.OAuth.dll
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Microsoft.Owin.Security.xml
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Microsoft.Owin.Security.OAuth.xml

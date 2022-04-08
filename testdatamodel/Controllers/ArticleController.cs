@@ -494,7 +494,7 @@ namespace testdatamodel.Controllers
                 })
 
             }).ToList();
-            if (data.Count > 0)
+            if (data != null)
             {
                 var total = data.Count;
                 if (nowpage == 1)
@@ -1859,12 +1859,12 @@ namespace testdatamodel.Controllers
                     message = "你沒有權限"
                 });
             }
-
-            var q = db.Messages.Where(x => x.Id == messageId);
-            foreach (var str in q)
-            {
-                str.Main = main;
-            }
+            messageData.Main = main;
+            //var q = db.Messages.FirstOrDefault(x => x.Id == messageId);
+            //foreach (var str in q)
+            //{
+            //    str.Main = main;
+            //}
             
             db.SaveChanges();
             return Ok(new
@@ -1907,11 +1907,13 @@ namespace testdatamodel.Controllers
                 });
             }
 
-            var q = db.R_Messages.Where(x => x.Id == reMessageId);
-            foreach (var p in q)
-            {
-                p.Main = main;
-            }
+            reData.Main = main;
+            //var q = db.R_Messages.FirstOrDefault(x => x.Id == reMessageId);
+            //q.Main = main;
+            //foreach (var p in q)
+            //{
+            //    p.Main = main;
+            //}
 
             db.SaveChanges();
             return Ok(new
