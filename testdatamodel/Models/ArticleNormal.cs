@@ -26,16 +26,6 @@ namespace testdatamodel.Models
         [Display(Name = "使用者帳號")]
         public string UserName { get; set; }
         /// <summary>
-        /// 作者名字
-        /// </summary>
-        [Display(Name = "使用者名字")]
-        public string AuthorName { get; set; }
-        /// <summary>
-        /// 作者頭像
-        /// </summary>
-        [Display(Name = "使用者頭像")]
-        public string AuthorPic { get; set; }
-        /// <summary>
         /// 文章標題
         /// </summary>
         [Display(Name = "文章標題")]

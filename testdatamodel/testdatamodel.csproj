@@ -587,6 +587,10 @@
     <Compile Include="Migrations\202204010346386_EditSubscriptionplanAddInfo.Designer.cs">
       <DependentUpon>202204010346386_EditSubscriptionplanAddInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202204091141002_DeleteauthorandauthorpicInartilceAndnormalarticle.cs" />
+    <Compile Include="Migrations\202204091141002_DeleteauthorandauthorpicInartilceAndnormalarticle.Designer.cs">
+      <DependentUpon>202204091141002_DeleteauthorandauthorpicInartilceAndnormalarticle.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Article.cs" />
     <Compile Include="Models\Articlecategory.cs" />
@@ -1385,6 +1389,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202204010346386_EditSubscriptionplanAddInfo.resx">
       <DependentUpon>202204010346386_EditSubscriptionplanAddInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202204091141002_DeleteauthorandauthorpicInartilceAndnormalarticle.resx">
+      <DependentUpon>202204091141002_DeleteauthorandauthorpicInartilceAndnormalarticle.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

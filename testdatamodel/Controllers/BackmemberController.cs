@@ -157,7 +157,7 @@ namespace testdatamodel.Controllers
 
             db.SaveChanges();
             //回傳網址
-            return Redirect("https://kirukiru.rocket-coding.com/");
+            return Redirect("https://kirukiru.rocket-coding.com/#/signin");
         }
         /// <summary>
         /// 新增精選文章

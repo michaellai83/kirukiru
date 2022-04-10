@@ -319,8 +319,6 @@ namespace testdatamodel.Controllers
             Article article = new Article();
             article.UserName = username;
             article.Title = dataArticle.title;
-            article.AuthorName = memberdata.Name;
-            article.AuthorPic = memberdata.PicName + "." + memberdata.FileName;
             article.FirstPicName = titlePicName;
             article.FirstPicFileName = titleFileName;
             article.Introduction = dataArticle.introduction;
@@ -578,7 +576,7 @@ namespace testdatamodel.Controllers
                 messageMemberPic =y.Members.PicName+"."+y.Members.FileName,
                 messageMain=y.Main,
                 messageInitDate=y.InitDate
-            }).ToList();
+            }).FirstOrDefault();
             if (data == null)
             {
                 return Ok(new
@@ -1370,7 +1368,7 @@ namespace testdatamodel.Controllers
             }
             db.SaveChanges();
             var username = editkirukiru.userName;
-            if (string.IsNullOrWhiteSpace(editkirukiru.firstPhoto) && string.IsNullOrWhiteSpace(editkirukiru.title))
+            if (string.IsNullOrWhiteSpace(editkirukiru.firstPhoto) || string.IsNullOrWhiteSpace(editkirukiru.title))
             {
                 return Ok(new
                 {
@@ -1532,8 +1530,8 @@ namespace testdatamodel.Controllers
                 isPush = x.IsPush,
                 artInitDate=x.InitDate,
                 final = x.Remarks.FirstOrDefault(y=>y.ArticleId == artId).Main
-            }).ToList();
-            if (havdata.Count == 0)
+            }).FirstOrDefault();
+            if (havdata == null)
             {
                 return Ok(new
                 {
@@ -1565,7 +1563,7 @@ namespace testdatamodel.Controllers
         /// </summary>
         /// <param name="artId">文章ID</param>
         /// <returns></returns>
-        [Route("api/Article/DeleteActile")]
+        [Route("api/Article/DeleteArticle")]
         [HttpDelete]
         [JwtAuthFilter]
         public IHttpActionResult DeleteActile(int artId)
@@ -1592,41 +1590,60 @@ namespace testdatamodel.Controllers
             }
             
             var ArtFirstMission = ArtData.Firstmissions.ToList();
-            foreach (var str in ArtFirstMission)
+            if (ArtFirstMission != null)
             {
-                int FirstID = str.Id;
-                var FirstPic = db.Firstmissions.FirstOrDefault(m => m.Id == FirstID);
-                string picname = FirstPic.PicName + "." + FirstPic.PicFileName;
+                foreach (var str in ArtFirstMission)
+                {
+                    int FirstID = str.Id;
+                    var FirstPic = db.Firstmissions.FirstOrDefault(m => m.Id == FirstID);
+                    string picname = FirstPic.PicName + "." + FirstPic.PicFileName;
 
-                db.Firstmissions.Remove(FirstPic);
-                //db.SaveChanges();
+                    db.Firstmissions.Remove(FirstPic);
+                    //db.SaveChanges();
 
-                string savepath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
-                File.Delete(savepath);
+                    string savepath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
+                    if (!picname.Equals("."))
+                    {
+                        File.Delete(savepath);
+                    }
+
+                }
             }
+            
             var ArtMain = ArtData.ArticleMains.ToList();
-            foreach (var str in ArtMain)
+            if (ArtMain != null)
             {
+                foreach (var str in ArtMain)
+                {
 
-                int MainPicID = str.Id;
+                    int MainPicID = str.Id;
 
-                var MainPic = db.ArticleMains.FirstOrDefault(m => m.Id == MainPicID);
-                string picname = MainPic.PicName + "." + MainPic.PicFileName;
-                string savepath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
+                    var MainPic = db.ArticleMains.FirstOrDefault(m => m.Id == MainPicID);
+                    string picname = MainPic.PicName + "." + MainPic.PicFileName;
+                    string savepath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
 
-                db.ArticleMains.Remove(MainPic);
-                //db.SaveChanges();
-                File.Delete(savepath);
+                    db.ArticleMains.Remove(MainPic);
+                    //db.SaveChanges();
+                    if (!picname.Equals("."))
+                    {
+                        File.Delete(savepath);
+                    }
+
+                }
             }
-
+            
             var ArtRemarke = ArtData.Remarks.ToList();
-            foreach (var str in ArtRemarke)
+            if (ArtRemarke != null)
             {
-                int id = str.Id;
-                var result = db.Remarks.FirstOrDefault(m => m.Id == id);
-                db.Remarks.Remove(result);
-                //db.SaveChanges();
+                foreach (var str in ArtRemarke)
+                {
+                    int id = str.Id;
+                    var result = db.Remarks.FirstOrDefault(m => m.Id == id);
+                    db.Remarks.Remove(result);
+                    //db.SaveChanges();
+                }
             }
+            
 
             var ArtMessage = ArtData.Messages.ToList();
             if (ArtMessage.Count > 0)
@@ -1698,7 +1715,15 @@ namespace testdatamodel.Controllers
             //    artInitDate=x.InitDate
 
             //}).ToList();
-
+            var memberData = db.Members.FirstOrDefault(m => m.UserName == username);
+            if (memberData == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此作者"
+                });
+            }
             var havedata = db.Articles.Where(m => m.UserName == username &&  m.IsPush == ispush).Join(db.Members,
                 a=>a.UserName,
                 b=>b.UserName,
@@ -1735,15 +1760,6 @@ namespace testdatamodel.Controllers
 
             }).ToList();
 
-            if (havedata.Count == 0)
-            {
-                return Ok(new
-                {
-                    success = false,
-                    message = "沒有文章"
-                });
-
-            }
 
             int pagecount = havedata.Count;
             if (nowpage == 1)

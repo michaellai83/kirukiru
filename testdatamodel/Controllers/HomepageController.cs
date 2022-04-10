@@ -29,6 +29,15 @@ namespace testdatamodel.Controllers
         [HttpGet]
         public IHttpActionResult SeekArticle(int articlecategoryId, int nowpage,int showcount)
         {
+            var artLog = db.Articlecategory.FirstOrDefault(x => x.Id == articlecategoryId);
+            if (artLog == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "類別錯誤"
+                });
+            }
             //var data = db.Articles.Where(m => m.ArticlecategoryId == articlecategoryId).Where(m => m.IsPush == true).Select(x=>new
             //{
             //    artId = x.ID,
@@ -262,47 +271,35 @@ namespace testdatamodel.Controllers
             //var dataNormal = from q in db.ArticleNormals
             //    where q.InitDate >= datetime01 && q.InitDate <datetime02 & q.IsPush == true
             //    select q;
-            if (data != null )
+            if (nowpage == 1)
             {
-                
-                if (nowpage == 1)
+
+                //排序依照日期
+                var result = data.OrderByDescending(x => x.artInitDate).Take(showcount);
+                //var resultArticles = from e in arrayList
+                //    orderby e.InitDateTime
+                //    select e;
+                totalcount = data.Count();
+
+                return Ok(new
                 {
-                    
-                    //排序依照日期
-                    var result = data.OrderByDescending(x => x.artInitDate).Take(showcount);
-                    //var resultArticles = from e in arrayList
-                    //    orderby e.InitDateTime
-                    //    select e;
-                    totalcount = data.Count();
-
-                    return Ok(new
-                    {
-                        success = true,
-                        total = totalcount,
-                        data = result
-                    });
-                }
-                else
-                {
-
-                    int page = (nowpage - 1) * showcount;
-                    //排序依照日期
-                    var result = data.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
-
-                    return Ok(new
-                    {
-                        success = true,
-                        total = totalcount,
-                        data = result
-                    });
-                }
+                    success = true,
+                    total = totalcount,
+                    data = result
+                });
             }
             else
             {
+
+                int page = (nowpage - 1) * showcount;
+                //排序依照日期
+                var result = data.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+
                 return Ok(new
                 {
-                    success = false,
-                    message = "時間或者格式錯誤"
+                    success = true,
+                    total = totalcount,
+                    data = result
                 });
             }
         }
@@ -363,45 +360,32 @@ namespace testdatamodel.Controllers
                     artInitDate = x.artInitDate
                 }).ToList();
 
-            if (data.Count != 0 )
+            var total = data.Count;
+            if (nowpage == 1)
             {
-               
-                var total = data.Count;
-                if (nowpage == 1)
+                //排序依照日期 desending遞減
+                //用Take表示拿取幾筆資料
+                var result = data.OrderByDescending(x => x.artInitDate).Take(showcount);
+                //另一種寫法
+                //var result = from e in arrayList
+                //    orderby e.InitDateTime descending 
+                //    select e;
+                return Ok(new
                 {
-                    //排序依照日期 desending遞減
-                    //用Take表示拿取幾筆資料
-                    var result = data.OrderByDescending(x => x.artInitDate).Take(showcount);
-                    //另一種寫法
-                    //var result = from e in arrayList
-                    //    orderby e.InitDateTime descending 
-                    //    select e;
-                    return Ok(new
-                    {
-                        success = true,
-                        total = total,
-                        data = result
-                    });
-                }
-                else
-                {
-                    var page = (nowpage - 1) * showcount;
-                    var result = data.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
-                    return Ok(new
-                    {
-                        success = true,
-                        total = total,
-                        data = result
-                    });
-                }
-               
+                    success = true,
+                    total = total,
+                    data = result
+                });
             }
             else
             {
+                var page = (nowpage - 1) * showcount;
+                var result = data.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
-                    success=false,
-                    message="應該不會有錯誤吧"
+                    success = true,
+                    total = total,
+                    data = result
                 });
             }
         }
@@ -464,40 +448,28 @@ namespace testdatamodel.Controllers
                 artInitDate = x.artInitDate
                 }).ToList();
 
-            if (data.Count() != 0 )
+            int total = data.Count;
+            if (nowpage == 1)
             {
-                int total = data.Count;
-                if (nowpage == 1)
-                {
-                    //排序依照日期 desending遞減
-                    var result = data.OrderByDescending(x => x.lovecount).Take(4);
+                //排序依照日期 desending遞減
+                var result = data.OrderByDescending(x => x.lovecount).Take(4);
 
-                    return Ok(new
-                    {
-                        success = true,
-                        total = total,
-                        data = result
-                    });
-                }
-                else
+                return Ok(new
                 {
-                    int page = (nowpage - 1) * showcount;
-                    var result = data.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
-                    return Ok(new
-                    {
-                        success = true,
-                        total = total,
-                        data = result
-                    });
-                }
-               
+                    success = true,
+                    total = total,
+                    data = result
+                });
             }
             else
             {
+                int page = (nowpage - 1) * showcount;
+                var result = data.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
-                    success=false,
-                    message="我也不知道啥錯誤應該是沒資料拉"
+                    success = true,
+                    total = total,
+                    data = result
                 });
             }
         }

@@ -1441,15 +1441,35 @@ namespace testdatamodel.Controllers
         public IHttpActionResult GetMyOrder(int nowpage, int showcount)
         {
             var userId = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
-            var orderList = db.Orderlists.Where(x => x.MemberID == userId).Where(x=>x.Issuccess == true).Select(x=>new
+            //var orderList = db.Orderlists.Where(x => x.MemberID == userId).Where(x=>x.Issuccess == true).Select(x=>new
+            //{
+            //    ID=x.ID,
+            //    Author=x.AuthorName,
+            //    Amount = x.Amount,
+            //    IsSuccess=x.Issuccess,
+            //    InitDate=x.InitDateTime
+            //}).OrderByDescending(x => x.InitDate).ToList();
+            var orderList = db.Orderlists.Where(x => x.MemberID == userId && x.Issuccess == true)
+                .Join(db.Members,a=>a.AuthorName,b=>b.UserName,(a,b)=>new
+                {
+                    ID = a.ID,
+                    Author = b.Name,
+                    Amount = a.Amount,
+                    authorPic = b.PicName + "." + b.FileName,
+                    username = b.UserName,
+                    IsSuccess = a.Issuccess,
+                    InitDate = a.InitDateTime
+                }).Select(x => new
             {
-                ID=x.ID,
-                Author=x.AuthorName,
+                ID = x.ID,
+                Author = x.Author,
+                authorPic = x.authorPic,
+                username = x.username,
                 Amount = x.Amount,
-                IsSuccess=x.Issuccess,
-                InitDate=x.InitDateTime
+                IsSuccess = x.IsSuccess,
+                InitDate = x.InitDate
             }).OrderByDescending(x => x.InitDate).ToList();
-            
+
             int HowPay = 0;
             foreach (var order in orderList)
             {

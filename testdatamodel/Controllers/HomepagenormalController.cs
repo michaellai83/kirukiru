@@ -45,7 +45,16 @@ namespace testdatamodel.Controllers
             //                 where (a.ArticlecategoryId == articlecategoryId &
             //                        a.IsPush == true)
             //                 select a;
-
+            var artLog = db.Articlecategory.FirstOrDefault(x => x.Id == articlecategoryId);
+            if (artLog == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "類別錯誤"
+                });
+            }
+            
             var datanormal = db.ArticleNormals.Where(m => m.ArticlecategoryId == articlecategoryId && m.IsPush == true)
                 .Join(db.Members,a=>a.UserName,b=>b.UserName,(a,b)=>new
                 {
@@ -56,6 +65,7 @@ namespace testdatamodel.Controllers
                     introduction = a.Introduction,
                     title = a.Title,
                     articlecategoryId = a.ArticlecategoryId,
+                    artArtlog = a.Articlecategory.Name,
                     main = a.Main,
                     isFree = a.IsFree,
                     messageCount = a.MessageNormals.Count,
@@ -71,6 +81,7 @@ namespace testdatamodel.Controllers
                     introduction = x.introduction,
                     title = x.title,
                     articlecategoryId = x.articlecategoryId,
+                    artArtlog = x.artArtlog,
                     main = x.main,
                     isFree = x.isFree,
                     messageCount = x.messageCount,
@@ -78,48 +89,37 @@ namespace testdatamodel.Controllers
                     artInitDate = x.artInitDate
                 }).ToList();
             int pagecount = datanormal.Count();
-            if ( datanormal.Count != 0)
+            if (nowpage == 1)
             {
-                if (nowpage == 1)
+                //排序依照日期
+                //var result = from e in arrayList
+                //    orderby e.InitDateTime
+                //    select e;
+                var result = datanormal.OrderByDescending(x => x.artInitDate).Take(showcount);
+                return Ok(new
                 {
-                    //排序依照日期
-                    //var result = from e in arrayList
-                    //    orderby e.InitDateTime
-                    //    select e;
-                    var result = datanormal.OrderByDescending(x => x.artInitDate).Take(showcount);
-                    return Ok(new
-                    {
-                        success = true,
-                        total = datanormal.Count,
-                        data = result
-                    });
-                   
-                }
-                else
-                {
-                   
-
-                    int page = (nowpage - 1) * showcount;
-                    //排序依照日期
-
-                    var result = datanormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
-                    return Ok(new
-                    {
-                        success = true,
-                        total = datanormal.Count,
-                        data =result
-                    });
-                }
+                    success = true,
+                    total = datanormal.Count,
+                    data = result
+                });
 
             }
             else
             {
+
+
+                int page = (nowpage - 1) * showcount;
+                //排序依照日期
+
+                var result = datanormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
-                    success=false,
-                    message="類別錯誤"
+                    success = true,
+                    total = datanormal.Count,
+                    data = result
                 });
             }
+
 
         }
         /// <summary>
@@ -135,7 +135,7 @@ namespace testdatamodel.Controllers
         {
             var datetime01 = DateTime.Parse(datetime1);
             var datetime02 = DateTime.Parse(datetime2).AddDays(1);
-
+           
             //var dataNormal = db.ArticleNormals.Where(m => m.InitDate >= datetime01).Where(m => m.InitDate < datetime02)
             //    .Where(m => m.IsPush).Select(x => new
             //    {
@@ -166,6 +166,7 @@ namespace testdatamodel.Controllers
                     introduction = a.Introduction,
                     title = a.Title,
                     articlecategoryId = a.ArticlecategoryId,
+                    artArtlog = a.Articlecategory.Name,
                     main = a.Main,
                     isFree = a.IsFree,
                     messageCount = a.MessageNormals.Count,
@@ -180,58 +181,46 @@ namespace testdatamodel.Controllers
                     introduction = x.introduction,
                     title = x.title,
                     articlecategoryId = x.articlecategoryId,
+                    artArtlog = x.artArtlog,
                     main = x.main,
                     isFree = x.isFree,
                     messageCount = x.messageCount,
                     lovecount = x.lovecount,
                     artInitDate = x.artInitDate
                 });
-
-            if (dataNormal.Count() != 0)
+            if (nowpage == 1)
             {
-                
 
-                if (nowpage == 1)
+
+                //排序依照日期
+                var result = dataNormal.OrderByDescending(x => x.artInitDate).Take(showcount);
+                //var resultArticles = from e in arrayList
+                //    orderby e.InitDateTime
+                //    select e;
+
+                return Ok(new
                 {
-
-                    
-                    //排序依照日期
-                    var result = dataNormal.OrderByDescending(x => x.artInitDate).Take(showcount);
-                    //var resultArticles = from e in arrayList
-                    //    orderby e.InitDateTime
-                    //    select e;
-
-                    return Ok(new
-                    {
-                        success=true,
-                        total = dataNormal.Count(),
-                        data=result
-                    });
-                }
-                else
-                {
-
-                    int page = (nowpage - 1) * showcount;
-                    //排序依照日期
-                    var result = dataNormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
-
-
-                    return Ok(new
-                    {
-                        success=true,
-                        total = dataNormal.Count(),
-                        data =result
-                    });
-                }
+                    success = true,
+                    total = dataNormal.Count(),
+                    data = result
+                });
             }
             else
             {
+
+                int page = (nowpage - 1) * showcount;
+                //排序依照日期
+                var result = dataNormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
+
+
                 return Ok(new
                 {
-                    success=false,
-                    message="時間或者格式錯誤"
+                    success = true,
+                    total = dataNormal.Count(),
+                    data = result
                 });
             }
+            
         }
         /// <summary>
         /// 最新的一般文章
@@ -272,6 +261,7 @@ namespace testdatamodel.Controllers
                     introduction = a.Introduction,
                     title = a.Title,
                     articlecategoryId = a.ArticlecategoryId,
+                    artArtlog = a.Articlecategory.Name,
                     main = a.Main,
                     isFree = a.IsFree,
                     messageCount = a.MessageNormals.Count,
@@ -286,51 +276,38 @@ namespace testdatamodel.Controllers
                 introduction = x.introduction,
                 title = x.title,
                 articlecategoryId = x.articlecategoryId,
+                artArtlog = x.artArtlog,
                 main = x.main,
                 isFree = x.isFree,
                 messageCount = x.messageCount,
                 lovecount = x.lovecount,
                 artInitDate = x.artInitDate
                 }).ToList();
-            if (dataNormal.Count != 0)
+            if (nowpage == 1)
             {
-
-                if (nowpage == 1)
+                //排序依照日期 desending遞減
+                //用Take表示拿取幾筆資料
+                var result = dataNormal.OrderByDescending(x => x.artInitDate).Take(showcount);
+                //另一種寫法
+                //var result = from e in arrayList
+                //    orderby e.InitDateTime descending 
+                //    select e;
+                return Ok(new
                 {
-                    //排序依照日期 desending遞減
-                    //用Take表示拿取幾筆資料
-                    var result = dataNormal.OrderByDescending(x => x.artInitDate).Take(showcount);
-                    //另一種寫法
-                    //var result = from e in arrayList
-                    //    orderby e.InitDateTime descending 
-                    //    select e;
-                    return Ok(new
-                    {
-                        success = true,
-                        total=dataNormal.Count,
-                        data = result
-                    });
-                }
-                else
-                {
-                    int page = (nowpage - 1) * showcount;
-                    var result = dataNormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
-                    return Ok(new
-                    {
-                        success = true,
-                        total = dataNormal.Count,
-                        data = result
-                    });
-                }
-
-               
+                    success = true,
+                    total = dataNormal.Count,
+                    data = result
+                });
             }
             else
             {
+                int page = (nowpage - 1) * showcount;
+                var result = dataNormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
-                    success = false,
-                    message = "應該不會有錯誤拉"
+                    success = true,
+                    total = dataNormal.Count,
+                    data = result
                 });
             }
         }
@@ -373,6 +350,7 @@ namespace testdatamodel.Controllers
                     introduction = a.Introduction,
                     title = a.Title,
                     articlecategoryId = a.ArticlecategoryId,
+                    artArtlog = a.Articlecategory.Name,
                     main = a.Main,
                     isFree = a.IsFree,
                     messageCount = a.MessageNormals.Count,
@@ -387,45 +365,34 @@ namespace testdatamodel.Controllers
                 introduction = x.introduction,
                 title = x.title,
                 articlecategoryId = x.articlecategoryId,
+                artArtlog = x.artArtlog,
                 main = x.main,
                 isFree = x.isFree,
                 messageCount = x.messageCount,
                 lovecount = x.lovecount,
                 artInitDate = x.artInitDate
                 }).ToList();
-            if ( dataNormal.Count != 0)
+            if (nowpage == 1)
             {
-                if (nowpage == 1)
-                {
-                    //排序依照日期 desending遞減
-                    var result = dataNormal.OrderByDescending(x => x.lovecount).Take(showcount);
+                //排序依照日期 desending遞減
+                var result = dataNormal.OrderByDescending(x => x.lovecount).Take(showcount);
 
-                    return Ok(new
-                    {
-                        success = true,
-                        total = dataNormal.Count,
-                        data = result
-                    });
-                }
-                else
+                return Ok(new
                 {
-                    int page = (nowpage - 1) * showcount;
-                    var result = dataNormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
-                    return Ok(new
-                    {
-                        success = true,
-                        total = dataNormal.Count,
-                        data = result
-                    });
-                }
-                
+                    success = true,
+                    total = dataNormal.Count,
+                    data = result
+                });
             }
             else
             {
+                int page = (nowpage - 1) * showcount;
+                var result = dataNormal.OrderByDescending(x => x.artInitDate).Skip(page).Take(showcount);
                 return Ok(new
                 {
-                    success=false,
-                    message="我也不知道啥錯誤"
+                    success = true,
+                    total = dataNormal.Count,
+                    data = result
                 });
             }
         }
@@ -486,6 +453,7 @@ namespace testdatamodel.Controllers
                     introduction = a.Introduction,
                     title = a.Title,
                     articlecategoryId = a.ArticlecategoryId,
+                    artArtlog = a.Articlecategory.Name,
                     main = a.Main,
                     isFree = a.IsFree,
                     messageCount = a.MessageNormals.Count,
@@ -501,6 +469,7 @@ namespace testdatamodel.Controllers
                     introduction = x.introduction,
                     title = x.title,
                     articlecategoryId = x.articlecategoryId,
+                    artArtlog = x.artArtlog,
                     main = x.main,
                     isFree = x.isFree,
                     messageCount = x.messageCount,

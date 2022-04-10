@@ -45,8 +45,6 @@ namespace testdatamodel.Controllers
 
             ArticleNormal article = new ArticleNormal();
             article.UserName = data.userName;
-            article.AuthorName = checkusername.Name;
-            article.AuthorPic = checkusername.PicName + "." + checkusername.FileName;
             article.Introduction = data.introduction;
             article.Title = data.title;
             article.Main = data.main;
@@ -77,6 +75,15 @@ namespace testdatamodel.Controllers
         public IHttpActionResult GetUserAllArticleNormal( bool isPush,int nowpage,int showcount)
         {
             var username = JwtAuthUtil.GetUsername(Request.Headers.Authorization.Parameter);
+            var memeberData = db.Members.FirstOrDefault(m => m.UserName == username);
+            if ( memeberData == null)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "沒有此作者"
+                });
+            }
             //var data = db.ArticleNormals.Where(m => m.UserName == username).Where(m => m.IsPush == isPush).Select(x =>
             //    new
             //    {
@@ -105,6 +112,7 @@ namespace testdatamodel.Controllers
                     introduction = a.Introduction,
                     title = a.Title,
                     articlecategoryId = a.ArticlecategoryId,
+                    artArtlog = a.Articlecategory.Name,
                     main = a.Main,
                     isFree = a.IsFree,
                     messageCount = a.MessageNormals.Count,
@@ -120,6 +128,7 @@ namespace testdatamodel.Controllers
                     introduction = x.introduction,
                     title = x.title,
                     articlecategoryId = x.articlecategoryId,
+                    artArtlog = x.artArtlog,
                     main = x.main,
                     isFree = x.isFree,
                     messageCount = x.messageCount,
@@ -128,14 +137,7 @@ namespace testdatamodel.Controllers
 
                 }).ToList();
 
-            if (data.Count == 0)
-            {
-                return Ok(new
-                {
-                    success=false,
-                    message="沒有文章"
-                });
-            }
+           
 
             var total = data.Count;
             if (nowpage == 1)
@@ -324,6 +326,7 @@ namespace testdatamodel.Controllers
                     introduction = c.Introduction,
                     title = c.Title,
                     articlecategoryId = c.ArticlecategoryId,
+                    artArtlog = c.Articlecategory.Name,
                     main = c.Main,
                     isFree = c.IsFree,
                     isPush = c.IsPush,
@@ -338,6 +341,7 @@ namespace testdatamodel.Controllers
                 introduction = x.introduction,
                 title = x.title,
                 articlecategoryId = x.articlecategoryId,
+                artArtlog = x.artArtlog,
                 main = x.main,
                 isFree = x.isFree,
                 isPush = x.isPush,
@@ -595,8 +599,8 @@ namespace testdatamodel.Controllers
                 messageMemberPic = y.Members.PicName + "." + y.Members.FileName,
                 messageMain = y.Main,
                 messageInitDate = y.InitDate
-            }).ToList();
-            if (data.Count == 0)
+            }).FirstOrDefault();
+            if (data == null)
             {
                 return Ok(new
                 {
@@ -817,6 +821,7 @@ namespace testdatamodel.Controllers
                     introduction = a.Introduction,
                     title = a.Title,
                     articlecategoryId = a.ArticlecategoryId,
+                    artArtlog = a.Articlecategory.Name,
                     main = a.Main,
                     isFree = a.IsFree,
                     messageCount = a.MessageNormals.Count,
@@ -831,6 +836,7 @@ namespace testdatamodel.Controllers
                     introduction = x.introduction,
                     title = x.title,
                     articlecategoryId = x.articlecategoryId,
+                    artArtlog = x.artArtlog,
                     main = x.main,
                     isFree = x.isFree,
                     messageCount = x.messageCount,
@@ -901,6 +907,7 @@ namespace testdatamodel.Controllers
                     introduction = a.Introduction,
                     title = a.Title,
                     articlecategoryId = a.ArticlecategoryId,
+                    artArtlog = a.Articlecategory.Name,
                     main = a.Main,
                     isFree = a.IsFree,
                     messageCount = a.MessageNormals.Count,
@@ -915,6 +922,7 @@ namespace testdatamodel.Controllers
                     introduction = x.introduction,
                     title = x.title,
                     articlecategoryId = x.articlecategoryId,
+                    artArtlog = x.artArtlog,
                     main = x.main,
                     isFree = x.isFree,
                     messageCount = x.messageCount,

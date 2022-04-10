@@ -57,6 +57,7 @@ namespace testdatamodel.Controllers
             var userid = JwtAuthUtil.GetId(Request.Headers.Authorization.Parameter);
             var memberdata = db.Members.FirstOrDefault(x => x.ID == userid);
             string username = memberdata.UserName;
+            string email = memberdata.Email;
             if (memberdata == null)
             {
                 return Ok(new
@@ -123,7 +124,7 @@ namespace testdatamodel.Controllers
                     // 支付取消 返回商店網址
                     ClientBackURL = null,
                     // * 付款人電子信箱
-                    Email = string.Empty,
+                    Email = email,
                     // 付款人電子信箱 是否開放修改(1=可修改 0=不可修改)
                     EmailModify = 0,
                     // 商店備註

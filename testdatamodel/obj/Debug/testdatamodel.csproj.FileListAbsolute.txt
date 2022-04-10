@@ -207,3 +207,4 @@ C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Micro
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Microsoft.Owin.Security.OAuth.dll
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Microsoft.Owin.Security.xml
 C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\bin\Microsoft.Owin.Security.OAuth.xml
+C:\Users\賴彥融\Desktop\Project\Project\testdatamodel\testdatamodel\obj\Debug\testdatamodel.Migrations.DeleteauthorandauthorpicInartilceAndnormalarticle.resources

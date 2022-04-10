@@ -2103,16 +2103,6 @@
             使用者帳號
             </summary>
         </member>
-        <member name="P:testdatamodel.Models.Article.AuthorName">
-            <summary>
-            作者名字
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.Article.AuthorPic">
-            <summary>
-            作者頭像
-            </summary>
-        </member>
         <member name="P:testdatamodel.Models.Article.FirstPicName">
             <summary>
             封面圖片名稱
@@ -2206,16 +2196,6 @@
         <member name="P:testdatamodel.Models.ArticleNormal.UserName">
             <summary>
             使用者帳號
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.ArticleNormal.AuthorName">
-            <summary>
-            作者名字
-            </summary>
-        </member>
-        <member name="P:testdatamodel.Models.ArticleNormal.AuthorPic">
-            <summary>
-            作者頭像
             </summary>
         </member>
         <member name="P:testdatamodel.Models.ArticleNormal.Title">
