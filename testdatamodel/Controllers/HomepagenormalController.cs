@@ -89,6 +89,7 @@ namespace testdatamodel.Controllers
                     artInitDate = x.artInitDate
                 }).ToList();
             int pagecount = datanormal.Count();
+            db.Database.Log = log => System.Diagnostics.Debug.Write(log);
             if (nowpage == 1)
             {
                 //排序依照日期

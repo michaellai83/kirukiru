@@ -157,7 +157,8 @@ namespace testdatamodel.Controllers
                         Userpic = pic,
                         Isusername.Email,
                         Isusername.Introduction,
-                        Hobby = artlog.Name,
+                        Hobby = artlog.Name, 
+                        isCollect = Isusername.Opencollectarticles,
                         Subscription = order
 
                     };
@@ -727,7 +728,7 @@ namespace testdatamodel.Controllers
             //var memberdata = from q in db.Members
             //                 where (q.UserName == authorusername & q.Opencollectarticles == true)
             //                 select q;
-            var memberdata = db.Members.Where(x => x.UserName == authorusername && x.Opencollectarticles == true).FirstOrDefault();
+            var memberdata = db.Members.Where(x => x.UserName == authorusername ).FirstOrDefault();
             if (memberdata == null)
             {
                 return Ok(new
@@ -736,6 +737,16 @@ namespace testdatamodel.Controllers
                     message = "沒有此作者"
                 });
             }
+
+            if (memberdata.Opencollectarticles == false)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "作者不公開收藏"
+                });
+            }
+
             int memberid = memberdata.ID;
             //var authordata = db.Members.FirstOrDefault(m => m.ID == memberid).Articles.Select(x=>new
             //{
@@ -836,13 +847,21 @@ namespace testdatamodel.Controllers
             //var memberdata = from q in db.Members
             //                 where (q.UserName == authorusername & q.Opencollectarticles == true)
             //                 select q;
-            var memberdata = db.Members.Where(x => x.UserName == authorusername && x.Opencollectarticles == true).FirstOrDefault();
+            var memberdata = db.Members.Where(x => x.UserName == authorusername).FirstOrDefault();
             if (memberdata == null)
             {
                 return Ok(new
                 {
                     success = false,
                     message = "沒有此作者"
+                });
+            }
+            if (memberdata.Opencollectarticles == false)
+            {
+                return Ok(new
+                {
+                    success = false,
+                    message = "作者不公開收藏"
                 });
             }
             int memberid = 0;

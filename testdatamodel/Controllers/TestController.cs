@@ -48,36 +48,60 @@ namespace testdatamodel.Controllers
                     message = "沒有此帳號"
                 });
             }
-
             var userName = data.Item2;
-            var user = db.Members.FirstOrDefault(m => m.UserName == userName);
-            var artlog = db.Articlecategory.FirstOrDefault(m => m.Id == user.ArticlecategoryId);
-            string pic = user.PicName + "."+user.FileName;
-            var order = user.Orderlists.Where(x => x.Issuccess == true).ToList();
-            ArrayList orderlist = new ArrayList();
-            foreach (var q in order)
+            var user = db.Members.Where(m => m.UserName == userName).Join(db.Articlecategory,a=>a.ArticlecategoryId,b=>b.Id,(a,b)=>new
             {
-                var resultdata = new
+                UserId = a.ID,
+                Username = a.UserName,
+                Name =a.Name,
+                Userpic = a.PicName + "." + a.FileName,
+                Email=a.Email,
+                Introduction=a.Introduction,
+                Hobby = b.Name,
+                IsCollect=a.Opencollectarticles,
+                Subscription = a.Orderlists.Where(x=>x.Issuccess == true).Select(c=>new
                 {
-                    AuthorName = q.AuthorName
-                };
-                orderlist.Add(resultdata);
-            }
-            var result = new
+                    AuthorName = c.AuthorName
+                })
+            }).Select(x=>new
             {
-                UserId = user.ID,
-                Username =user.UserName,
-                user.Name,
-                Userpic = pic,
-                user.Email,
-                user.Introduction,
-                Hobby=artlog.Name,
-                Subscription = orderlist
-            };
+                UserId = x.UserId,
+                Username = x.Username,
+                Name = x.Name,
+                Userpic = x.Userpic,
+                Email = x.Email,
+                Introduction = x.Introduction,
+                Hobby = x.Hobby,
+                isCollect=x.IsCollect,
+                Subscription = x.Subscription
+            }).FirstOrDefault();
+            //var artlog = db.Articlecategory.FirstOrDefault(m => m.Id == user.ArticlecategoryId);
+            //string pic = user.PicName + "."+user.FileName;
+            //var order = user.Orderlists.Where(x => x.Issuccess == true).ToList();
+            //ArrayList orderlist = new ArrayList();
+            //foreach (var q in order)
+            //{
+            //    var resultdata = new
+            //    {
+            //        AuthorName = q.AuthorName
+            //    };
+            //    orderlist.Add(resultdata);
+            //}
+            //var result = new
+            //{
+            //    UserId = user.ID,
+            //    Username =user.UserName,
+            //    user.Name,
+            //    Userpic = pic,
+            //    user.Email,
+            //    user.Introduction,
+            //    Hobby=artlog.Name,
+            //    Subscription = orderlist
+            //};
             return Ok(new
             {
                 success=true,
-                data=result
+                data=user
             });
         }
         /// <summary>
