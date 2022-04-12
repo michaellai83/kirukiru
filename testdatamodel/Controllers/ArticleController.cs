@@ -784,7 +784,8 @@ namespace testdatamodel.Controllers
                         auxiliarymain = y.Main
                     }),
                     final = a.Remarks.FirstOrDefault(y => y.ArticleId == artId).Main
-                }).Where(x => x.artId == artId).Select(x => new
+                }).Where(x => x.artId == artId).
+                Select(x => new
             {
                 artId = x.artId,
                 username = x.username,
@@ -815,7 +816,7 @@ namespace testdatamodel.Controllers
                 {
                     fId = y.fId,
                     auxiliary = y.auxiliary,
-                    auxiliarymain = y.auxiliary
+                    auxiliarymain = y.auxiliarymain
                 }),
                 final = x.final
             }).FirstOrDefault();
@@ -1310,7 +1311,7 @@ namespace testdatamodel.Controllers
             string picname = otpicdata.FirstPicName + "." + otpicdata.FirstPicFileName;
             string savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
 
-            File.Delete(savpath);
+            //File.Delete(savpath);
             //db.FirstPics.Remove(otpicdata);
             //刪除前置步驟
             var OFpicary = db.Firstmissions.Where(m => m.ArticleId == artId).ToList();
@@ -1326,7 +1327,7 @@ namespace testdatamodel.Controllers
                 else
                 {
                     savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
-                    File.Delete(savpath);
+                    //File.Delete(savpath);
                     db.Firstmissions.Remove(fdata);
                 }
 
@@ -1345,7 +1346,7 @@ namespace testdatamodel.Controllers
                 else
                 {
                     savpath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
-                    File.Delete(savpath);
+                    //File.Delete(savpath);
                     db.ArticleMains.Remove(mdata);
                 }
 
@@ -1604,7 +1605,7 @@ namespace testdatamodel.Controllers
                     string savepath = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{picname}");
                     if (!picname.Equals("."))
                     {
-                        File.Delete(savepath);
+                        //File.Delete(savepath);
                     }
 
                 }
@@ -1626,7 +1627,7 @@ namespace testdatamodel.Controllers
                     //db.SaveChanges();
                     if (!picname.Equals("."))
                     {
-                        File.Delete(savepath);
+                        //File.Delete(savepath);
                     }
 
                 }
@@ -1667,7 +1668,7 @@ namespace testdatamodel.Controllers
             db.SaveChanges();
             string TitlePicfilestr = TitlePicName + "." + TitlePicFileName;
             string path = System.Web.HttpContext.Current.Server.MapPath($"~/Pic/{TitlePicfilestr}");
-            File.Delete(path);
+            //File.Delete(path);
             return Ok(new {
                 success = true,
                 message = "已刪除文章"

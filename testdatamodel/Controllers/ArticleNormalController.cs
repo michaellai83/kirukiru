@@ -913,23 +913,24 @@ namespace testdatamodel.Controllers
                     messageCount = a.MessageNormals.Count,
                     lovecount = a.Lovecount,
                     artInitDate = a.InitDate
-                }).Select(x => new
-                {
-                    artId = x.artId,
-                    username = x.userName,
-                    author = x.authorName,
-                    authorPic = x.authorPic,
-                    introduction = x.introduction,
-                    title = x.title,
-                    articlecategoryId = x.articlecategoryId,
-                    artArtlog = x.artArtlog,
-                    main = x.main,
-                    isFree = x.isFree,
-                    messageCount = x.messageCount,
-                    lovecount = x.lovecount,
-                    artInitDate = x.artInitDate
                 }).ToList();
-            if (data.Count == 0)
+                //Select(x => new
+                //{
+                //    artId = x.artId,
+                //    username = x.userName,
+                //    author = x.authorName,
+                //    authorPic = x.authorPic,
+                //    introduction = x.introduction,
+                //    title = x.title,
+                //    articlecategoryId = x.articlecategoryId,
+                //    artArtlog = x.artArtlog,
+                //    main = x.main,
+                //    isFree = x.isFree,
+                //    messageCount = x.messageCount,
+                //    lovecount = x.lovecount,
+                //    artInitDate = x.artInitDate
+                //}).ToList();
+            if (data == null)
             {
                 return Ok(new
                 {

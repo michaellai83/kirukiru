@@ -763,8 +763,8 @@ namespace testdatamodel.Controllers
             //    lovecount = x.Lovecount,
             //    artInitDate = x.InitDate
             //}).ToList();
-            var authordata = db.Members.FirstOrDefault(m => m.ID == memberid).Articles
-                .Join(db.Members,a=>a.UserName,b=>b.UserName,(a,b)=>new
+            var authordata = memberdata.Articles
+                .Join(db.Members, a => a.UserName, b => b.UserName, (a, b) => new
                 {
                     artId = a.ID,
                     author = b.Name,
@@ -779,31 +779,32 @@ namespace testdatamodel.Controllers
                     lovecount = a.Lovecount,
                     messageCount = a.Messages.Count,
                     artInitDate = a.InitDate
-                }).Select(x => new
-            {
-                artId = x.artId,
-                author = x.author,
-                authorPic = x.authorPic,
-                username = x.username,
-                title = x.title,
-                firstPhoto = x.firstPhoto,
-                introduction = x.introduction,
-                artArtlog = x.artArtlog,
-                articlecategoryId = x.articlecategoryId,
-                isFree = x.isFree,
-                lovecount = x.lovecount,
-                messageCount = x.messageCount,
-                artInitDate = x.artInitDate
                 }).ToList();
-            if (authordata.Count == 0)
-            {
-                return Ok(new
-                {
-                    success = false,
-                    message = "沒有資料或者不公開"
-                });
-            }
-            
+                //Select(x => new
+                //{
+                //    artId = x.artId,
+                //    author = x.author,
+                //    authorPic = x.authorPic,
+                //    username = x.username,
+                //    title = x.title,
+                //    firstPhoto = x.firstPhoto,
+                //    introduction = x.introduction,
+                //    artArtlog = x.artArtlog,
+                //    articlecategoryId = x.articlecategoryId,
+                //    isFree = x.isFree,
+                //    lovecount = x.lovecount,
+                //    messageCount = x.messageCount,
+                //    artInitDate = x.artInitDate
+                //}).ToList();
+            //if (authordata.Count == 0)
+            //{
+            //    return Ok(new
+            //    {
+            //        success = false,
+            //        message = "沒有資料或者不公開"
+            //    });
+            //}
+
 
             if (nowpage == 1)
             {
@@ -881,8 +882,8 @@ namespace testdatamodel.Controllers
             //    messageCount = x.MessageNormals.Count,
             //    artInitDate = x.InitDate
             //}).ToList();
-            var authordata = db.Members.Where(m => m.ID == memberid).FirstOrDefault().ArticleNormals.
-                Join(db.Members,a=>a.UserName,b=>b.UserName,(a,b)=>new
+            var authordata = memberdata.ArticleNormals.Join(db.Members,
+                a => a.UserName, b => b.UserName, (a, b) => new
                 {
                     artId = a.ID,
                     userName = a.UserName,
@@ -896,29 +897,30 @@ namespace testdatamodel.Controllers
                     messageCount = a.MessageNormals.Count,
                     lovecount = a.Lovecount,
                     artInitDate = a.InitDate
-                }).Select(x => new
-            {
-                artId = x.artId,
-                username = x.userName,
-                author = x.authorName,
-                authorPic = x.authorPic,
-                introduction = x.introduction,
-                title = x.title,
-                articlecategoryId = x.articlecategoryId,
-                main = x.main,
-                isFree = x.isFree,
-                messageCount = x.messageCount,
-                lovecount = x.lovecount,
-                artInitDate = x.artInitDate
                 }).ToList();
-            if (authordata.Count == 0)
-            {
-                return Ok(new
-                {
-                    success=false,
-                    message="沒有資料或者不公開"
-                });
-            }
+            //    Select(x => new
+            //{
+            //    artId = x.artId,
+            //    username = x.userName,
+            //    author = x.authorName,
+            //    authorPic = x.authorPic,
+            //    introduction = x.introduction,
+            //    title = x.title,
+            //    articlecategoryId = x.articlecategoryId,
+            //    main = x.main,
+            //    isFree = x.isFree,
+            //    messageCount = x.messageCount,
+            //    lovecount = x.lovecount,
+            //    artInitDate = x.artInitDate
+            //    }).ToList();
+            //if (authordata.Count == 0)
+            //{
+            //    return Ok(new
+            //    {
+            //        success=false,
+            //        message="沒有資料或者不公開"
+            //    });
+            //}
             
             if (nowpage == 1)
             {
